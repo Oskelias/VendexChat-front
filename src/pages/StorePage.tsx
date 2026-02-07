@@ -86,19 +86,23 @@ export function StorePage() {
     );
   }
 
+  const categories = data.categories ?? [];
+
   return (
     <div className="store-page">
-      <StoreHeader store={data.store} />
+      {data.store && <StoreHeader store={data.store} />}
 
       {view === "catalog" && (
         <>
-          <CategoryNav
-            categories={data.categories}
-            activeId={activeCategory}
-            onSelect={handleCategorySelect}
-          />
+          {categories.length > 0 && (
+            <CategoryNav
+              categories={categories}
+              activeId={activeCategory}
+              onSelect={handleCategorySelect}
+            />
+          )}
           <main className="store-page__content">
-            {data.categories.map((cat) => (
+            {categories.map((cat) => (
               <CategorySection key={cat.id} category={cat} />
             ))}
           </main>
