@@ -9,12 +9,13 @@ interface Props {
 export function ProductCard({ product }: Props) {
   const { addItem, items } = useCart();
   const inCart = items.find((i) => i.product.id === product.id);
+  const isAvailable = product.available !== false;
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(price);
 
   return (
-    <div className={`product-card ${!product.available ? "product-card--unavailable" : ""}`}>
+    <div className={`product-card ${!isAvailable ? "product-card--unavailable" : ""}`}>
       {product.image_url && (
         <img
           className="product-card__image"
@@ -30,7 +31,7 @@ export function ProductCard({ product }: Props) {
         )}
         <div className="product-card__footer">
           <span className="product-card__price">{formatPrice(product.price)}</span>
-          {product.available ? (
+          {isAvailable ? (
             <button className="product-card__add" onClick={() => addItem(product)}>
               {inCart ? `En carrito (${inCart.quantity})` : "Agregar"}
             </button>
