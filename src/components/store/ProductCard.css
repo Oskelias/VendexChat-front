@@ -101,3 +101,11 @@
   color: #0f172a;
   font-weight: 600;
 }
+
+.product-card__qty {
+  min-width: 28px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #0f172a;
+  font-weight: 600;
+}
