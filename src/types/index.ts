@@ -1,12 +1,38 @@
-// Backend API types
+// Backend API types (raw response from server)
+
+export interface ApiProduct {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  offer_price: number | null;
+  final_price: number;
+  image_url: string | null;
+  sort_order: number;
+  category_id: string;
+}
+
+export interface ApiCategory {
+  id: string;
+  name: string;
+  sort_order: number;
+}
+
+export interface ApiCatalogResponse {
+  store: Store;
+  categories: ApiCategory[];
+  products_by_category: Record<string, ApiProduct[]>;
+}
+
+// Normalized types (used by components)
 
 export interface Product {
   id: string;
   name: string;
   description: string | null;
   price: number;
+  offer_price: number | null;
   image_url: string | null;
-  available: boolean;
 }
 
 export interface Category {
@@ -26,7 +52,7 @@ export interface Store {
 
 export interface CatalogResponse {
   store: Store;
-  categories?: Category[];
+  categories: Category[];
 }
 
 export interface CartItem {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { fetchCatalog } from "../api/catalog";
 import type { CatalogResponse } from "../types";
 
@@ -6,6 +6,7 @@ export function useCatalog(slug: string | undefined) {
   const [data, setData] = useState<CatalogResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const fetchIdRef = useRef(0);
 
   useEffect(() => {
     const hostname =
@@ -21,7 +22,7 @@ export function useCatalog(slug: string | undefined) {
       return;
     }
 
-    let cancelled = false;
+    const fetchId = ++fetchIdRef.current;
     setLoading(true);
     setError(null);
 
@@ -30,24 +31,15 @@ export function useCatalog(slug: string | undefined) {
 
     fetchCatalog(resolvedSlug)
       .then((res) => {
-        if (!cancelled) {
-          console.log("[useCatalog] Catalog loaded:", { store: res?.store?.name, categories: res?.categories?.length });
-          setData(res);
-        }
+        if (fetchId !== fetchIdRef.current) return;
+        setData(res);
+        setLoading(false);
       })
       .catch((err) => {
-        if (!cancelled) {
-          console.error("[useCatalog] Fetch error:", err);
-          setError(err.message);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (fetchId !== fetchIdRef.current) return;
+        setError(err.message);
+        setLoading(false);
       });
-
-    return () => {
-      cancelled = true;
-    };
   }, [slug]);
 
   return { data, loading, error };

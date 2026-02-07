@@ -1,4 +1,5 @@
 import { useCart } from "../../context/CartContext";
+import { formatPrice } from "../../utils/format";
 import "./FloatingCartButton.css";
 
 interface Props {
@@ -7,9 +8,6 @@ interface Props {
 
 export function FloatingCartButton({ onClick }: Props) {
   const { totalItems, totalPrice } = useCart();
-
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(price);
 
   if (totalItems === 0) return null;
 

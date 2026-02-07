@@ -17,9 +17,7 @@ type View = "catalog" | "cart" | "checkout" | "confirmation";
 
 export function StorePage() {
   const { slug } = useParams<{ slug: string }>();
-  console.log("[StorePage] slug from URL:", slug);
   const { data, loading, error } = useCatalog(slug);
-  console.log("[StorePage] state:", { loading, error, hasData: !!data });
   const { items, clearCart } = useCart();
 
   const [view, setView] = useState<View>("catalog");

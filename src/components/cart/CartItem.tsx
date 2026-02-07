@@ -1,5 +1,6 @@
 import type { CartItem as CartItemType } from "../../types";
 import { useCart } from "../../context/CartContext";
+import { formatPrice } from "../../utils/format";
 import "./CartItem.css";
 
 interface Props {
@@ -8,9 +9,6 @@ interface Props {
 
 export function CartItem({ item }: Props) {
   const { updateQuantity, removeItem } = useCart();
-
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(price);
 
   return (
     <div className="cart-item">
