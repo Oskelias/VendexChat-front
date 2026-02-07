@@ -3,7 +3,10 @@ import type { CatalogResponse, OrderPayload, OrderResponse } from "../types";
 const API_BASE = import.meta.env.VITE_API_URL || "https://api.vendexchat.app";
 
 export async function fetchCatalog(slug: string): Promise<CatalogResponse> {
-  const res = await fetch(`${API_BASE}/public/store/${slug}/catalog`);
+  const url = `${API_BASE}/public/store/${slug}/catalog`;
+  console.log("[fetchCatalog] GET", url);
+  const res = await fetch(url);
+  console.log("[fetchCatalog] Response status:", res.status);
   if (!res.ok) {
     throw new Error(`Failed to load store: ${res.status}`);
   }
