@@ -1,4 +1,5 @@
 import type { OrderResponse } from "../../types";
+import { formatPrice } from "../../utils/format";
 import "./OrderConfirmation.css";
 
 interface Props {
@@ -7,9 +8,6 @@ interface Props {
 }
 
 export function OrderConfirmation({ order, onBackToStore }: Props) {
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(price);
-
   return (
     <div className="order-confirmation">
       <div className="order-confirmation__icon">&#10003;</div>

@@ -1,5 +1,6 @@
 import type { Product } from "../../types";
 import { useCart } from "../../context/CartContext";
+import { formatPrice } from "../../utils/format";
 import "./ProductCard.css";
 
 interface Props {
@@ -9,13 +10,9 @@ interface Props {
 export function ProductCard({ product }: Props) {
   const { addItem, items } = useCart();
   const inCart = items.find((i) => i.product.id === product.id);
-  const isAvailable = product.available !== false;
-
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(price);
 
   return (
-    <div className={`product-card ${!isAvailable ? "product-card--unavailable" : ""}`}>
+    <div className="product-card">
       {product.image_url && (
         <img
           className="product-card__image"
@@ -30,14 +27,17 @@ export function ProductCard({ product }: Props) {
           <p className="product-card__desc">{product.description}</p>
         )}
         <div className="product-card__footer">
-          <span className="product-card__price">{formatPrice(product.price)}</span>
-          {isAvailable ? (
-            <button className="product-card__add" onClick={() => addItem(product)}>
-              {inCart ? `En carrito (${inCart.quantity})` : "Agregar"}
-            </button>
-          ) : (
-            <span className="product-card__unavailable">No disponible</span>
-          )}
+          <div className="product-card__prices">
+            {product.offer_price != null && (
+              <span className="product-card__original-price">
+                {formatPrice(product.offer_price)}
+              </span>
+            )}
+            <span className="product-card__price">{formatPrice(product.price)}</span>
+          </div>
+          <button className="product-card__add" onClick={() => addItem(product)}>
+            {inCart ? `En carrito (${inCart.quantity})` : "Agregar"}
+          </button>
         </div>
       </div>
     </div>

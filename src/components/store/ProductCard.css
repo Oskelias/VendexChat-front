@@ -12,10 +12,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.product-card--unavailable {
-  opacity: 0.5;
-}
-
 .product-card__image {
   width: 100px;
   height: 100px;
@@ -56,6 +52,18 @@
   gap: 0.5rem;
 }
 
+.product-card__prices {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.product-card__original-price {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
 .product-card__price {
   font-weight: 700;
   color: #111827;
@@ -77,10 +85,4 @@
 
 .product-card__add:hover {
   background: #4f46e5;
-}
-
-.product-card__unavailable {
-  font-size: 0.8rem;
-  color: #9ca3af;
-  font-style: italic;
 }

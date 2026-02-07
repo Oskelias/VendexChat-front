@@ -1,4 +1,5 @@
 import { useCart } from "../../context/CartContext";
+import { formatPrice } from "../../utils/format";
 import { CartItem } from "./CartItem";
 import "./CartPanel.css";
 
@@ -8,9 +9,6 @@ interface Props {
 
 export function CartPanel({ onCheckout }: Props) {
   const { items, totalPrice, totalItems, clearCart } = useCart();
-
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(price);
 
   if (items.length === 0) {
     return (
