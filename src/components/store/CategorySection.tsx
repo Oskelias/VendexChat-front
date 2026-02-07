@@ -7,13 +7,14 @@ interface Props {
 }
 
 export function CategorySection({ category }: Props) {
-  if (category.products.length === 0) return null;
+  const products = category.products ?? [];
+  if (products.length === 0) return null;
 
   return (
     <section className="category-section" id={`category-${category.id}`}>
       <h2 className="category-section__title">{category.name}</h2>
       <div className="category-section__grid">
-        {category.products.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

@@ -12,7 +12,7 @@ export interface Product {
 export interface Category {
   id: string;
   name: string;
-  products: Product[];
+  products?: Product[];
 }
 
 export interface Store {
@@ -25,7 +25,7 @@ export interface Store {
 
 export interface CatalogResponse {
   store: Store;
-  categories: Category[];
+  categories?: Category[];
 }
 
 export interface CartItem {

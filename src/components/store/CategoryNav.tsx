@@ -8,6 +8,8 @@ interface Props {
 }
 
 export function CategoryNav({ categories, activeId, onSelect }: Props) {
+  if (!categories || categories.length === 0) return null;
+
   return (
     <nav className="category-nav">
       <div className="category-nav__list">
