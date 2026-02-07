@@ -38,7 +38,8 @@ export interface Product {
 export interface Category {
   id: string;
   name: string;
-  products: Product[];
+  products?: Product[];
+  items?: Product[];
 }
 
 export interface Store {

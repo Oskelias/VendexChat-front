@@ -2,13 +2,13 @@
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
-  top: 65px;
+  top: 72px;
   z-index: 9;
   padding: 0.5rem 1rem;
 }
 
 .category-nav__list {
-  max-width: 800px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   gap: 0.5rem;
@@ -23,11 +23,11 @@
 
 .category-nav__item {
   flex-shrink: 0;
-  padding: 0.5rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 9999px;
-  background: #fff;
-  color: #374151;
+  padding: 0.55rem 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #0f172a;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -36,12 +36,12 @@
 }
 
 .category-nav__item:hover {
-  border-color: #6366f1;
-  color: #6366f1;
+  border-color: #0f766e;
+  color: #0f766e;
 }
 
 .category-nav__item--active {
-  background: #6366f1;
-  border-color: #6366f1;
+  background: #0f766e;
+  border-color: #0f766e;
   color: #fff;
 }
