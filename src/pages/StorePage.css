@@ -128,3 +128,21 @@
   text-align: center;
   border: 1px solid #FECACA;
 }
+
+.store-page__empty {
+  padding: 2rem 1.5rem 3rem;
+  text-align: center;
+  color: #64748b;
+}
+
+@media (max-width: 900px) {
+  .store-page {
+    padding: 0;
+    background: #fff;
+  }
+
+  .store-page__shell {
+    border-radius: 0;
+    box-shadow: none;
+  }
+}

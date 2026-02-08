@@ -1,8 +1,10 @@
 import type { Store } from "../../types";
+import { useCart } from "../../context/CartContext";
 import "./StoreHeader.css";
 
 interface Props {
   store: Store;
+  onCartClick?: () => void;
 }
 
 export function StoreHeader({ store }: Props) {

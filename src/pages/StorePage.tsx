@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useCatalog } from "../hooks/useCatalog";
 import { useCart } from "../context/CartContext";
@@ -22,6 +22,7 @@ export function StorePage() {
 
   const [view, setView] = useState<View>("catalog");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [order, setOrder] = useState<OrderResponse | null>(null);
@@ -88,10 +89,25 @@ export function StorePage() {
   }
 
   const categories = data.categories ?? [];
+  const query = search.trim().toLowerCase();
+  const filteredCategories = useMemo(() => {
+    return categories.map((category) => {
+      const products = category.products ?? category.items ?? [];
+      const filteredProducts = query
+        ? products.filter((product) => {
+            const haystack = `${product.name} ${product.description ?? ""}`.toLowerCase();
+            return haystack.includes(query);
+          })
+        : products;
+      return { ...category, products: filteredProducts };
+    });
+  }, [categories, query]);
+  const hasResults = filteredCategories.some((category) => (category.products ?? []).length > 0);
 
   return (
     <div className="store-page">
-      <StoreHeader store={data.store} />
+      <div className="store-page__shell">
+        {data.store && <StoreHeader store={data.store} onCartClick={() => setView("cart")} />}
 
       {view === "catalog" && (
         <>
@@ -148,9 +164,10 @@ export function StorePage() {
         </>
       )}
 
-      {view === "confirmation" && order && (
-        <OrderConfirmation order={order} onBackToStore={handleBackToStore} />
-      )}
+        {view === "confirmation" && order && (
+          <OrderConfirmation order={order} onBackToStore={handleBackToStore} />
+        )}
+      </div>
     </div>
   );
 }

@@ -9,7 +9,17 @@ export function useCatalog(slug: string | undefined) {
   const fetchIdRef = useRef(0);
 
   useEffect(() => {
-    if (!slug) {
+    const hostname =
+      typeof window !== "undefined" ? window.location.hostname : undefined;
+    const isLocal =
+      hostname === "localhost" || hostname === "127.0.0.1";
+    const isCustomDomain =
+      !!hostname && !hostname.endsWith("vendexchat.app") && !isLocal;
+    const resolvedSlug =
+      (isCustomDomain ? hostname : slug) ?? (!isLocal ? hostname : undefined);
+
+    if (!resolvedSlug) {
+      console.warn("[useCatalog] No slug provided, skipping fetch");
       setLoading(false);
       setError("No store slug provided");
       return;
@@ -18,9 +28,11 @@ export function useCatalog(slug: string | undefined) {
     const fetchId = ++fetchIdRef.current;
     setLoading(true);
     setError(null);
-    setData(null);
 
-    fetchCatalog(slug)
+    const url = `${import.meta.env.VITE_API_URL || "https://api.vendexchat.app"}/public/store/${resolvedSlug}/catalog`;
+    console.log("[useCatalog] Fetching catalog:", url);
+
+    fetchCatalog(resolvedSlug)
       .then((res) => {
         if (fetchId !== fetchIdRef.current) return;
         setData(res);

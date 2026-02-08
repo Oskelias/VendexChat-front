@@ -7,7 +7,7 @@ interface Props {
 }
 
 export function CategorySection({ category }: Props) {
-  const products = category.products ?? [];
+  const products = category.products ?? category.items ?? [];
   if (products.length === 0) return null;
 
   return (
