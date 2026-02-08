@@ -8,53 +8,66 @@ interface Props {
 }
 
 export function ProductCard({ product }: Props) {
-  const { addItem, items, updateQuantity } = useCart();
-  const inCart = items.find((i) => i.product.id === product.id);
-  const quantity = inCart?.quantity ?? 0;
+  const { addItem, updateQuantity, items } = useCart();
+  const cartItem = items.find((i) => i.product.id === product.id);
+  const quantity = cartItem?.quantity ?? 0;
 
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(price);
+  const hasOffer = product.offer_price != null && product.offer_price < product.price;
 
   return (
     <div className="product-card">
-      {product.image_url && (
-        <img
-          className="product-card__image"
-          src={product.image_url}
-          alt={product.name}
-          loading="lazy"
-        />
-      )}
+      <div className="product-card__image-wrap">
+        {product.image_url ? (
+          <img
+            className="product-card__image"
+            src={product.image_url}
+            alt={product.name}
+            loading="lazy"
+          />
+        ) : (
+          <div className="product-card__placeholder">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 5h-3.17L15.41 3.59 14 2H10L8.59 3.59 7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 14H4V7h4.05l1.83-2h4.24l1.83 2H20v12zm-8-11c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z" />
+            </svg>
+          </div>
+        )}
+      </div>
       <div className="product-card__body">
-        <h3 className="product-card__title">{product.name}</h3>
+        <h3 className="product-card__name">{product.name}</h3>
         {product.description && (
           <p className="product-card__desc">{product.description}</p>
         )}
         <div className="product-card__footer">
-          <span className="product-card__price">{formatPrice(product.price)}</span>
-          {product.available ? (
-            <div className="product-card__actions">
+          <div className="product-card__prices">
+            {hasOffer && (
+              <span className="product-card__original">
+                {formatPrice(product.price)}
+              </span>
+            )}
+            <span className={`product-card__price${hasOffer ? " product-card__price--offer" : ""}`}>
+              {hasOffer ? formatPrice(product.offer_price!) : formatPrice(product.price)}
+            </span>
+          </div>
+          {quantity === 0 ? (
+            <button className="product-card__add" onClick={() => addItem(product)}>
+              Agregar
+            </button>
+          ) : (
+            <div className="product-card__qty-controls">
               <button
-                className="product-card__action"
+                className="product-card__qty-btn"
                 onClick={() => updateQuantity(product.id, quantity - 1)}
-                type="button"
-                disabled={quantity === 0}
-                aria-label={`Quitar ${product.name}`}
               >
                 -
               </button>
-              <span className="product-card__qty">{quantity}</span>
+              <span className="product-card__qty-count">{quantity}</span>
               <button
-                className="product-card__action"
-                onClick={() => addItem(product)}
-                type="button"
-                aria-label={`Agregar ${product.name}`}
+                className="product-card__qty-btn"
+                onClick={() => updateQuantity(product.id, quantity + 1)}
               >
                 +
               </button>
             </div>
-          ) : (
-            <span className="product-card__unavailable">No disponible</span>
           )}
         </div>
       </div>
