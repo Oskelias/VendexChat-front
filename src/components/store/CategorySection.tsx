@@ -12,7 +12,12 @@ export function CategorySection({ category }: Props) {
 
   return (
     <section className="category-section" id={`category-${category.id}`}>
-      <h2 className="category-section__title">{category.name}</h2>
+      <div className="category-section__header">
+        <h2 className="category-section__title">{category.name}</h2>
+        <span className="category-section__count">
+          {products.length}
+        </span>
+      </div>
       <div className="category-section__grid">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />

@@ -14,8 +14,8 @@ export function FloatingCartButton({ onClick }: Props) {
   return (
     <button className="floating-cart" onClick={onClick}>
       <span className="floating-cart__badge">{totalItems}</span>
-      <span className="floating-cart__label">Ver carrito</span>
-      <span className="floating-cart__price">{formatPrice(totalPrice)}</span>
+      <span className="floating-cart__label">Ver pedido</span>
+      <span className="floating-cart__total">{formatPrice(totalPrice)}</span>
     </button>
   );
 }

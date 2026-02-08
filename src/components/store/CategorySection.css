@@ -1,20 +1,42 @@
 .category-section {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 1.25rem 1rem 0.5rem;
+}
+
+.category-section__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.875rem;
 }
 
 .category-section__title {
-  font-size: 1.1rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: #111827;
-  margin: 0 0 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #6366f1;
+  margin: 0;
+}
+
+.category-section__count {
+  background: #F3F4F6;
+  color: #6B7280;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
 }
 
 .category-section__grid {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+@media (min-width: 480px) {
+  .category-section__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
 }

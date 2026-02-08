@@ -18,19 +18,13 @@ type View = "catalog" | "cart" | "checkout" | "confirmation";
 export function StorePage() {
   const { slug } = useParams<{ slug: string }>();
   const { data, loading, error } = useCatalog(slug);
-  const { items, clearCart } = useCart();
+  const { items, totalPrice, clearCart } = useCart();
 
   const [view, setView] = useState<View>("catalog");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [order, setOrder] = useState<OrderResponse | null>(null);
-
-  const handleCategorySelect = useCallback((id: string) => {
-    setActiveCategory(id);
-    const el = document.getElementById(`category-${id}`);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
 
   const handleCheckout = useCallback(
     async (formData: {
@@ -66,13 +60,15 @@ export function StorePage() {
   const handleBackToStore = useCallback(() => {
     setView("catalog");
     setOrder(null);
+    setActiveCategory(null);
+    window.scrollTo({ top: 0 });
   }, []);
 
   if (loading) {
     return (
       <div className="store-page__loading">
         <div className="store-page__spinner" />
-        <p>Cargando tienda...</p>
+        <p className="store-page__loading-text">Cargando tienda...</p>
       </div>
     );
   }
@@ -80,6 +76,11 @@ export function StorePage() {
   if (error || !data) {
     return (
       <div className="store-page__error">
+        <div className="store-page__error-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+          </svg>
+        </div>
         <h2>Tienda no encontrada</h2>
         <p>{error || "No se pudo cargar la tienda."}</p>
       </div>
@@ -98,7 +99,7 @@ export function StorePage() {
             <CategoryNav
               categories={categories}
               activeId={activeCategory}
-              onSelect={handleCategorySelect}
+              onSelect={setActiveCategory}
             />
           )}
           <main className="store-page__content">
@@ -114,10 +115,16 @@ export function StorePage() {
         <>
           <div className="store-page__back-bar">
             <button className="store-page__back" onClick={() => setView("catalog")}>
-              &larr; Seguir comprando
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+              </svg>
+              Seguir comprando
             </button>
           </div>
-          <CartPanel onCheckout={() => setView("checkout")} />
+          <CartPanel
+            onCheckout={() => setView("checkout")}
+            onContinueShopping={() => setView("catalog")}
+          />
         </>
       )}
 
@@ -125,11 +132,19 @@ export function StorePage() {
         <>
           <div className="store-page__back-bar">
             <button className="store-page__back" onClick={() => setView("cart")}>
-              &larr; Volver al carrito
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+              </svg>
+              Volver al carrito
             </button>
           </div>
           {orderError && <p className="store-page__order-error">{orderError}</p>}
-          <CheckoutForm onSubmit={handleCheckout} loading={orderLoading} />
+          <CheckoutForm
+            items={items}
+            totalPrice={totalPrice}
+            onSubmit={handleCheckout}
+            loading={orderLoading}
+          />
         </>
       )}
 
