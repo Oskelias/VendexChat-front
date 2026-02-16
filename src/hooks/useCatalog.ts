@@ -29,9 +29,6 @@ export function useCatalog(slug: string | undefined) {
     setLoading(true);
     setError(null);
 
-    const url = `${import.meta.env.VITE_API_URL || "https://api.vendexchat.app"}/public/store/${resolvedSlug}/catalog`;
-    console.log("[useCatalog] Fetching catalog:", url);
-
     fetchCatalog(resolvedSlug)
       .then((res) => {
         if (fetchId !== fetchIdRef.current) return;
