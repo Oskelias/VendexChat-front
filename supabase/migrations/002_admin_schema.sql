@@ -1,11 +1,10 @@
 -- ============================================
--- VendexChat - Admin Schema Extensions
--- Run this in the Supabase SQL Editor
--- AFTER 001_initial_schema.sql
+-- VendexChat - Admin Schema Extensions (Robust Version)
+-- Use this if you get "already exists" errors
 -- ============================================
 
 -- ============================================
--- 1. Profiles table (links auth.users to stores)
+-- 1. Profiles table
 -- ============================================
 create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -26,20 +25,25 @@ begin
     new.id,
     coalesce(new.raw_user_meta_data->>'name', ''),
     coalesce(new.raw_user_meta_data->>'role', 'client')
-  );
+  )
+  on conflict (id) do nothing;
   return new;
 end;
 $$ language plpgsql security definer;
 
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute function public.handle_new_user();
+do $$ begin
+  if not exists (select 1 from pg_trigger where tgname = 'on_auth_user_created') then
+    create trigger on_auth_user_created
+      after insert on auth.users
+      for each row execute function public.handle_new_user();
+  end if;
+end $$;
 
 -- ============================================
 -- 2. Extend stores table
 -- ============================================
 alter table stores add column if not exists owner_id uuid references auth.users(id);
+alter table stores add column if not exists phone text;
 alter table stores add column if not exists description text;
 alter table stores add column if not exists email text;
 alter table stores add column if not exists address text;
@@ -57,8 +61,6 @@ alter table stores add column if not exists is_active boolean not null default t
 -- ============================================
 -- 3. Extend products table
 -- ============================================
-
--- Rename 'title' to 'name' (idempotent)
 do $$ begin
   if exists (
     select 1 from information_schema.columns
@@ -74,24 +76,35 @@ alter table products add column if not exists unlimited_stock boolean not null d
 alter table products add column if not exists is_active boolean not null default true;
 alter table products add column if not exists is_featured boolean not null default false;
 
--- Populate store_id from category's store
-update products p
-set store_id = c.store_id
-from categories c
-where p.category_id = c.id and p.store_id is null;
-
-create index if not exists idx_products_store on products (store_id);
-
 -- ============================================
 -- 4. Extend orders table
 -- ============================================
+alter table orders add column if not exists customer_name text;
+alter table orders add column if not exists customer_address text;
 alter table orders add column if not exists customer_notes text;
 alter table orders add column if not exists subtotal numeric(10,2) not null default 0;
 alter table orders add column if not exists order_delivery_cost numeric(10,2) not null default 0;
+alter table orders add column if not exists total numeric(10,2) not null default 0;
+alter table orders add column if not exists status text not null default 'pending';
 alter table orders add column if not exists updated_at timestamptz not null default now();
 
 -- ============================================
--- 5. Helper functions for RLS
+-- 4.1 Order Items table
+-- ============================================
+create table if not exists order_items (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null references orders(id) on delete cascade,
+  product_id uuid not null references products(id),
+  quantity integer not null default 1,
+  price numeric(10,2) not null,
+  name text not null, -- Snapshot of product name at time of order
+  created_at timestamptz not null default now()
+);
+
+alter table order_items enable row level security;
+
+-- ============================================
+-- 5. Helper functions
 -- ============================================
 create or replace function public.is_superadmin()
 returns boolean as $$
@@ -107,73 +120,60 @@ returns uuid as $$
 $$ language sql security definer stable;
 
 -- ============================================
--- 6. RLS Policies for profiles
+-- 6. RLS Policies - DROP Before CREATE to avoid "already exists"
 -- ============================================
-create policy "Users can read own profile"
-  on profiles for select to authenticated
-  using (id = auth.uid() or is_superadmin());
 
-create policy "Users can update own profile"
-  on profiles for update to authenticated
-  using (id = auth.uid())
-  with check (id = auth.uid());
+-- Profiles
+drop policy if exists "Users can read own profile" on profiles;
+create policy "Users can read own profile" on profiles for select to authenticated using (id = auth.uid() or is_superadmin());
 
-create policy "System can insert profiles"
-  on profiles for insert
-  with check (true);
+drop policy if exists "Users can update own profile" on profiles;
+create policy "Users can update own profile" on profiles for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
 
--- ============================================
--- 7. RLS Policies for stores (authenticated write)
--- ============================================
-create policy "Owner can update own store"
-  on stores for update to authenticated
-  using (owner_id = auth.uid() or is_superadmin())
-  with check (owner_id = auth.uid() or is_superadmin());
+drop policy if exists "System can insert profiles" on profiles;
+create policy "System can insert profiles" on profiles for insert with check (true);
 
-create policy "Authenticated can insert stores"
-  on stores for insert to authenticated
-  with check (owner_id = auth.uid() or is_superadmin());
+-- Stores
+drop policy if exists "Owner can update own store" on stores;
+create policy "Owner can update own store" on stores for update to authenticated using (owner_id = auth.uid() or is_superadmin()) with check (owner_id = auth.uid() or is_superadmin());
 
-create policy "Superadmin can delete stores"
-  on stores for delete to authenticated
-  using (is_superadmin());
+drop policy if exists "Authenticated can insert stores" on stores;
+create policy "Authenticated can insert stores" on stores for insert to authenticated with check (owner_id = auth.uid() or is_superadmin());
 
--- ============================================
--- 8. RLS Policies for categories (authenticated write)
--- ============================================
-create policy "Owner can insert categories"
-  on categories for insert to authenticated
-  with check (store_id = my_store_id() or is_superadmin());
+drop policy if exists "Superadmin can delete stores" on stores;
+create policy "Superadmin can delete stores" on stores for delete to authenticated using (is_superadmin());
 
-create policy "Owner can update categories"
-  on categories for update to authenticated
-  using (store_id = my_store_id() or is_superadmin())
-  with check (store_id = my_store_id() or is_superadmin());
+-- Categories
+drop policy if exists "Owner can insert categories" on categories;
+create policy "Owner can insert categories" on categories for insert to authenticated with check (store_id = my_store_id() or is_superadmin());
 
-create policy "Owner can delete categories"
-  on categories for delete to authenticated
-  using (store_id = my_store_id() or is_superadmin());
+drop policy if exists "Owner can update categories" on categories;
+create policy "Owner can update categories" on categories for update to authenticated using (store_id = my_store_id() or is_superadmin()) with check (store_id = my_store_id() or is_superadmin());
 
--- ============================================
--- 9. RLS Policies for products (authenticated write)
--- ============================================
-create policy "Owner can insert products"
-  on products for insert to authenticated
-  with check (store_id = my_store_id() or is_superadmin());
+drop policy if exists "Owner can delete categories" on categories;
+create policy "Owner can delete categories" on categories for delete to authenticated using (store_id = my_store_id() or is_superadmin());
 
-create policy "Owner can update products"
-  on products for update to authenticated
-  using (store_id = my_store_id() or is_superadmin())
-  with check (store_id = my_store_id() or is_superadmin());
+-- Products
+drop policy if exists "Owner can insert products" on products;
+create policy "Owner can insert products" on products for insert to authenticated with check (store_id = my_store_id() or is_superadmin());
 
-create policy "Owner can delete products"
-  on products for delete to authenticated
-  using (store_id = my_store_id() or is_superadmin());
+drop policy if exists "Owner can update products" on products;
+create policy "Owner can update products" on products for update to authenticated using (store_id = my_store_id() or is_superadmin()) with check (store_id = my_store_id() or is_superadmin());
 
--- ============================================
--- 10. RLS Policies for orders (authenticated update)
--- ============================================
-create policy "Owner can update orders"
-  on orders for update to authenticated
-  using (store_id = my_store_id() or is_superadmin())
-  with check (store_id = my_store_id() or is_superadmin());
+drop policy if exists "Owner can delete products" on products;
+create policy "Owner can delete products" on products for delete to authenticated using (store_id = my_store_id() or is_superadmin());
+
+-- Orders
+drop policy if exists "Owner can update orders" on orders;
+create policy "Owner can update orders" on orders for update to authenticated using (store_id = my_store_id() or is_superadmin()) with check (store_id = my_store_id() or is_superadmin());
+
+drop policy if exists "Guests can insert orders" on orders;
+create policy "Guests can insert orders" on orders for insert with check (true);
+
+-- Order Items
+drop policy if exists "Guests can insert order_items" on order_items;
+create policy "Guests can insert order_items" on order_items for insert with check (true);
+
+drop policy if exists "Owner can read order_items" on order_items;
+create policy "Owner can read order_items" on order_items for select to authenticated 
+  using (exists (select 1 from orders where id = order_items.order_id and (store_id = my_store_id() or is_superadmin())));
