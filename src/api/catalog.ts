@@ -29,7 +29,7 @@ export async function fetchCatalog(slug: string): Promise<CatalogResponse> {
 
   const { data: products, error: prodError } = await supabase
     .from("products")
-    .select("id, title, description, price, offer_price, image_url, sort_order, category_id")
+    .select("id, name, description, price, offer_price, image_url, sort_order, category_id")
     .in("category_id", categoryIds)
     .order("sort_order");
 
@@ -52,7 +52,7 @@ export async function fetchCatalog(slug: string): Promise<CatalogResponse> {
       name: cat.name,
       products: catProducts.map((p) => ({
         id: p.id,
-        name: p.title,
+        name: p.name,
         description: p.description,
         price: p.offer_price ?? p.price,
         offer_price: p.offer_price,
