@@ -1,33 +1,34 @@
+import { BrowserRouter, Routes, Route, useParams, Navigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "./supabaseClient";
-import Auth from "./Auth";
-import type { Session } from "@supabase/supabase-js";
 
-const TENANT_SLUG = "morfi-demo";
+const DEFAULT_SLUG = "morfi-demo";
 
 type Product = {
   id: string;
   category_id: string;
   name: string;
   description: string | null;
-  price: number; // Changed from final_price
+  price: number;
 };
 
 type Store = {
   id: string;
   name: string;
   slug: string;
-  whatsapp: string | null; // Changed from phone
+  whatsapp: string | null;
 };
 
-export default function App() {
+function Storefront() {
+  const { slug } = useParams<{ slug: string }>();
+  const currentSlug = slug || DEFAULT_SLUG;
+
   const [store, setStore] = useState<Store | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [msg, setMsg] = useState<string>("");
-  const [session, setSession] = useState<Session | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string>("");
 
   // Checkout Form State
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -36,29 +37,14 @@ export default function App() {
   const [customerNotes, setCustomerNotes] = useState("");
 
   useEffect(() => {
-    // Check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
     async function fetchData() {
       setLoading(true);
+      setErrorMsg("");
       try {
         const { data: storeData, error: storeError } = await supabase
           .from("stores")
           .select("id, name, slug, whatsapp")
-          .eq("slug", TENANT_SLUG)
+          .eq("slug", currentSlug)
           .single();
 
         if (storeError) throw storeError;
@@ -72,8 +58,8 @@ export default function App() {
 
         if (productsError) throw productsError;
 
-        // Demo fallback if no products are found in Supabase yet
         if (!productsData || productsData.length === 0) {
+          // Mock data for demo if DB is empty
           const mockProducts: Product[] = [
             { id: '1', category_id: 'cat1', name: 'Hamburguesa Premium', description: 'Carne braseada, queso cheddar y panceta.', price: 1800 },
             { id: '2', category_id: 'cat1', name: 'Papas Fritas XL', description: 'Porción grande con dip de cheddar.', price: 950 },
@@ -84,30 +70,24 @@ export default function App() {
           setProducts(productsData);
         }
       } catch (e: any) {
-        setMsg(e.message || String(e));
+        setErrorMsg(e.message || "No se pudo encontrar la tienda.");
       } finally {
         setLoading(false);
       }
     }
 
     fetchData();
-  }, []);
+  }, [currentSlug]);
 
   const addToCart = (productId: string) => {
-    setCart((prev) => ({
-      ...prev,
-      [productId]: (prev[productId] || 0) + 1,
-    }));
+    setCart((prev) => ({ ...prev, [productId]: (prev[productId] || 0) + 1 }));
   };
 
   const removeFromCart = (productId: string) => {
     setCart((prev) => {
       const newCart = { ...prev };
-      if (newCart[productId] > 1) {
-        newCart[productId] -= 1;
-      } else {
-        delete newCart[productId];
-      }
+      if (newCart[productId] > 1) newCart[productId] -= 1;
+      else delete newCart[productId];
       return newCart;
     });
   };
@@ -129,7 +109,6 @@ export default function App() {
 
     setSubmitting(true);
     try {
-      // 1. Create the order
       const { data: orderData, error: orderError } = await supabase
         .from("orders")
         .insert({
@@ -146,7 +125,6 @@ export default function App() {
 
       if (orderError) throw orderError;
 
-      // 2. Create order items
       const itemsToInsert = Object.entries(cart).map(([productId, quantity]) => {
         const product = products.find(p => p.id === productId);
         return {
@@ -154,131 +132,91 @@ export default function App() {
           product_id: productId,
           quantity,
           price: product?.price || 0,
-          name: product?.name || 'Producto desconocido'
+          name: product?.name || 'Producto'
         };
       });
 
-      const { error: itemsError } = await supabase
-        .from("order_items")
-        .insert(itemsToInsert);
-
+      const { error: itemsError } = await supabase.from("order_items").insert(itemsToInsert);
       if (itemsError) throw itemsError;
 
-      // 3. Formato WhatsApp y Redirección
-      const cartItemsStr = itemsToInsert
-        .map(item => `- ${item.name} x${item.quantity} ($${item.price * item.quantity})`)
-        .join("\n");
+      const cartItemsStr = itemsToInsert.map(i => `- ${i.name} x${i.quantity}`).join("\n");
+      const message = `¡Nuevo Pedido! 🛍️\n\n*Cliente:* ${customerName}\n*Dirección:* ${customerAddress}\n\n*Items:*\n${cartItemsStr}\n\n*Total: $${cartTotal.toFixed(2)}*`;
+      window.open(`https://wa.me/${store.whatsapp}?text=${encodeURIComponent(message)}`, "_blank");
 
-      const message = `¡Nuevo Pedido! 🛍️\n\n*Cliente:* ${customerName}\n*Dirección:* ${customerAddress}\n*Notas:* ${customerNotes || 'Sin notas'}\n\n*Items:*\n${cartItemsStr}\n\n*Total: $${cartTotal.toFixed(2)}*\n\nNro de Pedido: ${orderData.id.slice(0, 8)}`;
-      const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/${store.whatsapp}?text=${encodedMessage}`;
-
-      // Limpiar y Resetear
       setCart({});
       setIsCheckingOut(false);
-      setCustomerName("");
-      setCustomerAddress("");
-      setCustomerNotes("");
-
-      window.open(whatsappUrl, "_blank");
     } catch (e: any) {
-      alert("Error al guardar el pedido: " + (e.message || String(e)));
+      alert("Error: " + e.message);
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loading) return <div className="loading">Cargando tienda...</div>;
-  if (msg) return <div className="error">Error: {msg}</div>;
+  if (loading) return <div className="loading">Cargando catálogo...</div>;
+  if (errorMsg) return <div className="error">{errorMsg}</div>;
 
   return (
     <div className="container">
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h1>{store?.name || "VendeXChat"}</h1>
-          <p>Catálogo Público</p>
-        </div>
-        {session && (
-          <div style={{ textAlign: 'right' }}>
-            <p style={{ fontSize: '0.8rem', color: '#888' }}>{session.user.email}</p>
-            <button onClick={() => supabase.auth.signOut()} style={{ fontSize: '0.8rem', padding: '0.4rem 0.8rem' }}>
-              Cerrar Sesión
-            </button>
-          </div>
-        )}
+      <header>
+        <h1>{store?.name || "Tienda"}</h1>
+        <p>Catálogo de Productos</p>
       </header>
 
-      {!session ? (
-        <Auth />
-      ) : isCheckingOut ? (
-        <div className="checkout-form glass-panel" style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-          <h2>Finalizar Pedido</h2>
-          <form onSubmit={submitOrder} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
-            <label>
-              Nombre Completo:
-              <input type="text" value={customerName} onChange={e => setCustomerName(e.target.value)} required
-                style={{ width: '100%', padding: '0.8rem', marginTop: '0.5rem', borderRadius: '8px', border: '1px solid #444', background: '#1a1a1a', color: 'white' }} />
-            </label>
-            <label>
-              Dirección de Entrega:
-              <input type="text" value={customerAddress} onChange={e => setCustomerAddress(e.target.value)} required
-                style={{ width: '100%', padding: '0.8rem', marginTop: '0.5rem', borderRadius: '8px', border: '1px solid #444', background: '#1a1a1a', color: 'white' }} />
-            </label>
-            <label>
-              Notas Adicionales:
-              <textarea value={customerNotes} onChange={e => setCustomerNotes(e.target.value)}
-                style={{ width: '100%', padding: '0.8rem', marginTop: '0.5rem', borderRadius: '8px', border: '1px solid #444', background: '#1a1a1a', color: 'white', minHeight: '100px' }} />
-            </label>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-              <button type="button" onClick={() => setIsCheckingOut(false)} style={{ flex: 1 }}>Volver</button>
-              <button type="submit" className="primary" style={{ flex: 2 }} disabled={submitting}>
-                {submitting ? "Confirmando..." : "Confirmar Pedido"}
+      {isCheckingOut ? (
+        <div className="checkout-form glass-panel">
+          <h2>Tus Datos de Entrega</h2>
+          <form onSubmit={submitOrder} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <input placeholder="Nombre Completo" value={customerName} onChange={e => setCustomerName(e.target.value)} required />
+            <input placeholder="Dirección Exacta" value={customerAddress} onChange={e => setCustomerAddress(e.target.value)} required />
+            <textarea placeholder="Notas (opcional)" value={customerNotes} onChange={e => setCustomerNotes(e.target.value)} />
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button type="button" onClick={() => setIsCheckingOut(false)}>Volver</button>
+              <button type="submit" className="primary" disabled={submitting}>
+                {submitting ? "Procesando..." : "Confirmar por WhatsApp"}
               </button>
             </div>
           </form>
         </div>
       ) : (
         <>
-          <main>
-            <div className="product-list">
-              {products.length === 0 ? (
-                <p>No hay productos disponibles.</p>
-              ) : (
-                products.map((product) => (
-                  <div key={product.id} className="product-card">
-                    <h3>{product.name}</h3>
-                    <p>{product.description || "Sin descripción."}</p>
-                    <div className="price">${product.price.toLocaleString()}</div>
-                    <div className="actions">
-                      <button onClick={() => addToCart(product.id)}>Agregar al carrito</button>
-                      {cart[product.id] && (
-                        <div className="cart-controls">
-                          <span>{cart[product.id]}</span>
-                          <button onClick={() => removeFromCart(product.id)}>-</button>
-                        </div>
-                      )}
+          <main className="product-list">
+            {products.map((product) => (
+              <div key={product.id} className="product-card">
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+                <div className="price">${product.price.toLocaleString()}</div>
+                <div className="actions">
+                  <button onClick={() => addToCart(product.id)}>Agregar</button>
+                  {cart[product.id] && (
+                    <div className="cart-controls">
+                      <button onClick={() => removeFromCart(product.id)}>-</button>
+                      <span>{cart[product.id]}</span>
                     </div>
-                  </div>
-                ))
-              )}
-            </div>
+                  )}
+                </div>
+              </div>
+            ))}
           </main>
 
-          <footer className="cart-summary">
-            <h2>Tu Carrito</h2>
-            {Object.keys(cart).length === 0 ? (
-              <p>El carrito está vacío</p>
-            ) : (
-              <div>
-                <p>Total: ${cartTotal.toLocaleString()}</p>
-                <button className="primary" onClick={() => setIsCheckingOut(true)}>
-                  Finalizar Pedido
-                </button>
-              </div>
-            )}
-          </footer>
+          {Object.keys(cart).length > 0 && (
+            <footer className="cart-summary">
+              <p>Total: ${cartTotal.toLocaleString()}</p>
+              <button className="primary" onClick={() => setIsCheckingOut(true)}>Ver Carrito / Comprar</button>
+            </footer>
+          )}
         </>
       )}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to={`/${DEFAULT_SLUG}`} replace />} />
+        <Route path="/:slug" element={<Storefront />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
