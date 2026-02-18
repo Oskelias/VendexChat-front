@@ -19,9 +19,7 @@ const Navbar = () => {
         </div>
         <div className="flex items-center gap-3">
           <a
-            href="https://shop.vendexchat.app/morfi-demo"
-            target="_blank"
-            rel="noreferrer"
+            href="/morfi-demo"
             className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Ver ejemplo <ExternalLink className="w-3.5 h-3.5" />

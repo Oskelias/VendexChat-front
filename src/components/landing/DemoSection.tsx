@@ -14,9 +14,7 @@ const DemoSection = () => {
             Explora cómo se ve la experiencia del cliente antes de pedir una demo.
           </p>
           <a
-            href="https://shop.vendexchat.app/morfi-demo"
-            target="_blank"
-            rel="noreferrer"
+            href="/morfi-demo"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-12 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-[#0D9488] transition-all shadow-elevated"
             onClick={() => trackEvent("demo_store_click")}
           >

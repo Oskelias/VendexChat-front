@@ -74,9 +74,7 @@ const HeroSection = () => {
               style={{ animationDelay: "0.3s" }}
             >
               <a
-                href="https://shop.vendexchat.app/morfi-demo"
-                target="_blank"
-                rel="noreferrer"
+                href="/morfi-demo"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-[#0D9488] transition-all shadow-elevated hover:shadow-card"
                 onClick={() => trackEvent("hero_demo_click")}
               >
@@ -99,9 +97,8 @@ const HeroSection = () => {
                 {heroSlides.map((slide, index) => (
                   <div
                     key={slide.title}
-                    className={`absolute inset-0 transition-opacity duration-700 ${
-                      activeSlide === index ? "opacity-100" : "opacity-0"
-                    }`}
+                    className={`absolute inset-0 transition-opacity duration-700 ${activeSlide === index ? "opacity-100" : "opacity-0"
+                      }`}
                   >
                     <div className="h-full w-full flex flex-col justify-between p-5 sm:p-6">
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -135,9 +132,8 @@ const HeroSection = () => {
                             <div key={item.name} className="rounded-2xl border border-border/70 bg-white px-3 py-3 shadow-soft">
                               <p className="text-sm font-semibold">{item.name}</p>
                               <span
-                                className={`mt-2 inline-flex rounded-full px-2 py-1 text-[10px] font-semibold ${
-                                  item.status === "Disponible" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-                                }`}
+                                className={`mt-2 inline-flex rounded-full px-2 py-1 text-[10px] font-semibold ${item.status === "Disponible" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                                  }`}
                               >
                                 {item.status}
                               </span>
@@ -220,9 +216,8 @@ const HeroSection = () => {
                     key={index}
                     type="button"
                     onClick={() => setActiveSlide(index)}
-                    className={`h-2.5 rounded-full transition-all ${
-                      activeSlide === index ? "w-6 bg-primary" : "w-2.5 bg-muted"
-                    }`}
+                    className={`h-2.5 rounded-full transition-all ${activeSlide === index ? "w-6 bg-primary" : "w-2.5 bg-muted"
+                      }`}
                     aria-label={`Ir al slide ${index + 1}`}
                   />
                 ))}

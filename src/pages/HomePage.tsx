@@ -15,6 +15,7 @@ import Footer from "@/components/landing/Footer";
 import WhatsAppFloatingButton from "@/components/landing/WhatsAppFloatingButton";
 
 export function HomePage() {
+  console.log("[HomePage] Mounting landing page...");
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

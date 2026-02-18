@@ -4,6 +4,7 @@ import { StorePage } from "./pages/StorePage";
 import { CartProvider } from "./context/CartContext";
 
 export default function App() {
+  console.log("[App] Rendering. Path:", window.location.pathname);
   return (
     <BrowserRouter>
       <CartProvider>
