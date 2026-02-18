@@ -14,6 +14,8 @@ export default function App() {
           {/* Rutas reservadas que no deben ser capturadas por el shop */}
           <Route path="/admin" element={<div className="p-10 font-bold">Admin Panel (Separated deployment)</div>} />
           <Route path="/admin/*" element={<div className="p-10 font-bold">Admin Panel (Separated deployment)</div>} />
+          <Route path="/sa" element={<div className="p-10 font-bold">Superadmin Panel</div>} />
+          <Route path="/sa/*" element={<div className="p-10 font-bold">Superadmin Panel</div>} />
           <Route path="/api/*" element={<div>API Endpoint</div>} />
 
           {/* Tienda dinámica en cualquier slug */}
