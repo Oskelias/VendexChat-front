@@ -78,8 +78,8 @@ export function StoreHeader({
                 {banner ? (
                     <img src={banner} alt={name} className="w-full h-full object-cover" />
                 ) : (
-                    <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-                        <span className="text-slate-200 font-black text-6xl opacity-20">{name}</span>
+                    <div className="w-full h-full bg-primary-dynamic flex items-center justify-center">
+                        <span className="text-white font-black text-6xl opacity-20">{name}</span>
                     </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
