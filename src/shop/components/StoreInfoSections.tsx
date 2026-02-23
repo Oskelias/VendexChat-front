@@ -12,96 +12,115 @@ interface StoreInfoSectionsProps {
 }
 
 export function StoreInfoSections({ description, address, whatsapp, instagram, facebook, schedule, storeName }: StoreInfoSectionsProps) {
-    // Formatear horario si existe
-    const renderSchedule = () => {
-        if (!schedule) return null;
-        try {
-            // Asumiendo que schedule es un objeto { lunes: "09:00 - 18:00", ... }
-            return (
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-medium text-slate-500">
-                    {Object.entries(schedule).map(([day, hours]) => (
-                        <div key={day} className="flex justify-between">
-                            <span className="capitalize text-slate-400">{day}:</span>
-                            <span>{String(hours)}</span>
-                        </div>
-                    ))}
-                </div>
-            );
-        } catch (e) {
-            return <p className="text-xs text-slate-500 italic">Horarios de atención flexibles.</p>;
+    // Lógica para resumir horarios
+    const getSummarizedSchedule = () => {
+        if (!schedule) return "Consultar horarios";
+
+        const daysFull = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
+        const daysShort = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+        const dayNames = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+        const getHoursStr = (dayKey: string) => {
+            const dayData = schedule[dayKey];
+            if (!dayData || !dayData.open) return "Cerrado";
+            const interval = dayData.intervals?.[0];
+            if (!interval) return "Cerrado";
+            if (interval.start === "00:00" && interval.end === "23:59") return "24hs";
+            return `${interval.start} a ${interval.end}hs`;
+        };
+
+        const groups: { days: number[], hours: string }[] = [];
+        for (let i = 0; i < 7; i++) {
+            const hours = getHoursStr(daysShort[i]);
+            if (groups.length > 0 && groups[groups.length - 1].hours === hours) {
+                groups[groups.length - 1].days.push(i);
+            } else {
+                groups.push({ days: [i], hours });
+            }
         }
+
+        return groups.map(group => {
+            const startDay = dayNames[group.days[0]];
+            const endDay = dayNames[group.days[group.days.length - 1]];
+            const dayRange = group.days.length > 1 ? `${startDay} a ${endDay}` : startDay;
+            return `${dayRange} ${group.hours}`;
+        }).join(", ");
     };
 
     return (
         <section className="bg-slate-50 border-t border-slate-100">
-            <div className="max-w-4xl mx-auto px-4 py-16 space-y-16">
+            {/* Banner de Horario de Atención con Degradado */}
+            <div className="bg-gradient-to-r from-primary-dynamic via-primary-dynamic to-primary-dynamic/80 relative overflow-hidden py-6 px-4">
+                <div className="max-w-4xl mx-auto flex flex-col items-center justify-center text-center relative z-10">
+                    <h3 className="text-white/70 text-[10px] font-black uppercase tracking-[0.3em] mb-1">Horario de Atención</h3>
+                    <div className="flex items-center gap-2.5 text-white">
+                        <Clock className="w-4 h-4 flex-shrink-0 opacity-80" />
+                        <span className="text-lg md:text-xl font-black uppercase tracking-tight">
+                            {getSummarizedSchedule()}
+                        </span>
+                    </div>
+                </div>
+                {/* Icono de Reloj Gigante de Fondo */}
+                <Clock className="absolute top-1/2 -left-8 -translate-y-1/2 w-40 h-40 text-white/5 -rotate-12" />
+            </div>
 
-                {/* Nosotro / Header */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
-                    <div className="md:col-span-2 space-y-6">
-                        <div className="space-y-2">
-                            <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tight">Nosotros</h2>
-                            <div className="w-12 h-1.5 bg-primary-dynamic rounded-full" />
+            <div className="max-w-4xl mx-auto px-4 py-10 space-y-10">
+                {/* Nosotros & Info */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div className="space-y-4">
+                        <div className="space-y-1">
+                            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Nosotros</h2>
+                            <div className="w-10 h-1 bg-primary-dynamic rounded-full" />
                         </div>
-                        <p className="text-slate-500 font-medium leading-relaxed text-lg">
+                        <p className="text-slate-500 font-medium leading-relaxed text-base italic border-l-4 border-slate-100 pl-4">
                             {description || `Bienvenidos a ${storeName}. Nos apasiona ofrecerte los mejores productos con la mejor calidad y atención.`}
                         </p>
 
-                        {/* Service Icons (Generic highlights) */}
-                        <div className="grid grid-cols-3 gap-4 pt-4">
-                            <div className="flex flex-col items-center p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-center space-y-2">
-                                <Thermometer className="w-6 h-6 text-primary-dynamic" />
-                                <span className="text-[10px] font-black uppercase text-slate-400">Congelados</span>
+                        {/* Service Icons (Compact) */}
+                        <div className="flex gap-3 pt-2">
+                            <div className="flex-1 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center space-y-1">
+                                <Thermometer className="w-5 h-5 text-primary-dynamic" />
+                                <span className="text-[9px] font-black uppercase text-slate-400">Congelados</span>
                             </div>
-                            <div className="flex flex-col items-center p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-center space-y-2">
-                                <Calendar className="w-6 h-6 text-primary-dynamic" />
-                                <span className="text-[10px] font-black uppercase text-slate-400">Pack Semanal</span>
+                            <div className="flex-1 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center space-y-1">
+                                <Calendar className="w-5 h-5 text-primary-dynamic" />
+                                <span className="text-[9px] font-black uppercase text-slate-400">Pack Semanal</span>
                             </div>
-                            <div className="flex flex-col items-center p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-center space-y-2">
-                                <Box className="w-6 h-6 text-primary-dynamic" />
-                                <span className="text-[10px] font-black uppercase text-slate-400">Hermético</span>
+                            <div className="flex-1 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center space-y-1">
+                                <Box className="w-5 h-5 text-primary-dynamic" />
+                                <span className="text-[9px] font-black uppercase text-slate-400">Hermético</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="space-y-8 bg-white p-8 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50">
+                    <div className="space-y-6 bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/40">
                         <div className="space-y-4">
-                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Contacto</h3>
-                            <div className="space-y-3">
+                            <h3 className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Donde Encontrarnos</h3>
+                            <div className="space-y-2.5">
                                 {address && (
-                                    <div className="flex items-start gap-3 text-sm">
-                                        <MapPin className="w-4 h-4 text-primary-dynamic mt-0.5" />
+                                    <div className="flex items-start gap-2.5 text-sm">
+                                        <MapPin className="w-4 h-4 text-primary-dynamic mt-0.5 flex-shrink-0" />
                                         <span className="font-bold text-slate-700">{address}</span>
                                     </div>
                                 )}
                                 {whatsapp && (
-                                    <div className="flex items-center gap-3 text-sm">
-                                        <Phone className="w-4 h-4 text-primary-dynamic" />
+                                    <div className="flex items-center gap-2.5 text-sm">
+                                        <Phone className="w-4 h-4 text-primary-dynamic flex-shrink-0" />
                                         <span className="font-bold text-slate-700">{whatsapp}</span>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div className="space-y-4 pt-4 border-t border-slate-50">
-                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Horarios</h3>
-                            <div className="flex items-start gap-3">
-                                <Clock className="w-4 h-4 text-primary-dynamic mt-0.5" />
-                                <div className="flex-1">
-                                    {renderSchedule() || <span className="text-sm font-bold text-slate-700 italic">Consultar horarios</span>}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-4 pt-4 border-t border-slate-50">
+                        <div className="flex gap-3 pt-4 border-t border-slate-50">
                             {instagram && (
-                                <a href={getSocialLink(instagram, 'instagram')} target="_blank" rel="noreferrer" className="w-10 h-10 bg-slate-50 flex items-center justify-center rounded-xl text-slate-400 hover:text-pink-500 transition-colors">
-                                    <Instagram className="w-5 h-5" />
+                                <a href={getSocialLink(instagram, 'instagram')} target="_blank" rel="noreferrer" className="w-9 h-9 bg-slate-50 flex items-center justify-center rounded-lg text-slate-400 hover:text-pink-500 transition-colors">
+                                    <Instagram className="w-4 h-4" />
                                 </a>
                             )}
                             {facebook && (
-                                <a href={getSocialLink(facebook, 'facebook')} target="_blank" rel="noreferrer" className="w-10 h-10 bg-slate-50 flex items-center justify-center rounded-xl text-slate-400 hover:text-blue-500 transition-colors">
-                                    <Facebook className="w-5 h-5" />
+                                <a href={getSocialLink(facebook, 'facebook')} target="_blank" rel="noreferrer" className="w-9 h-9 bg-slate-50 flex items-center justify-center rounded-lg text-slate-400 hover:text-blue-500 transition-colors">
+                                    <Facebook className="w-4 h-4" />
                                 </a>
                             )}
                         </div>
@@ -109,14 +128,27 @@ export function StoreInfoSections({ description, address, whatsapp, instagram, f
                 </div>
 
                 {/* Footer Copyright */}
-                <div className="pt-12 border-t border-slate-200 text-center flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-[10px] font-bold text-slate-400">© {new Date().getFullYear()} {storeName}. Todos los derechos reservados.</p>
-                    <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Potenciado por</span>
-                        <span className="text-sm font-black text-primary-dynamic tracking-tighter">VENDEXCHAT</span>
+                <div className="pt-8 border-t border-slate-200 text-center flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">© {new Date().getFullYear()} {storeName}.</p>
+                    <div className="flex items-center gap-2 opacity-50 grayscale hover:grayscale-0 transition-all">
+                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Potenciado por</span>
+                        <span className="text-xs font-black text-primary-dynamic tracking-tighter">VENDEXCHAT</span>
                     </div>
                 </div>
             </div>
         </section>
+    );
+}
+
+{/* Footer Copyright */ }
+<div className="pt-12 border-t border-slate-200 text-center flex flex-col md:flex-row items-center justify-between gap-4">
+    <p className="text-[10px] font-bold text-slate-400">© {new Date().getFullYear()} {storeName}. Todos los derechos reservados.</p>
+    <div className="flex items-center gap-2">
+        <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Potenciado por</span>
+        <span className="text-sm font-black text-primary-dynamic tracking-tighter">VENDEXCHAT</span>
+    </div>
+</div>
+            </div >
+        </section >
     );
 }
