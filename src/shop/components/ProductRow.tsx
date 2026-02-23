@@ -10,7 +10,7 @@ interface ProductRowProps {
 
 export function ProductRow({ product, quantity, onAdd, onUpdate }: ProductRowProps) {
     return (
-        <div className="bg-white p-3 rounded-2xl border border-slate-100 flex items-center gap-4 hover:border-emerald-200 transition-colors">
+        <div className="bg-white p-3 rounded-2xl border border-slate-100 flex items-center gap-4 hover:border-primary-dynamic transition-colors">
             <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-50 shrink-0">
                 {product.image_url ? (
                     <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
@@ -21,8 +21,8 @@ export function ProductRow({ product, quantity, onAdd, onUpdate }: ProductRowPro
 
             <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-slate-900 leading-tight truncate">{product.name}</h3>
-                <p className="text-xs text-slate-500 line-clamp-1 mb-1">{product.description}</p>
-                <div className="font-bold text-emerald-600">${product.price.toLocaleString()}</div>
+                <p className="text-xs text-slate-500 line-clamp-2 mb-1">{product.description}</p>
+                <div className="font-bold text-primary-dynamic">${product.price.toLocaleString()}</div>
             </div>
 
             <div className="shrink-0">
@@ -45,12 +45,12 @@ export function ProductRow({ product, quantity, onAdd, onUpdate }: ProductRowPro
                 ) : (
                     <button
                         onClick={() => onAdd(product)}
-                        className="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-600 text-white shadow-md shadow-emerald-100 active:scale-90 transition-transform"
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-primary-dynamic text-white shadow-md active:scale-90 transition-transform"
                     >
                         <Plus className="w-5 h-5" />
                     </button>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

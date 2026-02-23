@@ -40,6 +40,27 @@
     --shadow-soft: 0 4px 24px -4px hsla(220, 20%, 10%, 0.08);
     --shadow-card: 0 8px 32px -8px hsla(220, 20%, 10%, 0.1);
     --shadow-elevated: 0 16px 48px -12px hsla(220, 20%, 10%, 0.15);
+
+    --primary-color: #10b981;
+  }
+
+  .bg-primary-dynamic {
+    background-color: var(--primary-color) !important;
+  }
+  .text-primary-dynamic {
+    color: var(--primary-color) !important;
+  }
+  .border-primary-dynamic {
+    border-color: var(--primary-color) !important;
+  }
+  .ring-primary-dynamic {
+    --tw-ring-color: var(--primary-color) !important;
+  }
+  .fill-primary-dynamic {
+    fill: var(--primary-color) !important;
+  }
+  .accent-primary-dynamic {
+    accent-color: var(--primary-color) !important;
   }
 
   .dark {

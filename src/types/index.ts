@@ -29,10 +29,15 @@ export interface Store {
   banner_url?: string | null;
   description?: string | null;
   whatsapp: string;
+  phone?: string | null;
   address?: string | null;
+  instagram?: string | null;
+  facebook?: string | null;
+  schedule?: any | null;
   delivery_info?: string | null;
   custom_domain?: string | null;
   coupons_enabled: boolean;
+  primary_color: string;
 }
 
 export interface CatalogResponse {

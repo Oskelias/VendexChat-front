@@ -26,6 +26,12 @@ export function CartDrawer({
     storeId,
     couponsEnabled = true
 }: CartDrawerProps) {
+    const [deliveryType, setDeliveryType] = useState<"envio" | "retiro">("envio");
+    const [address, setAddress] = useState("");
+    const [deliveryZone, setDeliveryZone] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState("Efectivo");
+    const [notes, setNotes] = useState("");
+
     const [couponCode, setCouponCode] = useState("");
     const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
     const [couponError, setCouponError] = useState("");
@@ -93,17 +99,27 @@ export function CartDrawer({
     const finalTotal = totalPrice - discount;
 
     const handleSendWhatsApp = () => {
-        let message = `Hola! Quiero hacer este pedido:\n\n` +
+        let message = `*NUEVO PEDIDO*\n` +
+            `------------------\n` +
             items.map(i => `- ${i.quantity}x ${i.product.name} — $${(i.product.price * i.quantity).toLocaleString()}`).join('\n');
 
         if (appliedCoupon) {
-            message += `\n\n------------------\n` +
-                `Subtotal: $${totalPrice.toLocaleString()}\n` +
-                `Cupón: ${appliedCoupon.code} (-$${discount.toLocaleString()})\n` +
-                `*Total con Descuento: $${finalTotal.toLocaleString()}*`;
-        } else {
-            message += `\n\n*Total: $${totalPrice.toLocaleString()}*`;
+            message += `\n\nSubtotal: $${totalPrice.toLocaleString()}\n` +
+                `Cupón: ${appliedCoupon.code} (-$${discount.toLocaleString()})\n`;
         }
+
+        message += `\n*TOTAL: $${finalTotal.toLocaleString()}*\n` +
+            `------------------\n\n` +
+            `*DETALLES DE ENTREGA*\n` +
+            `- Tipo: ${deliveryType === 'envio' ? 'Envío a domicilio' : 'Retiro en local'}\n`;
+
+        if (deliveryType === 'envio') {
+            message += `- Dirección: ${address}\n`;
+            if (deliveryZone) message += `- Zona: ${deliveryZone}\n`;
+        }
+
+        message += `- Pago: ${paymentMethod}\n`;
+        if (notes) message += `\n*OBSERVACIONES:*\n${notes}`;
 
         const encoded = encodeURIComponent(message);
         window.open(`https://wa.me/${whatsappNumber}?text=${encoded}`, '_blank');
@@ -126,7 +142,7 @@ export function CartDrawer({
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="flex-1 overflow-y-auto p-4 space-y-6">
                     {items.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-3">
                             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
@@ -135,32 +151,112 @@ export function CartDrawer({
                             <p>Tu carrito está vacío</p>
                         </div>
                     ) : (
-                        items.map((item) => (
-                            <div key={item.product.id} className="flex gap-4 items-start pb-4 border-b border-slate-50">
-                                <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 shrink-0">
-                                    {item.product.image_url && <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover" />}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <h4 className="font-semibold text-slate-900 text-sm truncate">{item.product.name}</h4>
-                                    <p className="text-emerald-600 font-bold text-sm">${(item.product.price * item.quantity).toLocaleString()}</p>
-                                </div>
-                                <div className="flex items-center gap-2 bg-slate-100 rounded-full p-1">
-                                    <button
-                                        onClick={() => onUpdateQuantity(item.product.id, -1)}
-                                        className="w-6 h-6 flex items-center justify-center rounded-full bg-white shadow-sm text-slate-600"
-                                    >
-                                        <Minus className="w-3 h-3" />
-                                    </button>
-                                    <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
-                                    <button
-                                        onClick={() => onUpdateQuantity(item.product.id, 1)}
-                                        className="w-6 h-6 flex items-center justify-center rounded-full bg-white shadow-sm text-slate-600"
-                                    >
-                                        <Plus className="w-3 h-3" />
-                                    </button>
+                        <>
+                            <div className="space-y-4">
+                                {items.map((item) => (
+                                    <div key={item.product.id} className="flex gap-4 items-start pb-4 border-b border-slate-50">
+                                        <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 shrink-0">
+                                            {item.product.image_url && <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover" />}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-semibold text-slate-900 text-sm truncate">{item.product.name}</h4>
+                                            <p className="text-primary-dynamic font-bold text-sm">${(item.product.price * item.quantity).toLocaleString()}</p>
+                                        </div>
+                                        <div className="flex items-center gap-2 bg-slate-100 rounded-full p-1">
+                                            <button
+                                                onClick={() => onUpdateQuantity(item.product.id, -1)}
+                                                className="w-6 h-6 flex items-center justify-center rounded-full bg-white shadow-sm text-slate-600"
+                                            >
+                                                <Minus className="w-3 h-3" />
+                                            </button>
+                                            <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
+                                            <button
+                                                onClick={() => onUpdateQuantity(item.product.id, 1)}
+                                                className="w-6 h-6 flex items-center justify-center rounded-full bg-white shadow-sm text-slate-600"
+                                            >
+                                                <Plus className="w-3 h-3" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Formulario de Checkout */}
+                            <div className="space-y-4 pt-4">
+                                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest px-1">Datos de Entrega</h3>
+
+                                <div className="space-y-3">
+                                    {/* Método de Pago */}
+                                    <div className="flex items-stretch border-l-4 border-primary-dynamic bg-slate-50 rounded-r-xl overflow-hidden shadow-sm">
+                                        <select
+                                            value={paymentMethod}
+                                            onChange={(e) => setPaymentMethod(e.target.value)}
+                                            className="w-full px-4 py-3 bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer"
+                                        >
+                                            <option value="Efectivo">Efectivo</option>
+                                            <option value="Transferencia">Transferencia</option>
+                                            <option value="Mercado Pago">Mercado Pago</option>
+                                        </select>
+                                    </div>
+
+                                    {/* Tipo de Envío */}
+                                    <div className="flex items-stretch border-l-4 border-slate-900 bg-slate-50 rounded-r-xl overflow-hidden shadow-sm">
+                                        <select
+                                            value={deliveryType}
+                                            onChange={(e) => setDeliveryType(e.target.value as any)}
+                                            className="w-full px-4 py-3 bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer"
+                                        >
+                                            <option value="envio">Quiero que me lo envíen</option>
+                                            <option value="retiro">Retiro en el local</option>
+                                        </select>
+                                    </div>
+
+                                    {deliveryType === "envio" && (
+                                        <>
+                                            <div className="flex items-stretch border-l-4 border-slate-900 bg-slate-50 rounded-r-xl overflow-hidden shadow-sm">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Dirección (Calle y Número)"
+                                                    value={address}
+                                                    onChange={(e) => setAddress(e.target.value)}
+                                                    className="w-full px-4 py-3 bg-transparent text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400"
+                                                />
+                                            </div>
+
+                                            <div className="flex gap-2">
+                                                <div className="flex-1 flex items-stretch border-l-4 border-slate-900 bg-slate-50 rounded-r-xl overflow-hidden shadow-sm">
+                                                    <select
+                                                        value={deliveryZone}
+                                                        onChange={(e) => setDeliveryZone(e.target.value)}
+                                                        className="w-full px-4 py-3 bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer"
+                                                    >
+                                                        <option value="">Zona de Entrega</option>
+                                                        <option value="CABA">CABA</option>
+                                                        <option value="Zona Norte">Zona Norte</option>
+                                                        <option value="Zona Sur">Zona Sur</option>
+                                                        <option value="Zona Oeste">Zona Oeste</option>
+                                                    </select>
+                                                </div>
+                                                <button className="bg-blue-600 text-white px-4 py-3 rounded-xl text-xs font-black uppercase tracking-tight shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all">
+                                                    Ver Zonas
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {/* Observaciones */}
+                                    <div className="flex items-stretch border-l-4 border-slate-400 bg-slate-50 rounded-r-xl overflow-hidden shadow-sm">
+                                        <textarea
+                                            placeholder="¿Alguna Observación?"
+                                            value={notes}
+                                            onChange={(e) => setNotes(e.target.value)}
+                                            rows={3}
+                                            className="w-full px-4 py-3 bg-transparent text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400 resize-none"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        ))
+                        </>
                     )}
                 </div>
 
@@ -169,19 +265,19 @@ export function CartDrawer({
                     {couponsEnabled && items.length > 0 && (
                         <div className="space-y-3">
                             {appliedCoupon ? (
-                                <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 p-3 rounded-xl animate-in fade-in zoom-in duration-300">
+                                <div className="flex items-center justify-between bg-slate-50 border border-slate-100 p-3 rounded-xl animate-in fade-in zoom-in duration-300">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+                                        <div className="w-8 h-8 bg-primary-dynamic rounded-lg flex items-center justify-center">
                                             <Tag className="w-4 h-4 text-white" />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Cupón Aplicado</span>
+                                            <span className="text-[10px] font-black text-primary-dynamic uppercase tracking-widest">Cupón Aplicado</span>
                                             <span className="text-sm font-black text-slate-800 uppercase">{appliedCoupon.code}</span>
                                         </div>
                                     </div>
                                     <button
                                         onClick={() => setAppliedCoupon(null)}
-                                        className="text-[10px] font-black text-emerald-600 uppercase hover:underline"
+                                        className="text-[10px] font-black text-primary-dynamic uppercase hover:underline"
                                     >
                                         Quitar
                                     </button>
@@ -194,7 +290,7 @@ export function CartDrawer({
                                             placeholder="¿Tenés un cupón?"
                                             value={couponCode}
                                             onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                                            className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-bold uppercase outline-none focus:border-emerald-500 transition-all"
+                                            className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-bold uppercase outline-none focus:border-primary-dynamic transition-all"
                                         />
                                         <button
                                             onClick={handleApplyCoupon}
@@ -221,21 +317,21 @@ export function CartDrawer({
                             <span>${totalPrice.toLocaleString()}</span>
                         </div>
                         {appliedCoupon && (
-                            <div className="flex items-center justify-between font-bold text-sm text-emerald-600">
+                            <div className="flex items-center justify-between font-bold text-sm text-primary-dynamic">
                                 <span>Descuento</span>
                                 <span>-${discount.toLocaleString()}</span>
                             </div>
                         )}
                         <div className="flex items-center justify-between font-bold text-xl pt-2 border-t border-slate-200">
                             <span className="text-slate-900 uppercase tracking-tight">Total</span>
-                            <span className="text-emerald-600">${finalTotal.toLocaleString()}</span>
+                            <span className="text-primary-dynamic">${finalTotal.toLocaleString()}</span>
                         </div>
                     </div>
 
                     <button
                         disabled={items.length === 0}
                         onClick={handleSendWhatsApp}
-                        className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-black uppercase tracking-widest py-5 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-emerald-200"
+                        className="w-full bg-primary-dynamic hover:opacity-90 disabled:bg-slate-300 text-white font-black uppercase tracking-widest py-5 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-primary-dynamic/20"
                     >
                         <Send className="w-5 h-5" />
                         Pedir por WhatsApp

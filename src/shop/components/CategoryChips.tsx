@@ -11,28 +11,24 @@ interface CategoryChipsProps {
 
 export function CategoryChips({ categories, activeId, onSelect }: CategoryChipsProps) {
     return (
-        <div className="sticky top-[65px] z-30 bg-white border-b border-slate-100 overflow-x-auto no-scrollbar py-3 px-4 flex gap-2">
-            <button
-                onClick={() => onSelect(null)}
-                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${activeId === null
-                        ? "bg-emerald-600 text-white shadow-md shadow-emerald-100"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                    }`}
-            >
-                Todos
-            </button>
-            {categories.map((cat) => (
-                <button
-                    key={cat.id}
-                    onClick={() => onSelect(cat.id)}
-                    className={`whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${activeId === cat.id
-                            ? "bg-emerald-600 text-white shadow-md shadow-emerald-100"
-                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                        }`}
-                >
-                    {cat.name}
-                </button>
-            ))}
+        <div className="bg-white border-b border-slate-100 overflow-x-auto no-scrollbar flex items-center shadow-sm">
+            <div className="flex px-4 mx-auto divide-x divide-slate-100">
+                {categories.map((cat) => (
+                    <button
+                        key={cat.id}
+                        onClick={() => onSelect(cat.id)}
+                        className={`whitespace-nowrap px-6 py-4 text-[10px] md:text-xs font-black uppercase tracking-widest transition-all relative ${activeId === cat.id
+                            ? "text-primary-dynamic bg-slate-50"
+                            : "text-slate-400 hover:text-slate-600 hover:bg-slate-50/50"
+                            }`}
+                    >
+                        {cat.name}
+                        {activeId === cat.id && (
+                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary-dynamic rounded-t-full shadow-[0_-2px_8px_var(--primary-color)] opacity-30" />
+                        )}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 }

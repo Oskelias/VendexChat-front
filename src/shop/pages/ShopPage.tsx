@@ -1,15 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useShopData } from "../hooks/useShopData";
 import { useCartState } from "../state/useCartStore";
 import { StoreHeader } from "../components/StoreHeader";
 import { CategoryChips } from "../components/CategoryChips";
 import { ProductCard } from "../components/ProductCard";
-import { ProductRow } from "../components/ProductRow";
 import { CartDrawer } from "../components/CartDrawer";
 import { CartBar } from "../components/CartBar";
 import { ProductQuickViewModal } from "../components/ProductQuickViewModal";
 import { StoreInfoSections } from "../components/StoreInfoSections";
+import { ChatBotWidget } from "../components/ChatBotWidget";
 import type { Product } from "../../types";
 
 export default function ShopPage() {
@@ -20,29 +20,52 @@ export default function ShopPage() {
     const [activeCategory, setActiveCategory] = useState<string | number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-
-    // Determinar modo de vista (prioridad: data.store.config.catalogView)
-    const viewMode = (data?.store as any)?.config?.catalogView || "grid";
 
     const filteredCategories = useMemo(() => {
         if (!data) return [];
 
-        return data.categories.map(cat => ({
+        const allWithFilteredProducts = data.categories.map(cat => ({
             ...cat,
             products: (cat.products || []).filter(p => {
-                const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                return p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     p.description?.toLowerCase().includes(searchTerm.toLowerCase());
-                const matchesCategory = activeCategory === null || String(cat.id) === String(activeCategory);
-                return matchesSearch && matchesCategory;
             })
         })).filter(cat => cat.products.length > 0);
+
+        // Si no hay categoría activa, intentamos poner la primera que tenga productos
+        if (activeCategory === null && allWithFilteredProducts.length > 0) {
+            // Usamos setTimeout o un useEffect separado para evitar warnings de "update during render"
+            // Pero como estamos en useMemo, lo mejor es que el componente lo maneje.
+            // Por ahora, solo filtramos si hay categoría.
+        }
+
+        if (activeCategory !== null) {
+            return allWithFilteredProducts.filter(cat => String(cat.id) === String(activeCategory));
+        }
+
+        return allWithFilteredProducts;
     }, [data, searchTerm, activeCategory]);
+
+    // Efecto para asegurar que siempre haya una categoría seleccionada si no estamos en modo "Search" global
+    useEffect(() => {
+        if (!activeCategory && data?.categories && data.categories.length > 0 && !searchTerm) {
+            setActiveCategory(data.categories[0].id);
+        }
+    }, [data, activeCategory, searchTerm]);
+
+    // Efecto para inyectar el color primario dinámico de la tienda
+    useEffect(() => {
+        if (data?.store?.primary_color) {
+            document.documentElement.style.setProperty('--primary-color', data.store.primary_color);
+        }
+    }, [data]);
 
     if (loading) {
         return (
             <div className="h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
-                <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+                <div className="w-12 h-12 border-4 border-primary-dynamic border-t-transparent rounded-full animate-spin" />
                 <p className="text-slate-500 font-medium animate-pulse">Cargando tienda...</p>
             </div>
         );
@@ -65,7 +88,14 @@ export default function ShopPage() {
                 logo={data.store.logo_url || ""}
                 banner={data.store.banner_url || ""}
                 description={data.store.description || ""}
+                address={data.store.address || ""}
+                whatsapp={data.store.whatsapp}
+                instagram={data.store.instagram || ""}
+                facebook={data.store.facebook || ""}
+                totalItems={totalItems}
                 onSearch={setSearchTerm}
+                onChatClick={() => setIsChatOpen(true)}
+                onCartClick={() => setIsCartOpen(true)}
             />
 
             <CategoryChips
@@ -74,46 +104,33 @@ export default function ShopPage() {
                 onSelect={setActiveCategory}
             />
 
-            <main className="max-w-4xl mx-auto px-4 py-12">
+            <main className="max-w-4xl mx-auto px-4 py-8">
                 {filteredCategories.length === 0 ? (
                     <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100">
                         <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No se encontraron productos</p>
                     </div>
                 ) : (
                     filteredCategories.map((cat) => (
-                        <section key={cat.id} className="mb-16">
-                            <div className="flex items-center gap-4 mb-8">
-                                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">
+                        <section key={cat.id} className="mb-12">
+                            <div className="flex items-center gap-4 mb-6">
+                                <h2 className="text-sm md:text-lg font-black text-slate-900 uppercase tracking-tight">
                                     {cat.name}
                                 </h2>
-                                <div className="h-px flex-1 bg-slate-100" />
-                                <span className="text-[10px] font-black bg-slate-100 text-slate-400 px-3 py-1 rounded-full uppercase tracking-tighter">
+                                <div className="h-[1px] flex-1 bg-slate-100" />
+                                <span className="text-[9px] font-black bg-slate-50 text-slate-400 px-3 py-1 rounded-full uppercase tracking-tighter">
                                     {cat.products.length} Items
                                 </span>
                             </div>
 
-                            <div className={
-                                viewMode === "grid"
-                                    ? "grid grid-cols-2 md:grid-cols-3 gap-6"
-                                    : "flex flex-col gap-4"
-                            }>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                                 {cat.products.map((p) => (
                                     <div key={p.id} onClick={() => !getItemQuantity(p.id) && setQuickViewProduct(p)} className="cursor-pointer">
-                                        {viewMode === "grid" ? (
-                                            <ProductCard
-                                                product={p}
-                                                quantity={getItemQuantity(p.id)}
-                                                onAdd={(prod) => addItem(prod)}
-                                                onUpdate={updateQuantity}
-                                            />
-                                        ) : (
-                                            <ProductRow
-                                                product={p}
-                                                quantity={getItemQuantity(p.id)}
-                                                onAdd={(prod) => addItem(prod)}
-                                                onUpdate={updateQuantity}
-                                            />
-                                        )}
+                                        <ProductCard
+                                            product={p}
+                                            quantity={getItemQuantity(p.id)}
+                                            onAdd={(prod) => addItem(prod)}
+                                            onUpdate={updateQuantity}
+                                        />
                                     </div>
                                 ))}
                             </div>
@@ -122,11 +139,14 @@ export default function ShopPage() {
                 )}
             </main>
 
-            {/* Info Sections: Nosotros / Zonas */}
+            {/* Info Sections: Nosotros / Zonas / Horarios */}
             <StoreInfoSections
                 description={data.store.description}
                 address={data.store.address}
-                deliveryInfo={data.store.delivery_info}
+                whatsapp={data.store.whatsapp}
+                instagram={data.store.instagram}
+                facebook={data.store.facebook}
+                schedule={data.store.schedule}
                 storeName={data.store.name}
             />
 
@@ -155,6 +175,16 @@ export default function ShopPage() {
                 quantity={quickViewProduct ? getItemQuantity(quickViewProduct.id) : 0}
                 onAdd={addItem}
                 onUpdate={updateQuantity}
+            />
+
+            <ChatBotWidget
+                isOpen={isChatOpen}
+                onClose={() => setIsChatOpen(false)}
+                storeName={data.store.name}
+                storeDescription={data.store.description || undefined}
+                storeAddress={data.store.address || undefined}
+                whatsappNumber={data.store.whatsapp}
+                products={data.categories.flatMap(c => c.products || [])}
             />
         </div>
     );

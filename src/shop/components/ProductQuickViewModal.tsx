@@ -41,7 +41,7 @@ export function ProductQuickViewModal({
 
                     <div className="md:w-1/2 p-6 flex flex-col">
                         <h2 className="text-2xl font-bold text-slate-900 mb-2">{product.name}</h2>
-                        <div className="text-2xl font-bold text-emerald-600 mb-4">${product.price.toLocaleString()}</div>
+                        <div className="text-2xl font-bold text-primary-dynamic mb-4">${product.price.toLocaleString()}</div>
 
                         <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-1">
                             {product.description || "Sin descripción disponible."}
@@ -69,7 +69,7 @@ export function ProductQuickViewModal({
                             ) : (
                                 <button
                                     onClick={() => onAdd(product)}
-                                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-100 transition-all active:scale-[0.98]"
+                                    className="w-full bg-primary-dynamic hover:opacity-90 text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary-dynamic/20 transition-all active:scale-[0.98]"
                                 >
                                     Agregar al pedido
                                 </button>
