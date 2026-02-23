@@ -146,7 +146,7 @@ export default function ShopPage() {
                 whatsapp={data.store.whatsapp || data.store.phone || ""}
                 instagram={data.store.instagram}
                 facebook={data.store.facebook}
-                schedule={data.store.schedule}
+                schedule={data.store.physical_schedule || data.store.schedule}
                 storeName={data.store.name}
             />
 

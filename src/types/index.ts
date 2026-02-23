@@ -34,6 +34,8 @@ export interface Store {
   instagram?: string | null;
   facebook?: string | null;
   schedule?: any | null;
+  physical_schedule?: any | null;
+  online_schedule?: any | null;
   delivery_info?: string | null;
   custom_domain?: string | null;
   coupons_enabled: boolean;
