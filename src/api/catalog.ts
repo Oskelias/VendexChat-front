@@ -31,7 +31,7 @@ export async function fetchCatalog(identifier: string): Promise<CatalogResponse>
     .from("products")
     .select("id, name, description, price, offer_price, image_url, sort_order, category_id, stock, unlimited_stock, is_active")
     .in("category_id", categoryIds)
-    .eq("is_active", true) // Solo productos activos
+    .eq("is_active", true)
     .order("sort_order");
 
   if (prodError) {
