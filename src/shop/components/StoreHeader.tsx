@@ -11,16 +11,32 @@ interface StoreHeaderProps {
     instagram?: string;
     facebook?: string;
     totalItems: number;
+    announcement?: string | null;
     onSearch: (q: string) => void;
     onChatClick: () => void;
     onCartClick: () => void;
 }
 
 export function StoreHeader({
-    name, logo, banner, description, address, whatsapp, instagram, facebook, totalItems, onSearch, onChatClick, onCartClick
+    name, logo, banner, description, address, whatsapp, instagram, facebook, totalItems, announcement, onSearch, onChatClick, onCartClick
 }: StoreHeaderProps) {
     return (
         <header className="bg-white">
+            {/* Global Announcement Banner */}
+            {announcement && (
+                <div className="bg-indigo-600 text-white px-4 py-2.5 text-center relative overflow-hidden group">
+                    <div className="max-w-4xl mx-auto flex items-center justify-center gap-3 relative z-10">
+                        <div className="p-1 bg-white/20 rounded-lg">
+                            <Bot className="w-3.5 h-3.5 text-white animate-pulse" />
+                        </div>
+                        <p className="text-[10px] md:text-xs font-black uppercase tracking-widest leading-none drop-shadow-sm">
+                            {announcement}
+                        </p>
+                    </div>
+                    {/* Decorative Background Elements */}
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                </div>
+            )}
             {/* Top Navigation Bar: Search & Icons */}
             <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-50 px-4 py-3 shadow-sm">
                 <div className="max-w-4xl mx-auto flex items-center gap-3">

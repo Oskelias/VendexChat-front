@@ -67,7 +67,22 @@ export async function fetchCatalog(identifier: string): Promise<CatalogResponse>
     };
   });
 
-  return { store, categories: normalizedCategories };
+  // 5. Fetch global announcement
+  const { data: globalSettings } = await supabase
+    .from("global_settings")
+    .select("key, value")
+    .in("key", ["global_announcement_active", "global_announcement_text"]);
+
+  const settingsMap = (globalSettings ?? []).reduce((acc, curr) => {
+    acc[curr.key] = curr.value;
+    return acc;
+  }, {} as Record<string, any>);
+
+  const announcement = (settingsMap.global_announcement_active === "true" || settingsMap.global_announcement_active === true)
+    ? settingsMap.global_announcement_text
+    : null;
+
+  return { store, categories: normalizedCategories, announcement };
 }
 
 export async function createOrder(payload: OrderPayload): Promise<OrderResponse> {

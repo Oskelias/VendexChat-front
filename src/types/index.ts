@@ -49,6 +49,7 @@ export interface Store {
 export interface CatalogResponse {
   store: Store;
   categories: Category[];
+  announcement?: string | null;
 }
 
 export interface CartItem {

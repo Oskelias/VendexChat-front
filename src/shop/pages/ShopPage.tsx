@@ -95,6 +95,7 @@ export default function ShopPage() {
                 instagram={data.store.instagram || ""}
                 facebook={data.store.facebook || ""}
                 totalItems={totalItems}
+                announcement={data.announcement}
                 onSearch={setSearchTerm}
                 onChatClick={() => setIsChatOpen(true)}
                 onCartClick={() => setIsCartOpen(true)}

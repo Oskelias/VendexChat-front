@@ -6,6 +6,7 @@ import { useCartState } from '../state/useCartStore'
 interface WeeklyMenuGridProps {
     categories: Category[]
     primaryColor: string
+    onItemClick?: (product: Product) => void
 }
 
 const DAYS = [
@@ -35,8 +36,8 @@ export function WeeklyMenuGrid({ categories, primaryColor }: WeeklyMenuGridProps
                             key={day.id}
                             onClick={() => setActiveDay(day.id)}
                             className={`flex flex-col items-center min-w-[80px] px-4 py-3 rounded-2xl transition-all border-2 ${isActive
-                                    ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200'
-                                    : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
+                                ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-200'
+                                : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
                                 }`}
                         >
                             <span className="text-[10px] font-black uppercase tracking-widest">{day.label}</span>
@@ -74,13 +75,14 @@ export function WeeklyMenuGrid({ categories, primaryColor }: WeeklyMenuGridProps
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {cat.products.map((p) => {
+                            {(cat.products || []).map((p) => {
                                 const qty = getItemQuantity(p.id, activeDay)
 
                                 return (
                                     <div
                                         key={p.id}
-                                        className={`group relative bg-white border-2 rounded-[2rem] p-5 transition-all flex items-center gap-4 ${qty > 0 ? 'border-slate-900 shadow-xl shadow-slate-100' : 'border-slate-50 hover:border-slate-200'
+                                        onClick={() => onItemClick?.(p)}
+                                        className={`group relative bg-white border-2 rounded-[2rem] p-5 transition-all flex items-center gap-4 cursor-pointer ${qty > 0 ? 'border-slate-900 shadow-xl shadow-slate-100' : 'border-slate-50 hover:border-slate-200'
                                             }`}
                                     >
                                         {p.image_url && (
