@@ -144,6 +144,21 @@ export function StoreInfoSections({ description, address, whatsapp, instagram, f
                     </div>
                 </div>
 
+                {/* Nuestra Historia / Long Description */}
+                {metadata?.description_long && (
+                    <div className="pt-10 border-t border-slate-100">
+                        <div className="space-y-4 max-w-2xl mx-auto text-center">
+                            <div className="space-y-1 flex flex-col items-center">
+                                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Nuestra Historia</h2>
+                                <div className="w-8 h-1 bg-primary-dynamic rounded-full" />
+                            </div>
+                            <p className="text-slate-500 font-medium leading-relaxed text-sm whitespace-pre-wrap">
+                                {metadata.description_long}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {/* Footer Copyright */}
                 <div className="pt-8 border-t border-slate-200 text-center flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">© {new Date().getFullYear()} VENDExChat.</p>
