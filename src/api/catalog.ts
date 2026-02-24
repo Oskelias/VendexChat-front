@@ -1,7 +1,39 @@
 import { supabase } from "../lib/supabase";
 import type { CatalogResponse, OrderPayload, OrderResponse } from "../types";
 
+const CATALOG_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+function getCachedCatalog(identifier: string): CatalogResponse | null {
+  try {
+    const raw = sessionStorage.getItem(`catalog_${identifier}`);
+    if (!raw) return null;
+    const cached = JSON.parse(raw);
+    if (Date.now() - cached.timestamp > CATALOG_CACHE_TTL) {
+      sessionStorage.removeItem(`catalog_${identifier}`);
+      return null;
+    }
+    return cached.data;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedCatalog(identifier: string, data: CatalogResponse) {
+  try {
+    sessionStorage.setItem(`catalog_${identifier}`, JSON.stringify({
+      data,
+      timestamp: Date.now()
+    }));
+  } catch {
+    // sessionStorage lleno, ignorar
+  }
+}
+
 export async function fetchCatalog(identifier: string): Promise<CatalogResponse> {
+  // Intentar servir desde caché
+  const cached = getCachedCatalog(identifier);
+  if (cached) return cached;
+
   // 1. Get store by slug OR custom_domain
   const { data: store, error: storeError } = await supabase
     .from("stores")
@@ -82,8 +114,14 @@ export async function fetchCatalog(identifier: string): Promise<CatalogResponse>
     ? settingsMap.global_announcement_text
     : null;
 
-  return { store, categories: normalizedCategories, announcement };
+  const result = { store, categories: normalizedCategories, announcement };
+
+  // Guardar en caché
+  setCachedCatalog(identifier, result);
+
+  return result;
 }
+
 
 export async function createOrder(payload: OrderPayload): Promise<OrderResponse> {
   // 1. Look up prices for all items
