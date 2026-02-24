@@ -41,6 +41,9 @@ export interface Store {
   coupons_enabled: boolean;
   primary_color: string;
   metadata?: any | null;
+  ai_prompt?: string | null;
+  welcome_message?: string | null;
+  footer_message?: string | null;
 }
 
 export interface CatalogResponse {

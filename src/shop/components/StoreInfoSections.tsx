@@ -10,9 +10,10 @@ interface StoreInfoSectionsProps {
     schedule?: any | null;
     storeName: string;
     metadata?: any;
+    footerMessage?: string | null;
 }
 
-export function StoreInfoSections({ description, address, whatsapp, instagram, facebook, schedule, storeName, metadata }: StoreInfoSectionsProps) {
+export function StoreInfoSections({ description, address, whatsapp, instagram, facebook, schedule, storeName, metadata, footerMessage }: StoreInfoSectionsProps) {
     // Lógica para resumir horarios
     const getSummarizedSchedule = () => {
         if (!schedule) return "Consultar horarios";
@@ -160,11 +161,18 @@ export function StoreInfoSections({ description, address, whatsapp, instagram, f
                 )}
 
                 {/* Footer Copyright */}
-                <div className="pt-8 border-t border-slate-200 text-center flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">© {new Date().getFullYear()} VENDExChat.</p>
-                    <div className="flex items-center gap-2 opacity-50 grayscale hover:grayscale-0 transition-all text-slate-400 hover:text-slate-600">
-                        <span className="text-[8px] font-black uppercase tracking-[0.3em]">Potenciado por</span>
-                        <span className="text-xs font-black tracking-tighter italic">@InteliarStack</span>
+                <div className="pt-8 border-t border-slate-200 text-center flex flex-col items-center gap-4">
+                    {footerMessage && (
+                        <p className="text-sm font-bold text-slate-500 italic max-w-lg">
+                            {footerMessage}
+                        </p>
+                    )}
+                    <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4">
+                        <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">© {new Date().getFullYear()} VENDExChat.</p>
+                        <div className="flex items-center gap-2 opacity-50 grayscale hover:grayscale-0 transition-all text-slate-400 hover:text-slate-600">
+                            <span className="text-[8px] font-black uppercase tracking-[0.3em]">Potenciado por</span>
+                            <span className="text-xs font-black tracking-tighter italic">@InteliarStack</span>
+                        </div>
                     </div>
                 </div>
             </div>

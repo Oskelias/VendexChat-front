@@ -16,6 +16,8 @@ interface ChatBotWidgetProps {
     storeAddress?: string;
     whatsappNumber?: string;
     products: any[];
+    aiPrompt?: string | null;
+    welcomeMessage?: string | null;
 }
 
 export function ChatBotWidget({
@@ -25,13 +27,15 @@ export function ChatBotWidget({
     storeDescription,
     storeAddress,
     whatsappNumber,
-    products
+    products,
+    aiPrompt,
+    welcomeMessage
 }: ChatBotWidgetProps) {
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
             role: "assistant",
-            content: `¡Hola! 👋 Soy el asistente virtual de **${storeName}**. ¿En qué puedo ayudarte hoy?`
+            content: welcomeMessage || `¡Hola! 👋 Soy el asistente virtual de **${storeName}**. ¿En qué puedo ayudarte hoy?`
         }
     ]);
     const [input, setInput] = useState("");
@@ -62,7 +66,7 @@ export function ChatBotWidget({
         try {
             // Preparar el contexto para la IA
             const productList = products.map(p => `- ${p.name}: $${p.price} (${p.description || 'Sin descripción'})`).join('\n');
-            const systemPrompt = `Eres un asistente virtual amable y servicial para la tienda "${storeName}". 
+            const systemPrompt = aiPrompt || `Eres un asistente virtual amable y servicial para la tienda "${storeName}". 
             Descripción de la tienda: ${storeDescription || 'Tienda minorista'}.
             Dirección física/Ubicación: ${storeAddress || 'Consultar por WhatsApp'}.
             Tu objetivo es ayudar a los clientes con sus dudas sobre los productos y la tienda de forma fluida.

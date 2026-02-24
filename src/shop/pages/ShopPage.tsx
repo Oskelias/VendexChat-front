@@ -149,6 +149,7 @@ export default function ShopPage() {
                 schedule={data.store.physical_schedule || data.store.schedule}
                 storeName={data.store.name}
                 metadata={data.store.metadata}
+                footerMessage={data.store.footer_message}
             />
 
             <CartBar
@@ -186,6 +187,8 @@ export default function ShopPage() {
                 storeAddress={data.store.address || undefined}
                 whatsappNumber={data.store.whatsapp || data.store.phone || ""}
                 products={data.categories.flatMap(c => c.products || [])}
+                aiPrompt={data.store.ai_prompt}
+                welcomeMessage={data.store.welcome_message}
             />
         </div>
     );
