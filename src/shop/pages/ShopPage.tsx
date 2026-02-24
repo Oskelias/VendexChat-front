@@ -148,6 +148,7 @@ export default function ShopPage() {
                 facebook={data.store.facebook}
                 schedule={data.store.physical_schedule || data.store.schedule}
                 storeName={data.store.name}
+                metadata={data.store.metadata}
             />
 
             <CartBar

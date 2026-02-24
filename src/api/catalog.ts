@@ -5,7 +5,7 @@ export async function fetchCatalog(identifier: string): Promise<CatalogResponse>
   // 1. Get store by slug OR custom_domain
   const { data: store, error: storeError } = await supabase
     .from("stores")
-    .select("id, name, slug, logo_url, banner_url, description, whatsapp, phone, address, delivery_info, custom_domain, coupons_enabled, instagram, facebook, schedule, physical_schedule, online_schedule, primary_color")
+    .select("id, name, slug, logo_url, banner_url, description, whatsapp, phone, address, delivery_info, custom_domain, coupons_enabled, instagram, facebook, schedule, physical_schedule, online_schedule, primary_color, metadata")
     .or(`slug.eq.${identifier},custom_domain.eq.${identifier}`)
     .single();
 

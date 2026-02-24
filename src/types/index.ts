@@ -40,6 +40,7 @@ export interface Store {
   custom_domain?: string | null;
   coupons_enabled: boolean;
   primary_color: string;
+  metadata?: any | null;
 }
 
 export interface CatalogResponse {

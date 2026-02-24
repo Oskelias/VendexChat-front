@@ -9,9 +9,10 @@ interface StoreInfoSectionsProps {
     facebook?: string | null;
     schedule?: any | null;
     storeName: string;
+    metadata?: any;
 }
 
-export function StoreInfoSections({ description, address, whatsapp, instagram, facebook, schedule, storeName }: StoreInfoSectionsProps) {
+export function StoreInfoSections({ description, address, whatsapp, instagram, facebook, schedule, storeName, metadata }: StoreInfoSectionsProps) {
     // Lógica para resumir horarios
     const getSummarizedSchedule = () => {
         if (!schedule) return "Consultar horarios";
@@ -78,20 +79,34 @@ export function StoreInfoSections({ description, address, whatsapp, instagram, f
                             {description || `Bienvenidos a ${storeName}. Nos apasiona ofrecerte los mejores productos con la mejor calidad y atención.`}
                         </p>
 
-                        {/* Service Icons (Compact) */}
+                        {/* Secondary Description (Dynamic) */}
+                        {metadata?.description_secondary && (
+                            <p className="text-slate-400 font-semibold leading-relaxed text-sm pl-4">
+                                {metadata.description_secondary}
+                            </p>
+                        )}
+
+                        {/* Service Icons (Dynamic or Fallback) */}
                         <div className="flex gap-3 pt-2">
-                            <div className="flex-1 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center space-y-1">
-                                <Thermometer className="w-5 h-5 text-primary-dynamic" />
-                                <span className="text-[9px] font-black uppercase text-slate-400">Congelados</span>
-                            </div>
-                            <div className="flex-1 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center space-y-1">
-                                <Calendar className="w-5 h-5 text-primary-dynamic" />
-                                <span className="text-[9px] font-black uppercase text-slate-400">Pack Semanal</span>
-                            </div>
-                            <div className="flex-1 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center space-y-1">
-                                <Box className="w-5 h-5 text-primary-dynamic" />
-                                <span className="text-[9px] font-black uppercase text-slate-400">Hermético</span>
-                            </div>
+                            {(metadata?.highlights || [
+                                { icon: 'Thermometer', label: 'Congelados' },
+                                { icon: 'Calendar', label: 'Pack Semanal' },
+                                { icon: 'Box', label: 'Hermético' }
+                            ]).map((highlight: any, idx: number) => {
+                                const IconComponent = (highlight.icon === 'Thermometer' ? Thermometer :
+                                    highlight.icon === 'Calendar' ? Calendar :
+                                        highlight.icon === 'Box' ? Box :
+                                            highlight.icon === 'Clock' ? Clock :
+                                                highlight.icon === 'MapPin' ? MapPin :
+                                                    highlight.icon === 'Phone' ? Phone : Box);
+
+                                return (
+                                    <div key={idx} className="flex-1 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center space-y-1">
+                                        <IconComponent className="w-5 h-5 text-primary-dynamic" />
+                                        <span className="text-[9px] font-black uppercase text-slate-400">{highlight.label}</span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -131,10 +146,10 @@ export function StoreInfoSections({ description, address, whatsapp, instagram, f
 
                 {/* Footer Copyright */}
                 <div className="pt-8 border-t border-slate-200 text-center flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">© {new Date().getFullYear()} {storeName}.</p>
-                    <div className="flex items-center gap-2 opacity-50 grayscale hover:grayscale-0 transition-all">
-                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Potenciado por</span>
-                        <span className="text-xs font-black text-primary-dynamic tracking-tighter">VENDEXCHAT</span>
+                    <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">© {new Date().getFullYear()} VENDExChat.</p>
+                    <div className="flex items-center gap-2 opacity-50 grayscale hover:grayscale-0 transition-all text-slate-400 hover:text-slate-600">
+                        <span className="text-[8px] font-black uppercase tracking-[0.3em]">Potenciado por</span>
+                        <span className="text-xs font-black tracking-tighter italic">@InteliarStack</span>
                     </div>
                 </div>
             </div>
