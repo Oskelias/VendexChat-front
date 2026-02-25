@@ -143,6 +143,11 @@ export function CartDrawer({
                 message += `\nSubtotal: $${totalPrice.toLocaleString()}\n` +
                     `Cupón: ${appliedCoupon.code} (-$${discount.toLocaleString()})\n`;
             }
+
+            if (!dbSaveOk) {
+                message += `\n⚠️ *AVISO: El pedido no se sincronizó con el panel. Usar estos detalles para procesar.*\n`;
+            }
+
             message += `\n*TOTAL: $${finalTotal.toLocaleString()}*\n` +
                 `------------------\n\n` +
                 `*DETALLES DEL CLIENTE*\n` +
