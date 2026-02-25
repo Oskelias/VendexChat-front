@@ -177,7 +177,11 @@ export default function ShopPage() {
                 whatsapp={data.store.whatsapp || data.store.phone || ""}
                 instagram={data.store.instagram}
                 facebook={data.store.facebook}
-                schedule={data.store.physical_schedule || data.store.schedule}
+                schedule={(() => {
+                    const phys = data.store.physical_schedule || data.store.schedule;
+                    const hasOpenPhysical = phys && Object.values(phys).some((d: any) => d?.open);
+                    return hasOpenPhysical ? phys : (data.store.online_schedule || phys);
+                })()}
                 storeName={data.store.name}
                 metadata={data.store.metadata}
                 footerMessage={data.store.footer_message}
