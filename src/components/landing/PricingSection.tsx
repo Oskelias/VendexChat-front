@@ -1,7 +1,6 @@
 import { Check } from "lucide-react";
 
 import { trackEvent } from "@/lib/analytics";
-import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 const plans = [
   {
@@ -19,7 +18,7 @@ const plans = [
     event: "pricing_free_click",
   },
   {
-    name: "Advance",
+    name: "Pro",
     price: "USD 4.99 / mes",
     highlight: "Más popular",
     features: [
@@ -37,10 +36,10 @@ const plans = [
     ],
     cta: "Probar Gratis",
     href: "https://admin.vendexchat.app/register",
-    event: "pricing_advance_click",
+    event: "pricing_pro_click",
   },
   {
-    name: "Pro",
+    name: "Premium",
     price: "USD 9.99 / mes",
     features: [
       "Categorías ilimitadas",
@@ -63,7 +62,7 @@ const plans = [
     event: "pricing_premium_click",
   },
   {
-    name: "VIP",
+    name: "Business",
     price: "USD 14.99 / mes",
     features: [
       "Todo lo de Premium +",
@@ -81,7 +80,7 @@ const plans = [
     ],
     cta: "Probar Gratis",
     href: "https://admin.vendexchat.app/register",
-    event: "pricing_vip_click",
+    event: "pricing_business_click",
   },
 ];
 

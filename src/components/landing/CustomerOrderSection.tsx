@@ -1,4 +1,4 @@
-import { Link, ShoppingCart, MessageCircle } from "lucide-react";
+import { Link, ShoppingCart, MessageCircle, Bot } from "lucide-react";
 
 const steps = [
   {
@@ -10,6 +10,11 @@ const steps = [
     icon: ShoppingCart,
     title: "Selecciona productos del catálogo",
     description: "Elige ítems, cantidades y extras por su cuenta.",
+  },
+  {
+    icon: Bot,
+    title: "Asistente IA lo ayuda a elegir",
+    description: "Tu bot inteligente responde dudas y sugiere productos en tiempo real.",
   },
   {
     icon: MessageCircle,
@@ -28,7 +33,7 @@ const CustomerOrderSection = () => {
             Un flujo simple que entienden al instante
           </h2>
         </div>
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {steps.map((step, index) => (
             <div
               key={step.title}
