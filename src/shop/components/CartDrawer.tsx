@@ -35,6 +35,7 @@ export function CartDrawer({
     const [paymentMethod, setPaymentMethod] = useState("Efectivo");
     const [notes, setNotes] = useState("");
     const [customerName, setCustomerName] = useState("");
+    const [customerWhatsapp, setCustomerWhatsapp] = useState("");
     const [customerCompany, setCustomerCompany] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -96,19 +97,36 @@ export function CartDrawer({
     const finalTotal = totalPrice - discount + currentShipping;
 
     const handleSendWhatsApp = async () => {
-        if (!customerName.trim()) {
-            alert("Por favor, ingresa tu nombre");
+        if (!customerName.trim() || !customerWhatsapp.trim()) {
+            alert("Por favor, completa tu nombre y WhatsApp.");
+            return;
+        }
+
+        if (deliveryType === "envio") {
+            if (!address.trim()) {
+                alert("Por favor, ingresa tu dirección para el envío.");
+                return;
+            }
+            if (!deliveryZone) {
+                alert("Por favor, selecciona una zona de entrega.");
+                return;
+            }
+        }
+
+        if (!whatsappNumber || sanitizePhoneNumber(whatsappNumber).length < 8) {
+            alert("Esta tienda no tiene un número de WhatsApp configurado correctamente para recibir pedidos.");
             return;
         }
         setIsSubmitting(true);
         try {
             // Try to save order to database, but don't block WhatsApp if it fails
             let dbSaveOk = true;
+            let orderResult = null;
             try {
                 const orderPayload = {
                     store_id: storeId,
                     customer_name: customerName,
-                    customer_whatsapp: "", // TODO: Add phone field if needed
+                    customer_whatsapp: customerWhatsapp,
                     customer_company: customerCompany || undefined,
                     delivery_type: deliveryType === 'envio' ? 'delivery' : 'pickup',
                     delivery_address: deliveryType === 'envio' ? address : undefined,
@@ -125,13 +143,14 @@ export function CartDrawer({
                         metadata: i.delivery_day ? { delivery_day: i.delivery_day } : undefined
                     }))
                 };
-                await createOrder(orderPayload as any);
+                orderResult = await createOrder(orderPayload as any);
             } catch (dbErr: any) {
                 console.error("Error al guardar pedido en BD:", dbErr);
                 dbSaveOk = false;
             }
 
-            let message = `*NUEVO PEDIDO*\n` + `------------------\n`;
+            let message = `*NUEVO PEDIDO ${orderResult?.order_number || ''}*\n`.trim() + `\n` + `------------------\n`;
+
 
             // Agrupar por día para el mensaje
             const grouped = items.reduce((acc, item) => {
@@ -160,7 +179,8 @@ export function CartDrawer({
             message += `\n*TOTAL: $${finalTotal.toLocaleString()}*\n` +
                 `------------------\n\n` +
                 `*DETALLES DEL CLIENTE*\n` +
-                `- Nombre: ${customerName}\n`;
+                `- Nombre: ${customerName}\n` +
+                `- WhatsApp: ${customerWhatsapp}\n`;
             if (customerCompany) message += `- Empresa: ${customerCompany}\n`;
             message += `\n*DETALLES DE ENTREGA*\n` + `- Tipo: ${deliveryType === 'envio' ? 'Envío a domicilio' : 'Retiro en local'}\n`;
             if (deliveryType === 'envio') {
@@ -245,7 +265,8 @@ export function CartDrawer({
                         <div className="space-y-4 pt-4 border-t border-slate-50">
                             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tus Datos</h3>
                             <div className="space-y-2">
-                                <input type="text" placeholder="Tu Nombre (Requerido)" value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl text-sm font-bold text-slate-700 outline-none" />
+                                <input type="text" placeholder="Tu Nombre (Obligatorio) *" value={customerName} onChange={(e) => setCustomerName(e.target.value)} className={`w-full px-4 py-3 bg-slate-50 border ${!customerName.trim() && isSubmitting ? 'border-red-500' : 'border-0'} rounded-xl text-sm font-bold text-slate-700 outline-none`} />
+                                <input type="tel" placeholder="Tu WhatsApp (Obligatorio) *" value={customerWhatsapp} onChange={(e) => setCustomerWhatsapp(e.target.value)} className={`w-full px-4 py-3 bg-slate-50 border ${!customerWhatsapp.trim() && isSubmitting ? 'border-red-500' : 'border-0'} rounded-xl text-sm font-bold text-slate-700 outline-none`} />
                                 <input type="text" placeholder="Empresa (Opcional)" value={customerCompany} onChange={(e) => setCustomerCompany(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl text-sm font-bold text-slate-700 outline-none" />
                             </div>
                             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Entrega y Pago</h3>
@@ -261,9 +282,9 @@ export function CartDrawer({
                                 </select>
                                 {deliveryType === "envio" && (
                                     <>
-                                        <input type="text" placeholder="Dirección" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl text-sm font-bold text-slate-700 outline-none" />
-                                        <select value={deliveryZone} onChange={(e) => setDeliveryZone(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl text-sm font-bold text-slate-700 outline-none">
-                                            <option value="">Zona de Entrega</option>
+                                        <input type="text" placeholder="Dirección (Obligatorio) *" value={address} onChange={(e) => setAddress(e.target.value)} className={`w-full px-4 py-3 bg-slate-50 border ${!address.trim() && isSubmitting ? 'border-red-500' : 'border-0'} rounded-xl text-sm font-bold text-slate-700 outline-none`} />
+                                        <select value={deliveryZone} onChange={(e) => setDeliveryZone(e.target.value)} className={`w-full px-4 py-3 bg-slate-50 border ${!deliveryZone && isSubmitting ? 'border-red-500' : 'border-0'} rounded-xl text-sm font-bold text-slate-700 outline-none`}>
+                                            <option value="">Zona de Entrega (Obligatorio) *</option>
                                             <option value="CABA">CABA</option>
                                             <option value="Zona Norte">Zona Norte</option>
                                             <option value="Zona Sur">Zona Sur</option>

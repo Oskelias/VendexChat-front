@@ -99,20 +99,30 @@ export async function fetchCatalog(identifier: string): Promise<CatalogResponse>
     };
   });
 
-  // 5. Fetch global announcement
-  const { data: globalSettings } = await supabase
-    .from("global_settings")
-    .select("key, value")
-    .in("key", ["global_announcement_active", "global_announcement_text"]);
+  // 5. Fetch announcement (Store specific overrides Global)
+  const storeMetadata = (store as any).metadata || {};
+  const isStoreAnnounceActive = storeMetadata.announcement_active === true || storeMetadata.announcement_active === "true";
 
-  const settingsMap = (globalSettings ?? []).reduce((acc, curr) => {
-    acc[curr.key] = curr.value;
-    return acc;
-  }, {} as Record<string, any>);
+  let announcement = null;
 
-  const announcement = (settingsMap.global_announcement_active === "true" || settingsMap.global_announcement_active === true)
-    ? settingsMap.global_announcement_text
-    : null;
+  if (isStoreAnnounceActive && storeMetadata.announcement_text) {
+    announcement = storeMetadata.announcement_text;
+  } else {
+    // Fallback to global announcement
+    const { data: globalSettings } = await supabase
+      .from("global_settings")
+      .select("key, value")
+      .in("key", ["global_announcement_active", "global_announcement_text"]);
+
+    const settingsMap = (globalSettings ?? []).reduce((acc, curr) => {
+      acc[curr.key] = curr.value;
+      return acc;
+    }, {} as Record<string, any>);
+
+    if (settingsMap.global_announcement_active === "true" || settingsMap.global_announcement_active === true) {
+      announcement = settingsMap.global_announcement_text;
+    }
+  }
 
   const result = { store, categories: normalizedCategories, announcement };
 
@@ -124,19 +134,19 @@ export async function fetchCatalog(identifier: string): Promise<CatalogResponse>
 
 
 export async function createOrder(payload: OrderPayload): Promise<OrderResponse> {
-  // 1. Look up prices for all items
+  // 1. Look up prices and names for all items
   const productIds = payload.items.map((i) => i.product_id);
   const { data: products, error: prodError } = await supabase
     .from("products")
-    .select("id, price, offer_price")
+    .select("id, price, offer_price, name")
     .in("id", productIds);
 
   if (prodError || !products) {
     throw new Error(`Failed to look up products: ${prodError?.message}`);
   }
 
-  const priceMap = new Map(
-    products.map((p) => [p.id, p.offer_price ?? p.price])
+  const productMap = new Map(
+    products.map((p) => [p.id, { price: p.offer_price ?? p.price, name: p.name }])
   );
 
   // 2. Validate items
@@ -145,52 +155,62 @@ export async function createOrder(payload: OrderPayload): Promise<OrderResponse>
   }
 
   // 3. Insert order
+  const orderData = {
+    store_id: payload.store_id,
+    customer_name: payload.customer_name,
+    customer_whatsapp: payload.customer_whatsapp,
+    delivery_type: payload.delivery_type,
+    delivery_address: payload.delivery_address || null,
+    customer_address: payload.delivery_address || null, // Keeping both for compatibility
+    customer_notes: payload.customer_notes || null,
+    subtotal: payload.subtotal,
+    order_delivery_cost: payload.delivery_cost,
+    total: payload.total,
+    status: 'pending',
+    delivery_zone: payload.delivery_zone || null,
+    payment_method: payload.payment_method || null,
+    coupon_id: payload.coupon_id || null,
+    metadata: { company_name: payload.customer_company || null }
+  };
+
   const { data: order, error: orderError } = await supabase
     .from("orders")
-    .insert({
-      store_id: payload.store_id,
-      customer_name: payload.customer_name,
-      customer_whatsapp: payload.customer_whatsapp,
-      delivery_type: payload.delivery_type,
-      delivery_address: payload.delivery_address ?? null,
-      delivery_zone: payload.delivery_zone ?? null,
-      payment_method: payload.payment_method ?? null,
-      customer_notes: payload.customer_notes ?? null,
-      subtotal: payload.subtotal,
-      delivery_cost: payload.delivery_cost,
-      total: payload.total,
-      status: 'pending',
-      coupon_id: payload.coupon_id ?? null,
-      metadata: {
-        company_name: payload.customer_company ?? null
-      }
-    })
-    .select("id, public_id, status, total")
+    .insert(orderData)
+    .select("id, public_id, status, total, order_number")
     .single();
 
   if (orderError || !order) {
-    throw new Error(`Failed to create order: ${orderError?.message}`);
+    throw new Error(`Failed to create order: ${orderError?.message || 'Unknown error'}`);
   }
 
   // 4. Insert order items
-  const orderItems = payload.items.map((item) => ({
-    order_id: order.id,
-    product_id: item.product_id,
-    quantity: item.quantity,
-    unit_price: priceMap.get(item.product_id) ?? 0,
-  }));
+  const orderItems = payload.items.map((item) => {
+    const info = productMap.get(item.product_id);
+    const price = info?.price ?? 0;
+    const prodName = info?.name ?? "Producto";
+    return {
+      order_id: order.id,
+      product_id: item.product_id,
+      quantity: item.quantity,
+      unit_price: price, // From initial schema
+      price: price,      // From new schema
+      name: prodName,
+      subtotal: price * item.quantity,
+    };
+  });
 
   const { error: itemsError } = await supabase
     .from("order_items")
     .insert(orderItems);
 
   if (itemsError) {
-    throw new Error(`Failed to save order items: ${itemsError.message}`);
+    console.error("Failed to save order items:", itemsError.message);
+    // Even if items fail, we have the order header
   }
 
   return {
     public_id: order.public_id,
-    order_number: (order as any).order_number,
+    order_number: order.order_number || order.public_id,
     status: order.status,
     total: order.total,
   };
@@ -207,7 +227,10 @@ export async function getOrder(publicId: string): Promise<OrderResponse> {
     throw new Error(`Order not found: ${publicId}`);
   }
 
-  return data;
+  return {
+    ...data,
+    order_number: (data as any).order_number || data.public_id,
+  };
 }
 
 export async function validateCoupon(code: string, storeId: string) {

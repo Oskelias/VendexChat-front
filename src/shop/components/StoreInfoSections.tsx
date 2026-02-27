@@ -1,4 +1,4 @@
-import { MapPin, Phone, Instagram, Facebook, Clock, Thermometer, Box, Calendar } from "lucide-react";
+import { MapPin, Phone, Instagram, Facebook, Clock, Thermometer, Box, Calendar, Zap, Truck, Shield, Utensils } from "lucide-react";
 import { getSocialLink } from "../../utils/format";
 
 interface StoreInfoSectionsProps {
@@ -87,28 +87,37 @@ export function StoreInfoSections({ description, address, whatsapp, instagram, f
                             </p>
                         )}
 
-                        {/* Service Icons (Dynamic or Fallback) */}
-                        <div className="flex gap-3 pt-2">
-                            {(metadata?.highlights || [
-                                { icon: 'Thermometer', label: 'Congelados' },
-                                { icon: 'Calendar', label: 'Pack Semanal' },
-                                { icon: 'Box', label: 'Hermético' }
-                            ]).map((highlight: any, idx: number) => {
-                                const IconComponent = (highlight.icon === 'Thermometer' ? Thermometer :
-                                    highlight.icon === 'Calendar' ? Calendar :
-                                        highlight.icon === 'Box' ? Box :
-                                            highlight.icon === 'Clock' ? Clock :
-                                                highlight.icon === 'MapPin' ? MapPin :
-                                                    highlight.icon === 'Phone' ? Phone : Box);
+                        {/* Service Icons (Dynamic) */}
+                        {metadata?.highlights && Array.isArray(metadata.highlights) && metadata.highlights.length > 0 && (
+                            <div className="flex gap-3 pt-2">
+                                {metadata.highlights.map((highlight: any, idx: number) => {
+                                    // Mapping icons to components
+                                    const iconMap: Record<string, any> = {
+                                        Thermometer,
+                                        Frozen: Thermometer,
+                                        Calendar,
+                                        Box,
+                                        Clock,
+                                        MapPin,
+                                        Phone,
+                                        Truck,
+                                        Zap,
+                                        Shield,
+                                        Utensils,
+                                        Hermético: Box // Alias
+                                    };
 
-                                return (
-                                    <div key={idx} className="flex-1 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center space-y-1">
-                                        <IconComponent className="w-5 h-5 text-primary-dynamic" />
-                                        <span className="text-[9px] font-black uppercase text-slate-400">{highlight.label}</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                                    const FinalIcon = iconMap[highlight.icon] || Box;
+
+                                    return (
+                                        <div key={idx} className="flex-1 flex flex-col items-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center space-y-1">
+                                            <FinalIcon className="w-5 h-5 text-primary-dynamic" />
+                                            <span className="text-[9px] font-black uppercase text-slate-400">{highlight.label}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
 
                     <div className="space-y-6 bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/40">

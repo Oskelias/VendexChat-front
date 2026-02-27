@@ -1,26 +1,21 @@
 import { Megaphone, X } from "lucide-react";
-import { useState, useEffect } from "react";
-import { getGlobalSettings } from "../../api/catalog";
+import { useState } from "react";
 
-export function GlobalAnnouncement() {
-    const [settings, setSettings] = useState<Record<string, any>>({});
+interface GlobalAnnouncementProps {
+    announcement?: string | null;
+}
+
+export function GlobalAnnouncement({ announcement }: GlobalAnnouncementProps) {
     const [visible, setVisible] = useState(true);
 
-    useEffect(() => {
-        getGlobalSettings().then(setSettings);
-    }, []);
-
-    const isActive = settings.global_announcement_active === "true" || settings.global_announcement_active === true;
-    const text = settings.global_announcement_text;
-
-    if (!isActive || !text || !visible) return null;
+    if (!announcement || !visible) return null;
 
     return (
         <div className="bg-indigo-600 text-white py-2.5 px-4 relative z-[60] overflow-hidden">
             <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 animate-in slide-in-from-top duration-500">
                 <Megaphone className="w-4 h-4 shrink-0 opacity-90" />
                 <p className="text-xs font-bold text-center pr-6">
-                    {text}
+                    {announcement}
                 </p>
                 <button
                     onClick={() => setVisible(false)}

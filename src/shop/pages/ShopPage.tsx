@@ -86,7 +86,7 @@ export default function ShopPage() {
 
     return (
         <div className="min-h-screen bg-white pb-24">
-            <GlobalAnnouncement />
+            <GlobalAnnouncement announcement={data.announcement} />
             <StoreHeader
                 name={data.store.name}
                 logo={data.store.logo_url || ""}

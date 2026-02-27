@@ -1,5 +1,4 @@
 import { useCart } from "../../context/CartContext";
-import type { Product } from "../../types";
 
 export function useCartState() {
     const { items, addItem, updateQuantity: originalUpdateQuantity, removeItem, clearCart, totalItems, totalPrice } = useCart();
@@ -8,13 +7,8 @@ export function useCartState() {
         items,
         addItem,
         removeItem,
-        updateQuantity: (productId: string | number, delta: number, deliveryDay?: string) => {
-            const item = items.find(i =>
-                String(i.product.id) === String(productId) && i.delivery_day === deliveryDay
-            );
-            if (item) {
-                originalUpdateQuantity(String(productId), item.quantity + delta, deliveryDay);
-            }
+        updateQuantity: (productId: string | number, quantity: number, deliveryDay?: string) => {
+            originalUpdateQuantity(String(productId), quantity, deliveryDay);
         },
         clearCart,
         totalItems,
