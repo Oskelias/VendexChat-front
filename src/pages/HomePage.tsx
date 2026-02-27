@@ -5,9 +5,9 @@ import ProblemSection from "@/components/landing/ProblemSection";
 import SolutionSection from "@/components/landing/SolutionSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
+import InteractiveAISection from "@/components/landing/InteractiveAISection";
 import BeforeAfterSection from "@/components/landing/BeforeAfterSection";
 import PricingSection from "@/components/landing/PricingSection";
-import UseCasesSection from "@/components/landing/UseCasesSection";
 import DemoSection from "@/components/landing/DemoSection";
 import SEOContentSection from "@/components/landing/SEOContentSection";
 import CTASection from "@/components/landing/CTASection";
@@ -24,9 +24,9 @@ export function HomePage() {
       <SolutionSection />
       <HowItWorksSection />
       <FeaturesSection />
+      <InteractiveAISection />
       <BeforeAfterSection />
       <PricingSection />
-      <UseCasesSection />
       <DemoSection />
       <SEOContentSection />
       <CTASection />

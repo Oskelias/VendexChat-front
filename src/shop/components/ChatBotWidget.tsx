@@ -18,6 +18,7 @@ interface ChatBotWidgetProps {
     products: any[];
     aiPrompt?: string | null;
     welcomeMessage?: string | null;
+    initialMessage?: string | null;
 }
 
 export function ChatBotWidget({
@@ -29,7 +30,8 @@ export function ChatBotWidget({
     whatsappNumber,
     products,
     aiPrompt,
-    welcomeMessage
+    welcomeMessage,
+    initialMessage
 }: ChatBotWidgetProps) {
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -41,6 +43,17 @@ export function ChatBotWidget({
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const hasTriggeredInitial = useRef(false);
+
+    useEffect(() => {
+        if (isOpen && initialMessage && !hasTriggeredInitial.current) {
+            hasTriggeredInitial.current = true;
+            // Esperar un poco a que abra el widget antes de "escribir"
+            setTimeout(() => {
+                handleSend(initialMessage);
+            }, 500);
+        }
+    }, [isOpen, initialMessage]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,17 +63,18 @@ export function ChatBotWidget({
         scrollToBottom();
     }, [messages]);
 
-    const handleSend = async () => {
-        if (!input.trim() || isLoading) return;
+    const handleSend = async (overrideInput?: string) => {
+        const textToSend = overrideInput || input;
+        if (!textToSend.trim() || isLoading) return;
 
         const userMessage: Message = {
             id: Date.now().toString(),
             role: "user",
-            content: input.trim()
+            content: textToSend.trim()
         };
 
         setMessages(prev => [...prev, userMessage]);
-        setInput("");
+        if (!overrideInput) setInput("");
         setIsLoading(true);
 
         try {
@@ -82,8 +96,8 @@ export function ChatBotWidget({
             5. Si preguntan por precios o detalles, usa SIEMPRE la lista de productos provista.
             6. Responde SIEMPRE en Español.`;
 
-            const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
-            chatHistory.push({ role: "user", content: input.trim() });
+            const chatHistory = messages.filter(m => m.id !== '1').map(m => ({ role: m.role, content: m.content }));
+            chatHistory.push({ role: "user", content: textToSend.trim() });
 
             // Llamada a Pollinations AI (Text)
             const response = await fetch(`https://text.pollinations.ai/`, {
@@ -94,7 +108,7 @@ export function ChatBotWidget({
                         { role: "system", content: systemPrompt },
                         ...chatHistory
                     ],
-                    model: "openai", // Pollinations usa modelos compatibles con OpenAI
+                    model: "openai",
                     seed: 42
                 })
             });
@@ -195,7 +209,7 @@ export function ChatBotWidget({
                         className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-dynamic/20 transition-all min-w-0"
                     />
                     <button
-                        onClick={handleSend}
+                        onClick={() => handleSend()}
                         disabled={!input.trim() || isLoading}
                         className="p-3 bg-primary-dynamic text-white rounded-2xl shadow-lg shadow-primary-dynamic/20 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all shrink-0"
                     >

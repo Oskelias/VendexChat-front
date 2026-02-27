@@ -1,30 +1,61 @@
 import { ArrowRight, MessageSquare } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
-import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 const CTASection = () => {
   return (
-    <section id="cta" className="py-12 md:py-16 lg:py-20 hero-gradient scroll-mt-20">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-6 shadow-elevated">
-            <MessageSquare className="w-8 h-8 text-primary-foreground" />
+    <section id="cta" className="relative py-24 md:py-32 overflow-hidden scroll-mt-20">
+      {/* Intense gradient background */}
+      <div className="absolute inset-0 bg-slate-900 -z-20" />
+      <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.15),transparent)] -z-10" />
+
+      <div className="container mx-auto px-4 sm:px-6 relative">
+        <div className="max-w-5xl mx-auto">
+          <div className="relative rounded-[3.5rem] bg-white border border-slate-100 p-12 md:p-20 shadow-2xl overflow-hidden group">
+            {/* Background decoration */}
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-dynamic/5 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2 group-hover:bg-primary-dynamic/10 transition-colors duration-1000" />
+
+            <div className="relative z-10 grid lg:grid-cols-[1fr_0.8fr] gap-12 items-center">
+              <div className="text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 text-[10px] font-black text-slate-500 uppercase tracking-widest mb-8">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary-dynamic animate-pulse" />
+                  Listo para escalar
+                </div>
+                <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-8 leading-[0.95] tracking-tighter">
+                  Empezá a recibir <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-dynamic to-indigo-600">pedidos organizados</span> hoy
+                </h2>
+                <p className="text-lg text-slate-500 font-medium mb-10 max-w-xl mx-auto lg:mx-0">
+                  Crea tu tienda en minutos, comparte tu link y deja que la IA de VendexChat haga el trabajo pesado por vos.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <a
+                    href="https://admin.vendexchat.app/register"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-12 py-5 rounded-2xl bg-slate-900 text-white font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-slate-900/30"
+                    onClick={() => trackEvent("cta_request_demo_click")}
+                  >
+                    Probar Gratis <ArrowRight className="w-5 h-5" />
+                  </a>
+                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Sin tarjeta de crédito
+                  </div>
+                </div>
+              </div>
+
+              <div className="hidden lg:block relative">
+                <div className="absolute -inset-4 bg-primary-dynamic/5 rounded-full blur-3xl animate-pulse" />
+                <div className="relative w-full aspect-square rounded-[3rem] bg-slate-50 border border-slate-100 shadow-inner flex items-center justify-center rotate-3 hover:rotate-0 transition-transform duration-1000 overflow-hidden">
+                  <div className="p-12 text-center group">
+                    <MessageSquare className="w-20 h-20 text-primary-dynamic mx-auto mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-12" />
+                    <div className="text-2xl font-black text-slate-900 tracking-tighter mb-2">IA Vendex ready</div>
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Tu asistente está listo</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-5">
-            Empieza a recibir pedidos organizados hoy
-          </h2>
-          <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto">
-            Crea tu tienda en minutos, comparte tu link y deja que VendexChat haga el trabajo pesado.
-          </p>
-          <a
-            href="https://admin.vendexchat.app/register"
-            target="_blank"
-            rel="noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-12 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-[#0D9488] transition-all shadow-elevated"
-            onClick={() => trackEvent("cta_request_demo_click")}
-          >
-            Probar Gratis <ArrowRight className="w-5 h-5" />
-          </a>
         </div>
       </div>
     </section>

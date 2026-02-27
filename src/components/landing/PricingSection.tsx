@@ -86,69 +86,88 @@ const plans = [
 
 const PricingSection = () => {
   return (
-    <section id="pricing" className="min-h-[calc(100vh-5rem)] flex items-center py-12 md:py-16 lg:py-20 bg-background scroll-mt-20">
-      <div className="container mx-auto px-4 sm:px-6 w-full">
-        <div className="max-w-4xl mx-auto text-center mb-8">
-          <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Precios</p>
-          <h2 className="text-4xl md:text-5xl lg:text-5xl font-display font-bold text-foreground mb-4 lg:whitespace-nowrap">
-            Planes que escalan con tu negocio
+    <section id="pricing" className="relative py-24 md:py-32 overflow-hidden scroll-mt-20">
+      <div className="absolute inset-0 bg-slate-50/50 -z-20" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-50/50 rounded-full blur-[120px] -z-10 -translate-x-1/2 translate-y-1/2" />
+
+      <div className="container mx-auto px-4 sm:px-6 relative">
+        <div className="max-w-4xl mx-auto text-center mb-20">
+          <p className="text-[10px] font-black text-primary-dynamic uppercase tracking-[0.3em] mb-4">Planes y Precios</p>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 mb-6 leading-tight">
+            Planes que escalan <br />
+            <span className="text-primary-dynamic text-gradient">con tu negocio</span>
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground lg:whitespace-nowrap">
-            Precios claros y predecibles para cada etapa.
-          </p>
-          <p className="text-sm md:text-base text-muted-foreground mt-3 lg:whitespace-nowrap">
-            Empezá gratis. Subí de plan cuando tu negocio crezca.
+          <p className="text-slate-500 text-lg font-medium max-w-2xl mx-auto">
+            Precios claros y predecibles. Empezá gratis y escalá cuando tu negocio despegue.
           </p>
         </div>
 
-        <div className="flex items-center justify-center mb-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card p-1 shadow-soft">
-            <button className="px-4 py-2 text-sm font-semibold rounded-full bg-primary text-primary-foreground">
+        <div className="flex items-center justify-center mb-16">
+          <div className="inline-flex items-center gap-1 rounded-2xl bg-white border border-slate-100 p-1.5 shadow-xl shadow-slate-200/50">
+            <button className="px-8 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-900/20 transition-all">
               Mensual
             </button>
-            <button className="px-4 py-2 text-sm font-semibold rounded-full text-muted-foreground hover:text-foreground transition-colors">
-              Anual
+            <button className="px-8 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+              Anual <span className="text-primary-dynamic ml-1">-20%</span>
             </button>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative p-9 rounded-2xl border shadow-soft bg-card ${plan.highlight ? "border-primary/50 bg-secondary shadow-elevated" : "border-border"
-                }`}
-            >
-              {plan.highlight && (
-                <span className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">
-                  {plan.highlight}
-                </span>
-              )}
-              <div className="mb-6">
-                <h3 className="text-2xl font-display font-semibold text-foreground mb-2">{plan.name}</h3>
-                <p className="text-2xl font-semibold text-foreground">{plan.price}</p>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3 text-base text-muted-foreground">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Check className="w-3.5 h-3.5 text-primary" />
-                    </span>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href={plan.href}
-                target={plan.href.startsWith("http") ? "_blank" : undefined}
-                rel={plan.href.startsWith("http") ? "noreferrer" : undefined}
-                onClick={() => trackEvent(plan.event)}
-                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-base hover:bg-[#0D9488] transition-all shadow-soft"
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          {plans.map((plan) => {
+            const isPro = plan.name === "Pro";
+            return (
+              <div
+                key={plan.name}
+                className={`
+                  group relative p-10 rounded-[2.5rem] transition-all duration-500 hover:-translate-y-2
+                  ${isPro
+                    ? 'bg-slate-900 text-white shadow-2xl shadow-slate-900/30 scale-105 z-10'
+                    : 'bg-white border border-slate-100 shadow-xl shadow-slate-200/40 hover:border-primary-dynamic/20'
+                  }
+                `}
               >
-                {plan.cta}
-              </a>
-            </div>
-          ))}
+                {isPro && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-primary-dynamic text-[8px] font-black text-white uppercase tracking-[0.2em] rounded-full shadow-lg">
+                    {plan.highlight}
+                  </div>
+                )}
+
+                <div className="text-center mb-10">
+                  <h3 className={`text-xl font-black mb-1 uppercase tracking-tighter ${isPro ? 'text-white' : 'text-slate-900'}`}>{plan.name}</h3>
+                  <div className="h-1 w-10 bg-primary-dynamic mx-auto rounded-full mb-4 opacity-50" />
+                  <p className={`text-2xl font-black ${isPro ? 'text-white' : 'text-slate-900'}`}>{plan.price}</p>
+                </div>
+
+                <ul className="space-y-4 mb-10">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-3">
+                      <div className={`mt-1 flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center ${isPro ? 'bg-primary-dynamic/20 text-primary-dynamic' : 'bg-slate-50 text-slate-400'}`}>
+                        <Check className="w-2.5 h-2.5" />
+                      </div>
+                      <span className={`text-[11px] font-medium leading-tight ${isPro ? 'text-slate-300' : 'text-slate-500'}`}>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <a
+                  href={plan.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => trackEvent(plan.event)}
+                  className={`
+                    w-full inline-flex items-center justify-center px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all
+                    ${isPro
+                      ? 'bg-primary-dynamic text-white hover:bg-emerald-400 shadow-xl shadow-primary-dynamic/20'
+                      : 'bg-slate-50 text-slate-900 hover:bg-slate-100'
+                    }
+                  `}
+                >
+                  {plan.cta}
+                </a>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

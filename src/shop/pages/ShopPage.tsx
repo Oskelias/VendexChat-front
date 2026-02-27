@@ -9,6 +9,7 @@ import { CartBar } from "../components/CartBar";
 import { ProductQuickViewModal } from "../components/ProductQuickViewModal";
 import { WeeklyMenuGrid } from "../components/WeeklyMenuGrid";
 import { GlobalAnnouncement } from "../components/GlobalAnnouncement";
+import FloatingAiAssistant from "../components/FloatingAiAssistant";
 import { Suspense, lazy } from "react";
 
 const CartDrawer = lazy(() => import("../components/CartDrawer").then(m => ({ default: m.CartDrawer })));
@@ -25,7 +26,13 @@ export default function ShopPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
+    const [chatInitialMessage, setChatInitialMessage] = useState<string | null>(null);
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
+    const openChat = (initialMsg?: string) => {
+        setChatInitialMessage(initialMsg || null);
+        setIsChatOpen(true);
+    };
 
     // New: Mode state for Bespoke stores
     const [viewMode, setViewMode] = useState<'standard' | 'weekly'>('standard');
@@ -101,7 +108,7 @@ export default function ShopPage() {
                 totalItems={totalItems}
                 announcement={data.announcement}
                 onSearch={setSearchTerm}
-                onChatClick={() => setIsChatOpen(true)}
+                onChatClick={() => openChat()}
                 onCartClick={() => setIsCartOpen(true)}
             />
 
@@ -222,6 +229,7 @@ export default function ShopPage() {
                 quantity={quickViewProduct ? getItemQuantity(quickViewProduct.id) : 0}
                 onAdd={addItem}
                 onUpdate={updateQuantity}
+                onAskAI={(p) => openChat(`Hola 👋, me gustaría saber más sobre el producto: **${p.name}**`)}
             />
 
             <Suspense fallback={null}>
@@ -235,8 +243,14 @@ export default function ShopPage() {
                     products={data.categories.flatMap(c => c.products || [])}
                     aiPrompt={data.store.metadata?.ai_prompt || data.store.ai_prompt}
                     welcomeMessage={data.store.welcome_message}
+                    initialMessage={chatInitialMessage}
                 />
             </Suspense>
+
+            <FloatingAiAssistant
+                onClick={() => openChat()}
+                isOpen={isChatOpen}
+            />
         </div>
     );
 }

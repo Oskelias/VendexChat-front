@@ -1,4 +1,4 @@
-import { X, Plus, Minus } from "lucide-react";
+import { X, Plus, Minus, Bot } from "lucide-react";
 import type { Product } from "../../types";
 
 interface QuickViewModalProps {
@@ -8,6 +8,7 @@ interface QuickViewModalProps {
     quantity: number;
     onAdd: (p: Product) => void;
     onUpdate: (id: string | number, delta: number) => void;
+    onAskAI?: (p: Product) => void;
 }
 
 export function ProductQuickViewModal({
@@ -16,7 +17,8 @@ export function ProductQuickViewModal({
     onClose,
     quantity,
     onAdd,
-    onUpdate
+    onUpdate,
+    onAskAI
 }: QuickViewModalProps) {
     if (!isOpen || !product) return null;
 
@@ -40,12 +42,24 @@ export function ProductQuickViewModal({
                     </div>
 
                     <div className="md:w-1/2 p-6 flex flex-col">
-                        <h2 className="text-2xl font-bold text-slate-900 mb-2">{product.name}</h2>
-                        <div className="text-2xl font-bold text-primary-dynamic mb-4">${product.price.toLocaleString()}</div>
+                        <div className="flex-1">
+                            <h2 className="text-2xl font-bold text-slate-900 mb-2">{product.name}</h2>
+                            <div className="text-2xl font-bold text-primary-dynamic mb-4">${product.price.toLocaleString()}</div>
 
-                        <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-1">
-                            {product.description || "Sin descripción disponible."}
-                        </p>
+                            <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                                {product.description || "Sin descripción disponible."}
+                            </p>
+
+                            {onAskAI && (
+                                <button
+                                    onClick={() => onAskAI(product)}
+                                    className="flex items-center gap-2 text-primary-dynamic bg-primary-dynamic/10 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary-dynamic/20 transition-all mb-4"
+                                >
+                                    <Bot className="w-4 h-4" />
+                                    Consultar con IA
+                                </button>
+                            )}
+                        </div>
 
                         <div className="pt-4 border-t border-slate-100">
                             {quantity > 0 ? (
