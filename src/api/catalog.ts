@@ -1,7 +1,7 @@
 import { supabase } from "../lib/supabase";
 import type { CatalogResponse, OrderPayload, OrderResponse } from "../types";
 
-const CATALOG_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+const CATALOG_CACHE_TTL = 15 * 60 * 1000; // 15 minutos
 
 function getCachedCatalog(identifier: string): CatalogResponse | null {
   try {
