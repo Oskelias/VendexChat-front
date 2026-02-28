@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Plus, Minus } from "lucide-react";
 import type { Product } from "../../types";
 
@@ -8,7 +9,7 @@ interface ProductCardProps {
     onUpdate: (id: string, q: number) => void;
 }
 
-export function ProductCard({ product, quantity, onAdd, onUpdate }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product, quantity, onAdd, onUpdate }: ProductCardProps) {
     const hasOffer = product.offer_price !== null;
     const isOutOfStock = !product.unlimited_stock && product.stock <= 0;
 
@@ -21,6 +22,8 @@ export function ProductCard({ product, quantity, onAdd, onUpdate }: ProductCardP
                         src={product.image_url}
                         alt={product.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-200 font-black text-xl md:text-2xl uppercase">
@@ -83,4 +86,4 @@ export function ProductCard({ product, quantity, onAdd, onUpdate }: ProductCardP
             </div>
         </div>
     );
-}
+});
