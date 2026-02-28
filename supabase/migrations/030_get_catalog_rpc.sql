@@ -52,11 +52,6 @@ AS $$
       ) AS products
     FROM categories c
     WHERE c.store_id = (SELECT id FROM store_row)
-  ),
-  global_ann AS (
-    SELECT COALESCE(json_object_agg(key, value), '{}'::json) AS settings
-    FROM global_settings
-    WHERE key IN ('global_announcement_active', 'global_announcement_text')
   )
   SELECT json_build_object(
     'store',           (SELECT row_to_json(s) FROM store_row s),
@@ -64,7 +59,7 @@ AS $$
                          (SELECT json_agg(c ORDER BY c.sort_order) FROM catalog_cats c),
                          '[]'::json
                        ),
-    'global_settings', (SELECT settings FROM global_ann)
+    'global_settings', '{}'::json
   );
 $$;
 
