@@ -1,15 +1,17 @@
 import { supabase } from "../lib/supabase";
 import type { CatalogResponse, OrderPayload, OrderResponse } from "../types";
 
-const CATALOG_CACHE_TTL = 15 * 60 * 1000; // 15 minutos
+// localStorage persiste entre pestañas y recargas (a diferencia de sessionStorage)
+const CATALOG_CACHE_TTL = 60 * 60 * 1000; // 1 hora
+const CACHE_KEY_PREFIX = "vdx_catalog_";
 
 function getCachedCatalog(identifier: string): CatalogResponse | null {
   try {
-    const raw = sessionStorage.getItem(`catalog_${identifier}`);
+    const raw = localStorage.getItem(`${CACHE_KEY_PREFIX}${identifier}`);
     if (!raw) return null;
     const cached = JSON.parse(raw);
     if (Date.now() - cached.timestamp > CATALOG_CACHE_TTL) {
-      sessionStorage.removeItem(`catalog_${identifier}`);
+      localStorage.removeItem(`${CACHE_KEY_PREFIX}${identifier}`);
       return null;
     }
     return cached.data;
@@ -20,109 +22,60 @@ function getCachedCatalog(identifier: string): CatalogResponse | null {
 
 function setCachedCatalog(identifier: string, data: CatalogResponse) {
   try {
-    sessionStorage.setItem(`catalog_${identifier}`, JSON.stringify({
+    localStorage.setItem(`${CACHE_KEY_PREFIX}${identifier}`, JSON.stringify({
       data,
       timestamp: Date.now()
     }));
   } catch {
-    // sessionStorage lleno, ignorar
+    // localStorage lleno, ignorar
   }
 }
 
 export async function fetchCatalog(identifier: string): Promise<CatalogResponse> {
-  // Intentar servir desde caché
+  // Servir desde caché si existe (localStorage persiste entre sesiones)
   const cached = getCachedCatalog(identifier);
   if (cached) return cached;
 
-  // 1. Get store by slug OR custom_domain
-  const { data: store, error: storeError } = await supabase
-    .from("stores")
-    .select("id, name, slug, logo_url, banner_url, description, whatsapp, phone, address, delivery_info, custom_domain, coupons_enabled, instagram, facebook, schedule, physical_schedule, online_schedule, primary_color, metadata, welcome_message, footer_message")
-    .or(`slug.eq.${identifier},custom_domain.eq.${identifier}`)
-    .single();
+  // Una sola llamada RPC que devuelve store + categorías + productos + anuncio global.
+  // Elimina el waterfall de 2 round-trips (store → categories+products).
+  const { data, error } = await supabase.rpc("get_catalog", { p_identifier: identifier });
 
-  if (storeError || !store) {
+  if (error || !data) {
     throw new Error(`Store not found for identifier: ${identifier}`);
   }
 
-  // 2. Fetch categories, products, and settings in parallel
-  const [categoriesResult, productsResult, globalSettingsResult] = await Promise.all([
-    supabase
-      .from("categories")
-      .select("id, name, sort_order")
-      .eq("store_id", store.id)
-      .order("sort_order"),
-    supabase
-      .from("products")
-      .select("id, name, description, price, offer_price, image_url, sort_order, category_id, stock, unlimited_stock, is_active")
-      .eq("store_id", store.id) // Using store_id directly is often faster than IN (category_ids)
-      .eq("is_active", true)
-      .order("sort_order"),
-    supabase
-      .from("global_settings")
-      .select("key, value")
-      .in("key", ["global_announcement_active", "global_announcement_text"])
-  ]);
+  const { store, categories: rawCategories, global_settings: globalSettings } = data as {
+    store: any;
+    categories: any[];
+    global_settings: Record<string, any>;
+  };
 
-  if (categoriesResult.error) throw new Error(`Failed to load categories: ${categoriesResult.error.message}`);
-  if (productsResult.error) throw new Error(`Failed to load products: ${productsResult.error.message}`);
-
-  const categories = categoriesResult.data ?? [];
-  const products = productsResult.data ?? [];
-  const globalSettings = globalSettingsResult.data ?? [];
-
-  // 3. Group products by category
-  const productsByCategory = new Map<string, any[]>();
-  for (const p of products) {
-    const list = productsByCategory.get(p.category_id) ?? [];
-    list.push(p);
-    productsByCategory.set(p.category_id, list);
+  if (!store) {
+    throw new Error(`Store not found for identifier: ${identifier}`);
   }
 
-  const normalizedCategories = categories.map((cat) => {
-    const catProducts = productsByCategory.get(cat.id) ?? [];
-    return {
-      id: cat.id,
-      name: cat.name,
-      products: catProducts.map((p) => ({
-        id: p.id,
-        name: p.name,
-        description: p.description,
-        price: p.offer_price ?? p.price,
-        offer_price: p.offer_price,
-        image_url: p.image_url,
-        stock: p.stock,
-        unlimited_stock: p.unlimited_stock ?? false,
-        is_active: p.is_active,
-        category_id: p.category_id,
-        sort_order: p.sort_order
-      })),
-    };
-  });
-
-  // 4. Handle Announcement logic
-  const storeMetadata = (store as any).metadata || {};
-  const isStoreAnnounceActive = storeMetadata.announcement_active === true || storeMetadata.announcement_active === "true";
+  // Handle Announcement logic
+  const storeMetadata = store.metadata || {};
+  const isStoreAnnounceActive =
+    storeMetadata.announcement_active === true || storeMetadata.announcement_active === "true";
 
   let announcement = null;
   if (isStoreAnnounceActive && storeMetadata.announcement_text) {
     announcement = storeMetadata.announcement_text;
-  } else {
-    const settingsMap = globalSettings.reduce((acc, curr) => {
-      acc[curr.key] = curr.value;
-      return acc;
-    }, {} as Record<string, any>);
-
-    if (settingsMap.global_announcement_active === "true" || settingsMap.global_announcement_active === true) {
-      announcement = settingsMap.global_announcement_text;
-    }
+  } else if (
+    globalSettings?.global_announcement_active === "true" ||
+    globalSettings?.global_announcement_active === true
+  ) {
+    announcement = globalSettings?.global_announcement_text ?? null;
   }
 
-  const result = { store, categories: normalizedCategories, announcement };
+  const result: CatalogResponse = {
+    store,
+    categories: rawCategories ?? [],
+    announcement,
+  };
 
-  // Guardar en caché
   setCachedCatalog(identifier, result);
-
   return result;
 }
 
