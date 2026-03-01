@@ -46,26 +46,28 @@ const InteractiveAISection = () => {
     };
 
     return (
-        <section id="ia-demo" className="relative py-24 md:py-32 bg-white overflow-hidden scroll-mt-20">
+        <section id="ia-demo" className="relative py-24 md:py-32 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 overflow-hidden scroll-mt-20">
+            {/* Top accent border */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-primary-dynamic to-emerald-400" />
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full -z-10">
-                <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-emerald-50/50 rounded-full blur-[100px]" />
-                <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-indigo-50/50 rounded-full blur-[100px]" />
+                <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px]" />
+                <div className="absolute bottom-1/4 left-0 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px]" />
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 relative">
                 <div className="grid lg:grid-cols-[1.1fr_1fr] gap-16 items-center max-w-7xl mx-auto">
                     <div>
-                        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-[0.2em] mb-8 animate-fade-up">
+                        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] mb-8 animate-fade-up border border-emerald-500/30">
                             <Sparkles className="w-3 h-3" />
                             Experiencia Viva
                         </div>
-                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-8 leading-[0.95] tracking-tighter">
+                        <h2 className="text-4xl md:text-6xl font-black text-white mb-8 leading-[0.95] tracking-tighter">
                             No lo contes, <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-primary-dynamic">demostralo</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-primary-dynamic">demostralo</span>
                         </h2>
-                        <p className="text-lg text-slate-500 font-medium mb-12 max-w-xl">
+                        <p className="text-lg text-slate-300 font-medium mb-12 max-w-xl">
                             Tus clientes no quieren esperar a que les respondas. Quieren respuestas instantáneas, precisas y amigables.
-                            <span className="text-slate-900 font-bold"> Nuestra IA lo hace posible 24/7.</span>
+                            <span className="text-white font-bold"> Nuestra IA lo hace posible 24/7.</span>
                         </p>
 
                         <div className="grid gap-6">
@@ -74,12 +76,12 @@ const InteractiveAISection = () => {
                                 { icon: ShoppingBag, title: "Cierre de ventas", text: "La IA guía al usuario hasta el checkout, aumentando tu conversión." }
                             ].map((item, i) => (
                                 <div key={i} className="flex gap-6 group">
-                                    <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-dynamic group-hover:text-white transition-all">
+                                    <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-slate-300 group-hover:bg-primary-dynamic group-hover:text-white group-hover:border-transparent transition-all">
                                         <item.icon className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-1">{item.title}</h4>
-                                        <p className="text-xs text-slate-500 font-medium leading-relaxed">{item.text}</p>
+                                        <h4 className="text-sm font-black text-white uppercase tracking-wider mb-1">{item.title}</h4>
+                                        <p className="text-xs text-slate-400 font-medium leading-relaxed">{item.text}</p>
                                     </div>
                                 </div>
                             ))}
