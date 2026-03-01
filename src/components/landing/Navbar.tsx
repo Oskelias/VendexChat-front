@@ -1,4 +1,4 @@
-import { MessageSquare, ExternalLink } from "lucide-react";
+import { Bot, ExternalLink } from "lucide-react";
 
 const Navbar = () => {
   return (
@@ -6,9 +6,11 @@ const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <MessageSquare className="w-4 h-4 text-primary-foreground" />
+            <Bot className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="font-display text-xl font-bold text-foreground">VendexChat</span>
+          <span className="font-display text-xl font-bold text-foreground">
+            VENDEx<span className="text-slate-400">Chat</span><span className="text-violet-600">.IA</span>
+          </span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
           <a href="#problema" className="hover:text-foreground transition-colors">Problema</a>
