@@ -10,7 +10,7 @@ const STORES: { id: StoreType; label: string; icon: React.ElementType; name: str
         label: "Hamburguesería",
         icon: UtensilsCrossed,
         name: "Don Bruno Burgers",
-        greeting: `¡Hola! Soy el asistente de Don Bruno Burgers 🍔 Podés ver todo el menú con fotos y precios en nuestra tienda web. Si tenés alguna duda sobre el proceso de compra, ¡te ayudo!`,
+        greeting: `¡Hola! 👋 Soy el asistente de Don Bruno Burgers. Puedo ayudarte con precios, horarios, promociones y el proceso de compra. El menú completo lo encontrás en nuestra tienda web 🍔`,
         color: "bg-amber-500",
     },
     {
@@ -18,7 +18,7 @@ const STORES: { id: StoreType; label: string; icon: React.ElementType; name: str
         label: "Vinoteca",
         icon: Wine,
         name: "La Vinoteca de Marta",
-        greeting: `¡Bienvenido/a! Soy el asistente de La Vinoteca de Marta 🍷 Podés ver todo el catálogo de vinos, cervezas y spirits en nuestra tienda web. Si tenés alguna duda sobre el proceso de compra, ¡te ayudo!`,
+        greeting: `¡Bienvenido/a! 🍷 Soy el asistente de La Vinoteca de Marta. Consultame sobre precios, disponibilidad, promociones o cómo hacer tu pedido. El catálogo completo está en nuestra tienda web.`,
         color: "bg-purple-500",
     },
     {
@@ -26,7 +26,7 @@ const STORES: { id: StoreType; label: string; icon: React.ElementType; name: str
         label: "Librería",
         icon: BookOpen,
         name: "El Rincón del Saber",
-        greeting: `¡Hola! Soy el asistente de El Rincón del Saber 📚 Podés ver todos nuestros libros y artículos de papelería en nuestra tienda web. Si tenés alguna duda sobre el proceso de compra, ¡te ayudo!`,
+        greeting: `¡Hola! 📚 Soy el asistente de El Rincón del Saber. Puedo ayudarte con precios, horarios, promociones y cómo hacer tu pedido. Para ver todo el catálogo, visitá nuestra tienda web.`,
         color: "bg-emerald-500",
     },
 ];
