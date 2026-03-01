@@ -280,10 +280,6 @@ const ModuleDemosSection = () => {
       <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-violet-500/10 text-violet-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6 border border-violet-500/20">
-            <Sparkles className="w-3 h-3" />
-            Demos Interactivas
-          </div>
           <h2 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tighter mb-4">
             Todo lo que puede hacer{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">
