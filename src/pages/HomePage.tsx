@@ -4,6 +4,7 @@ import ProblemSection from "@/components/landing/ProblemSection";
 import SolutionSection from "@/components/landing/SolutionSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
+import ModuleDemosSection from "@/components/landing/ModuleDemosSection";
 import InteractiveAISection from "@/components/landing/InteractiveAISection";
 import BeforeAfterSection from "@/components/landing/BeforeAfterSection";
 import PricingSection from "@/components/landing/PricingSection";
@@ -22,6 +23,7 @@ export function HomePage() {
       <SolutionSection />
       <HowItWorksSection />
       <FeaturesSection />
+      <ModuleDemosSection />
       <BeforeAfterSection />
       <PricingSection />
       <DemoSection />
