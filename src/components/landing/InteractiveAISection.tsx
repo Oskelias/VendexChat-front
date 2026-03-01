@@ -4,15 +4,13 @@ import { supabase } from "@/supabaseClient";
 
 type StoreType = "hamburgueseria" | "bebidas" | "libreria";
 
-const PURCHASE_FLOW = "El proceso es simple: elegís los productos, los agregás al carrito y confirmás el pedido por WhatsApp. Luego la tienda se pone en contacto para coordinar la entrega y el pago 🛒✅";
-
 const STORES: { id: StoreType; label: string; icon: React.ElementType; name: string; greeting: string; color: string }[] = [
     {
         id: "hamburgueseria",
         label: "Hamburguesería",
         icon: UtensilsCrossed,
         name: "Don Bruno Burgers",
-        greeting: `¡Hola! Soy el asistente IA de Don Bruno Burgers 🍔 ¿Qué se te antoja hoy? Tenemos hamburguesas clásicas, dobles y combos. ${PURCHASE_FLOW}`,
+        greeting: `¡Hola! Soy el asistente de Don Bruno Burgers 🍔 Podés ver todo el menú con fotos y precios en nuestra tienda web. Si tenés alguna duda sobre el proceso de compra, ¡te ayudo!`,
         color: "bg-amber-500",
     },
     {
@@ -20,7 +18,7 @@ const STORES: { id: StoreType; label: string; icon: React.ElementType; name: str
         label: "Vinoteca",
         icon: Wine,
         name: "La Vinoteca de Marta",
-        greeting: `¡Bienvenido/a! Soy el asistente de La Vinoteca de Marta 🍷 ¿Buscás vinos, cervezas o algo especial para una ocasión? ${PURCHASE_FLOW}`,
+        greeting: `¡Bienvenido/a! Soy el asistente de La Vinoteca de Marta 🍷 Podés ver todo el catálogo de vinos, cervezas y spirits en nuestra tienda web. Si tenés alguna duda sobre el proceso de compra, ¡te ayudo!`,
         color: "bg-purple-500",
     },
     {
@@ -28,7 +26,7 @@ const STORES: { id: StoreType; label: string; icon: React.ElementType; name: str
         label: "Librería",
         icon: BookOpen,
         name: "El Rincón del Saber",
-        greeting: `¡Hola! Soy el asistente de El Rincón del Saber 📚 ¿Buscás un libro, útiles escolares o algo de papelería? ${PURCHASE_FLOW}`,
+        greeting: `¡Hola! Soy el asistente de El Rincón del Saber 📚 Podés ver todos nuestros libros y artículos de papelería en nuestra tienda web. Si tenés alguna duda sobre el proceso de compra, ¡te ayudo!`,
         color: "bg-emerald-500",
     },
 ];
