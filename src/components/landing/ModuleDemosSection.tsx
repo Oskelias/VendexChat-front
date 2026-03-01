@@ -268,12 +268,12 @@ const ModuleDemosSection = () => {
   return (
     <section
       id="ia"
-      className="relative py-24 md:py-32 bg-white overflow-hidden scroll-mt-28"
+      className="relative py-24 md:py-32 bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-800 overflow-hidden scroll-mt-28"
     >
       {/* Background glows */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[120px]" />
+        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-white/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-indigo-300/20 rounded-full blur-[120px]" />
       </div>
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
 
@@ -281,7 +281,7 @@ const ModuleDemosSection = () => {
         {/* Header */}
         <div className="max-w-5xl mx-auto text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-black leading-tight tracking-tighter whitespace-nowrap">
-            <span className="text-slate-900">Todo lo que puede hacer </span>
+            <span className="text-white">Todo lo que puede hacer </span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">VENDExChat.IA</span>
           </h2>
         </div>
@@ -303,11 +303,11 @@ const ModuleDemosSection = () => {
                   className={`flex-1 flex items-center gap-4 px-6 py-4 rounded-2xl border transition-all duration-300 text-left ${
                     active
                       ? colors.active + " shadow-lg"
-                      : "border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                      : "border-white/20 bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"
                   }`}
                 >
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    active ? "bg-white/20" : "bg-slate-100"
+                    active ? "bg-white/20" : "bg-white/10"
                   }`}>
                     <tab.icon className="w-5 h-5" />
                   </div>
@@ -340,13 +340,13 @@ const ModuleDemosSection = () => {
                   onClick={() => setActiveModule(m.id)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all duration-200 w-full ${
                     active
-                      ? "bg-slate-100 ring-1 " + m.accentRing + " text-slate-900"
-                      : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                      ? "bg-white/20 ring-1 " + m.accentRing + " text-white"
+                      : "text-white/60 hover:bg-white/10 hover:text-white"
                   }`}
                 >
                   <div
                     className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${
-                      active ? m.accentBg + " text-white" : "bg-slate-100 text-slate-400"
+                      active ? m.accentBg + " text-white" : "bg-white/10 text-white/50"
                     }`}
                   >
                     <m.icon className="w-4 h-4" />
