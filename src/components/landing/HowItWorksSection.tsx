@@ -2,11 +2,13 @@ import { useState } from "react";
 import {
   ClipboardList, FileUp, Users, Truck, BarChart2,
   LayoutDashboard, Bell, Settings, Search, ChevronRight,
-  TrendingUp, Package, CheckCircle2, Clock, AlertCircle,
-  ArrowUpRight, ArrowDownRight, Star
+  Package, CheckCircle2, AlertCircle,
+  ArrowUpRight, ArrowDownRight, Star,
+  Store, HelpCircle, SlidersHorizontal, Clock, CreditCard,
+  QrCode, Ticket, Layers, Tag, Plus, ShoppingBag
 } from "lucide-react";
 
-type SectionId = "pedidos" | "catalogo" | "crm" | "logistica" | "estadisticas";
+type SectionId = "dashboard" | "pedidos" | "catalogo" | "crm" | "logistica" | "estadisticas";
 
 const NAV_ITEMS: { id: SectionId; label: string; icon: React.ElementType }[] = [
   { id: "pedidos",      label: "Pedidos",      icon: ClipboardList },
@@ -15,6 +17,70 @@ const NAV_ITEMS: { id: SectionId; label: string; icon: React.ElementType }[] = [
   { id: "logistica",    label: "Logística",    icon: Truck         },
   { id: "estadisticas", label: "Estadísticas", icon: BarChart2     },
 ];
+
+/* ── DASHBOARD HOME ──────────────────────────────────────────────────── */
+const QUICK_ACCESS = [
+  { label: "Mi Tienda",        icon: Store              },
+  { label: "Ayuda",            icon: HelpCircle         },
+  { label: "Sliders",          icon: SlidersHorizontal  },
+  { label: "Horarios",         icon: Clock              },
+  { label: "Métodos de cobro", icon: CreditCard         },
+  { label: "Envío / Retiro",   icon: Truck              },
+  { label: "Menú QR",          icon: QrCode             },
+  { label: "Cupones",          icon: Ticket             },
+  { label: "Popups",           icon: Layers             },
+  { label: "Editor Precios",   icon: Tag                },
+];
+
+const DashboardPanel = () => (
+  <div className="flex flex-col gap-4 p-5 h-full overflow-auto bg-slate-50">
+    {/* Page header */}
+    <div className="flex items-center justify-between">
+      <div>
+        <h3 className="text-sm font-black text-slate-900">Dashboard</h3>
+        <p className="text-[11px] text-slate-400 font-medium">Bienvenido de nuevo a tu panel de control.</p>
+      </div>
+      <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-[11px] font-bold hover:bg-emerald-700 transition-colors shadow-sm">
+        <Plus className="w-3 h-3" /> Nuevo Producto
+      </button>
+    </div>
+
+    {/* KPI cards */}
+    <div className="grid grid-cols-3 gap-3">
+      {[
+        { label: "Pedidos de hoy",    value: "67",       icon: ShoppingBag, color: "bg-emerald-50 text-emerald-600" },
+        { label: "Ventas hoy",        value: "$847.200", icon: ArrowUpRight, color: "bg-blue-50 text-blue-600"    },
+        { label: "Productos activos", value: "81",       icon: Package,     color: "bg-violet-50 text-violet-600"  },
+      ].map(k => (
+        <div key={k.label} className="p-3 rounded-xl bg-white border border-slate-200 shadow-sm">
+          <div className={`w-7 h-7 rounded-lg flex items-center justify-center mb-2 ${k.color}`}>
+            <k.icon className="w-3.5 h-3.5" />
+          </div>
+          <p className="text-base font-black text-slate-900 leading-none mb-0.5">{k.value}</p>
+          <p className="text-[10px] text-slate-400 font-semibold">{k.label}</p>
+        </div>
+      ))}
+    </div>
+
+    {/* Quick access */}
+    <div>
+      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Acceso rápido</p>
+      <div className="grid grid-cols-5 gap-2">
+        {QUICK_ACCESS.map(qa => (
+          <div
+            key={qa.label}
+            className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-sm transition-all cursor-pointer group"
+          >
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+              <qa.icon className="w-4 h-4 text-emerald-600" />
+            </div>
+            <span className="text-[9px] font-bold text-slate-600 text-center leading-tight">{qa.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 /* ── PEDIDOS ─────────────────────────────────────────────────────────── */
 const ORDERS = [
@@ -212,6 +278,7 @@ const EstadisticasPanel = () => (
 );
 
 const PANELS: Record<SectionId, React.ReactNode> = {
+  dashboard:    <DashboardPanel />,
   pedidos:      <PedidosPanel />,
   catalogo:     <CatalogoPanel />,
   crm:          <CRMPanel />,
@@ -220,7 +287,7 @@ const PANELS: Record<SectionId, React.ReactNode> = {
 };
 
 const HowItWorksSection = () => {
-  const [active, setActive] = useState<SectionId>("pedidos");
+  const [active, setActive] = useState<SectionId>("dashboard");
 
   return (
     <section id="gestion" className="relative py-24 md:py-32 bg-slate-50 scroll-mt-28 overflow-hidden">
@@ -274,9 +341,9 @@ const HowItWorksSection = () => {
                 {/* Nav */}
                 <div className="flex flex-col gap-1 px-2">
                   <button
-                    onClick={() => setActive("pedidos" as SectionId)}
+                    onClick={() => setActive("dashboard")}
                     className={`flex items-center gap-2 px-3 py-2 rounded-xl text-left transition-all text-[11px] font-semibold w-full ${
-                      active === "pedidos" ? "bg-white/10 text-white" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                      active === "dashboard" ? "bg-white/10 text-white" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
                     }`}
                   >
                     <LayoutDashboard className="w-3.5 h-3.5 flex-shrink-0" />
