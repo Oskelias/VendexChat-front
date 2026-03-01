@@ -1,4 +1,4 @@
-import { ArrowRight, ShoppingBag, List, Send } from "lucide-react";
+import { ArrowRight, Brain, Zap, TrendingUp } from "lucide-react";
 
 const SolutionSection = () => {
   return (
@@ -9,22 +9,22 @@ const SolutionSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative">
         <div className="max-w-3xl mx-auto text-center mb-20">
-          <p className="text-[10px] font-black text-primary-dynamic uppercase tracking-[0.3em] mb-4">La Solución Integral</p>
+          <p className="text-[10px] font-black text-primary-dynamic uppercase tracking-[0.3em] mb-4">La Plataforma IA-First</p>
           <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6 leading-tight">
-            Pedidos organizados, <br />
-            <span className="text-primary-dynamic">automáticamente</span>
+            Tu negocio vende solo, <br />
+            <span className="text-primary-dynamic">24/7 con IA</span>
           </h2>
           <p className="text-slate-500 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
-            VendexChat convierte el caos de los chats informales en un flujo de trabajo
-            <span className="text-slate-900 font-bold"> profesional y escalable.</span>
+            VendexChat no es solo una tienda. Es una
+            <span className="text-slate-900 font-bold"> máquina de ventas inteligente</span> que trabaja mientras vos descansás.
           </p>
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-4 max-w-6xl mx-auto mb-24">
           {[
-            { icon: ShoppingBag, label: "IA crea tu tienda con una foto", color: "bg-indigo-600 text-white shadow-indigo-100" },
-            { icon: List, label: "IA atiende y vende por vos", color: "bg-primary-dynamic text-white shadow-emerald-100" },
-            { icon: Send, label: "Recibís el pedido organizado", color: "bg-slate-900 text-white shadow-slate-100" },
+            { icon: Brain, label: "IA digitaliza tu catálogo en segundos", color: "bg-indigo-600 text-white shadow-indigo-100" },
+            { icon: Zap, label: "IA atiende, responde y cierra ventas", color: "bg-primary-dynamic text-white shadow-emerald-100" },
+            { icon: TrendingUp, label: "IA analiza y te dice cómo crecer", color: "bg-slate-900 text-white shadow-slate-100" },
           ].map((step, i) => (
             <div key={i} className="flex items-center gap-4 md:gap-8 flex-col md:flex-row group">
               <div className="flex flex-col items-center gap-6 px-4 transition-transform duration-500 group-hover:scale-105">
@@ -50,15 +50,15 @@ const SolutionSection = () => {
             <div className="grid md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-slate-100">
               <div className="pt-8 md:pt-0">
                 <div className="text-5xl font-black text-slate-900 mb-2 tracking-tighter">0%</div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Comisiones por pedido</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Comisiones por venta</p>
               </div>
               <div className="pt-12 md:pt-0 md:px-8">
                 <div className="text-5xl font-black text-primary-dynamic mb-2 tracking-tighter">24/7</div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">IA Siempre conectada</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">IA vendiendo por vos</p>
               </div>
               <div className="pt-12 md:pt-0 md:pl-8">
                 <div className="text-5xl font-black text-indigo-600 mb-2 tracking-tighter">~2min</div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Onboarding Express</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Setup express con IA</p>
               </div>
             </div>
           </div>

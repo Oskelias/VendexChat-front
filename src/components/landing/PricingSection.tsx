@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Bot } from "lucide-react";
 
 import { trackEvent } from "@/lib/analytics";
 
@@ -16,6 +16,7 @@ const plans = [
     cta: "Empezar",
     href: "https://admin.vendexchat.app/register",
     event: "pricing_free_click",
+    hasAI: false,
   },
   {
     name: "Pro",
@@ -34,9 +35,14 @@ const plans = [
       "Control de horarios",
       "Impresión Ticket / Comanda",
     ],
+    aiFeatures: [
+      "Importador IA (foto → catálogo)",
+      "Asistente IA 24/7",
+    ],
     cta: "Probar Gratis",
     href: "https://admin.vendexchat.app/register",
     event: "pricing_pro_click",
+    hasAI: true,
   },
   {
     name: "Premium",
@@ -57,9 +63,15 @@ const plans = [
       "Costo de envío por zonas",
       "Control de horarios",
     ],
+    aiFeatures: [
+      "Importador IA (foto → catálogo)",
+      "Asistente IA 24/7",
+      "Analítica IA básica",
+    ],
     cta: "Probar Gratis",
     href: "https://admin.vendexchat.app/register",
     event: "pricing_premium_click",
+    hasAI: true,
   },
   {
     name: "Business",
@@ -69,7 +81,6 @@ const plans = [
       "Mensajes emergentes",
       "Cupones de descuento",
       "Productos destacados",
-      "Estadísticas avanzadas",
       "Exportar pedidos a Excel",
       "Control de caja",
       "Variante de productos",
@@ -78,9 +89,16 @@ const plans = [
       "Facebook Pixel",
       "Google Analytics",
     ],
+    aiFeatures: [
+      "Importador IA (foto → catálogo)",
+      "Asistente IA 24/7 avanzado",
+      "Analítica IA + Insights",
+      "Estadísticas avanzadas IA",
+    ],
     cta: "Probar Gratis",
     href: "https://admin.vendexchat.app/register",
     event: "pricing_business_click",
+    hasAI: true,
   },
 ];
 
@@ -98,7 +116,7 @@ const PricingSection = () => {
             <span className="text-primary-dynamic text-gradient">con tu negocio</span>
           </h2>
           <p className="text-slate-500 text-lg font-medium max-w-2xl mx-auto">
-            Precios claros y predecibles. Empezá gratis y escalá cuando tu negocio despegue.
+            Empezá gratis. Sumá IA cuando tu negocio lo pida.
           </p>
         </div>
 
@@ -133,11 +151,34 @@ const PricingSection = () => {
                   </div>
                 )}
 
+                {plan.hasAI && !isPro && (
+                  <div className="absolute -top-3 right-6 flex items-center gap-1 px-3 py-1 bg-indigo-600 text-[8px] font-black text-white uppercase tracking-wider rounded-full">
+                    <Bot className="w-2.5 h-2.5" /> IA incluida
+                  </div>
+                )}
+
                 <div className="text-center mb-10">
                   <h3 className={`text-xl font-black mb-1 uppercase tracking-tighter ${isPro ? 'text-white' : 'text-slate-900'}`}>{plan.name}</h3>
                   <div className="h-1 w-10 bg-primary-dynamic mx-auto rounded-full mb-4 opacity-50" />
                   <p className={`text-2xl font-black ${isPro ? 'text-white' : 'text-slate-900'}`}>{plan.price}</p>
                 </div>
+
+                {/* AI Features block */}
+                {plan.aiFeatures && (
+                  <div className={`mb-6 p-4 rounded-2xl ${isPro ? 'bg-primary-dynamic/20 border border-primary-dynamic/30' : 'bg-indigo-50 border border-indigo-100'}`}>
+                    <div className={`flex items-center gap-1.5 mb-3 text-[9px] font-black uppercase tracking-widest ${isPro ? 'text-primary-dynamic' : 'text-indigo-600'}`}>
+                      <Bot className="w-3 h-3" /> Funciones IA
+                    </div>
+                    <ul className="space-y-2">
+                      {plan.aiFeatures.map((f, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <Check className={`w-3 h-3 mt-0.5 flex-shrink-0 ${isPro ? 'text-primary-dynamic' : 'text-indigo-500'}`} />
+                          <span className={`text-[10px] font-bold leading-tight ${isPro ? 'text-slate-200' : 'text-indigo-700'}`}>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <ul className="space-y-4 mb-10">
                   {plan.features.map((feature, idx) => (
@@ -169,6 +210,10 @@ const PricingSection = () => {
             );
           })}
         </div>
+
+        <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest mt-12">
+          Todos los planes incluyen 14 días de prueba gratis · Sin tarjeta de crédito
+        </p>
       </div>
     </section>
   );

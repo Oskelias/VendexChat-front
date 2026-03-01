@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Send, Bot, Sparkles, ShoppingBag, Zap } from "lucide-react";
+import { supabase } from "@/supabaseClient";
 
 const InteractiveAISection = () => {
     const [messages, setMessages] = useState<any[]>([]);
@@ -21,28 +22,33 @@ const InteractiveAISection = () => {
         }
     }, [messages, isTyping]);
 
-    const handleSend = (e?: React.FormEvent) => {
+    const handleSend = async (e?: React.FormEvent) => {
         e?.preventDefault();
-        if (!userInput.trim()) return;
+        if (!userInput.trim() || isTyping) return;
 
         const newMsg = { role: "user", text: userInput };
-        setMessages(prev => [...prev, newMsg]);
+        const updatedMessages = [...messages, newMsg];
+        setMessages(updatedMessages);
         setUserInput("");
         setIsTyping(true);
 
-        // Simulate AI response
-        setTimeout(() => {
-            setIsTyping(false);
-            const response = getMockResponse(newMsg.text.toLowerCase());
-            setMessages(prev => [...prev, { role: "bot", text: response }]);
-        }, 1500);
-    };
+        try {
+            const { data, error } = await supabase.functions.invoke("demo-ai-chat", {
+                body: {
+                    messages: updatedMessages.filter(m => m.role === "user" || m.role === "bot").map(m => ({
+                        role: m.role,
+                        text: m.text,
+                    })),
+                },
+            });
 
-    const getMockResponse = (input: string) => {
-        if (input.includes("precio") || input.includes("cuanto cuesta")) return "Todos los precios están actualizados en el catálogo digital. Por ejemplo, el Combo Pro sale $12.500.";
-        if (input.includes("envio") || input.includes("delivery")) return "Hacemos envíos a toda la zona. El costo se calcula automáticamente cuando pongas tu ubicación.";
-        if (input.includes("pago") || input.includes("mercado pago")) return "Aceptamos efectivo, transferencia y Mercado Pago para que sea súper fácil.";
-        return "¡Entendido! Puedo ayudarte con eso y mucho más. Mi objetivo es que vos no tengas que responder las mismas preguntas 100 veces al día.";
+            if (error) throw error;
+            setMessages(prev => [...prev, { role: "bot", text: data.reply }]);
+        } catch {
+            setMessages(prev => [...prev, { role: "bot", text: "¡Ups! Algo salió mal. Probá de nuevo en un momento." }]);
+        } finally {
+            setIsTyping(false);
+        }
     };
 
     return (
