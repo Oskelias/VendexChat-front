@@ -1,6 +1,5 @@
 import Navbar from "@/components/landing/Navbar";
 import HeroSection from "@/components/landing/HeroSection";
-import CustomerOrderSection from "@/components/landing/CustomerOrderSection";
 import ProblemSection from "@/components/landing/ProblemSection";
 import SolutionSection from "@/components/landing/SolutionSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
@@ -20,7 +19,6 @@ export function HomePage() {
       <Navbar />
       <HeroSection />
       <InteractiveAISection />
-      <CustomerOrderSection />
       <ProblemSection />
       <SolutionSection />
       <HowItWorksSection />
