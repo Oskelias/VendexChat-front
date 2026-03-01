@@ -292,9 +292,9 @@ const ModuleDemosSection = () => {
             {TABS.map((tab, i) => {
               const active = tab.id === activeTab;
               const colors = [
-                { active: "bg-violet-600 border-violet-600 text-white", dot: "bg-violet-400", num: "bg-violet-500/20 text-violet-300" },
-                { active: "bg-blue-600 border-blue-600 text-white", dot: "bg-blue-400", num: "bg-blue-500/20 text-blue-300" },
-                { active: "bg-pink-600 border-pink-600 text-white", dot: "bg-pink-400", num: "bg-pink-500/20 text-pink-300" },
+                { active: "bg-violet-600 border-violet-600 text-white", inactive: "bg-violet-600/40 border-violet-400/50 text-white", num: "bg-violet-500/30 text-violet-200" },
+                { active: "bg-blue-600 border-blue-600 text-white", inactive: "bg-blue-600/40 border-blue-400/50 text-white", num: "bg-blue-500/30 text-blue-200" },
+                { active: "bg-pink-600 border-pink-600 text-white", inactive: "bg-pink-600/40 border-pink-400/50 text-white", num: "bg-pink-500/30 text-pink-200" },
               ][i];
               return (
                 <button
@@ -302,18 +302,16 @@ const ModuleDemosSection = () => {
                   onClick={() => handleTabChange(tab.id)}
                   className={`flex-1 flex items-center gap-4 px-6 py-4 rounded-2xl border transition-all duration-300 text-left ${
                     active
-                      ? colors.active + " shadow-lg"
-                      : "border-white/20 bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"
+                      ? colors.active + " shadow-xl scale-[1.02]"
+                      : colors.inactive + " hover:scale-[1.01] opacity-75 hover:opacity-100"
                   }`}
                 >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    active ? "bg-white/20" : "bg-white/10"
-                  }`}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/20">
                     <tab.icon className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-black uppercase tracking-wider">{tab.label}</div>
-                    <div className={`text-[11px] font-medium mt-0.5 leading-tight ${active ? "text-white/70" : "text-slate-500"}`}>
+                    <div className="text-[11px] font-medium mt-0.5 leading-tight text-white/70">
                       {tab.description}
                     </div>
                   </div>
