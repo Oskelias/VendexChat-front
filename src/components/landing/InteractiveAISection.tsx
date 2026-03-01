@@ -199,7 +199,7 @@ const InteractiveAISection = () => {
                                 </div>
 
                                 {/* Chat Input */}
-                                <form onSubmit={handleSend} className="p-4 bg-white border-t border-slate-100 flex gap-2">
+                                <form onSubmit={handleSend} className="p-4 bg-white border-t border-slate-100 flex gap-2 items-center">
                                     <input
                                         type="text"
                                         value={userInput}
@@ -213,6 +213,10 @@ const InteractiveAISection = () => {
                                     >
                                         <Send className="w-4 h-4" />
                                     </button>
+                                    <div className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-emerald-500 shadow-md animate-float delay-700 flex-shrink-0">
+                                        <Zap className="w-3 h-3 text-white" />
+                                        <span className="text-[8px] font-black text-white uppercase tracking-wide whitespace-nowrap">Venta<br/>cerrada</span>
+                                    </div>
                                 </form>
                             </div>
 
@@ -221,12 +225,6 @@ const InteractiveAISection = () => {
                                 <div className="flex items-center gap-2 text-[10px] font-black text-slate-900">
                                     <Bot className="w-4 h-4 text-primary-dynamic" />
                                     RESPUESTA IA
-                                </div>
-                            </div>
-                            <div className="absolute -left-20 bottom-10 p-4 rounded-2xl bg-white shadow-xl -rotate-3 border border-slate-100 animate-float delay-700 hidden md:block">
-                                <div className="flex items-center gap-2 text-[10px] font-black text-slate-900">
-                                    <Zap className="w-4 h-4 text-amber-500" />
-                                    VENTA CERRADA
                                 </div>
                             </div>
                         </div>
