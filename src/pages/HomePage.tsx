@@ -19,12 +19,12 @@ export function HomePage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
+      <InteractiveAISection />
       <CustomerOrderSection />
       <ProblemSection />
       <SolutionSection />
       <HowItWorksSection />
       <FeaturesSection />
-      <InteractiveAISection />
       <BeforeAfterSection />
       <PricingSection />
       <DemoSection />
