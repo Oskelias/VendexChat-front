@@ -279,16 +279,11 @@ const ModuleDemosSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Header */}
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tighter mb-4">
-            Todo lo que puede hacer{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">
-              VENDExChat.IA
-            </span>
+        <div className="max-w-5xl mx-auto text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-black leading-tight tracking-tighter whitespace-nowrap">
+            <span className="text-white">Todo lo que puede hacer </span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">VENDExChat.IA</span>
           </h2>
-          <p className="text-slate-400 font-medium text-lg">
-            Explorá cada área — desde la experiencia del cliente hasta la inteligencia de tu negocio.
-          </p>
         </div>
 
         {/* Top tabs */}
