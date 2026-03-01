@@ -2,7 +2,7 @@ import { ArrowRight, Brain, Zap, TrendingUp } from "lucide-react";
 
 const SolutionSection = () => {
   return (
-    <section id="solucion" className="relative py-24 md:py-32 overflow-hidden scroll-mt-20">
+    <section id="solucion" className="relative py-24 md:py-32 overflow-hidden scroll-mt-28">
       {/* Dynamic Background */}
       <div className="absolute inset-0 bg-slate-50/50 -z-20" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-dynamic/5 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2" />

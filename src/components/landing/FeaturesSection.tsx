@@ -11,7 +11,7 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section id="funcionalidades" className="py-24 md:py-32 bg-white relative overflow-hidden scroll-mt-20">
+    <section id="funcionalidades" className="py-24 md:py-32 bg-white relative overflow-hidden scroll-mt-28">
       {/* Background patterns */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-50/50 -z-10 rounded-l-[5rem]" />
 

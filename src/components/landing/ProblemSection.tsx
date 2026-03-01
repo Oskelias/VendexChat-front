@@ -25,7 +25,7 @@ const problems = [
 
 const ProblemSection = () => {
   return (
-    <section id="problema" className="relative py-24 md:py-32 bg-violet-950 overflow-hidden scroll-mt-20">
+    <section id="problema" className="relative py-24 md:py-32 bg-violet-950 overflow-hidden scroll-mt-28">
       {/* Abstract dark elements */}
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(167,139,250,0.08),transparent)] -z-10" />
 

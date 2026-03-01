@@ -3,7 +3,7 @@ import { trackEvent } from "@/lib/analytics";
 
 const CTASection = () => {
   return (
-    <section id="cta" className="relative py-24 md:py-32 overflow-hidden scroll-mt-20">
+    <section id="cta" className="relative py-24 md:py-32 overflow-hidden scroll-mt-28">
       {/* Intense gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-violet-950 via-indigo-950 to-violet-950 -z-20" />
       <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_20%,rgba(167,139,250,0.12),transparent)] -z-10" />

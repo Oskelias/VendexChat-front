@@ -18,7 +18,7 @@ const vendexItems = [
 
 const BeforeAfterSection = () => {
   return (
-    <section className="relative py-24 md:py-32 bg-slate-50/50 overflow-hidden scroll-mt-20">
+    <section className="relative py-24 md:py-32 bg-slate-50/50 overflow-hidden scroll-mt-28">
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-violet-50/50 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2" />
 
       <div className="container mx-auto px-4 sm:px-6">

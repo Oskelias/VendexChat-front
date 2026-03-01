@@ -29,7 +29,7 @@ const steps = [
 
 const HowItWorksSection = () => {
   return (
-    <section id="como-funciona" className="relative py-24 md:py-32 bg-background scroll-mt-20 overflow-hidden">
+    <section id="como-funciona" className="relative py-24 md:py-32 bg-background scroll-mt-28 overflow-hidden">
       <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-primary-dynamic/5 rounded-full blur-[120px] -z-10 -translate-x-1/2 -translate-y-1/2" />
 
       <div className="container mx-auto px-4 sm:px-6 w-full">

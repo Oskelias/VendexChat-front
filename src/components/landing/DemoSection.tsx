@@ -3,7 +3,7 @@ import { trackEvent } from "@/lib/analytics";
 
 const DemoSection = () => {
   return (
-    <section id="demo" className="py-12 md:py-16 lg:py-20 bg-secondary scroll-mt-20">
+    <section id="demo" className="py-12 md:py-16 lg:py-20 bg-secondary scroll-mt-28">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Demo</p>
