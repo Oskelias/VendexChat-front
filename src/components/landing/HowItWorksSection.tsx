@@ -296,20 +296,15 @@ const HowItWorksSection = () => {
       <div className="container mx-auto px-4 sm:px-6">
 
         {/* Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-[10px] font-black uppercase tracking-[0.25em] mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-            Gestión de tienda
-          </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-tight tracking-tighter mb-5">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter mb-2 whitespace-nowrap">
             Todo tu negocio en{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
               un solo lugar
             </span>
           </h2>
-          <p className="text-lg text-slate-500 font-medium max-w-2xl mx-auto">
-            Pedidos, catálogo, clientes y envíos — todo centralizado en un panel simple,
-            diseñado para que no pierdas tiempo.
+          <p className="text-sm text-slate-500 font-medium whitespace-nowrap">
+            Pedidos, catálogo, clientes y envíos — todo centralizado en un panel simple, diseñado para que no pierdas tiempo.
           </p>
         </div>
 
