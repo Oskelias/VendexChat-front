@@ -46,7 +46,14 @@ export function ChatBotWidget({
     const hasTriggeredInitial = useRef(false);
 
     const systemPrompt = useMemo(() => {
-        const productList = products.map(p => `- ${p.name}: $${p.price} (${p.description || 'Sin descripción'})`).join('\n');
+        const productList = products.map(p => {
+            const stockStatus = p.unlimited_stock
+                ? 'disponible'
+                : p.stock > 0
+                    ? `disponible (stock: ${p.stock})`
+                    : 'SIN STOCK / agotado';
+            return `- ${p.name}: $${p.price} | Estado: ${stockStatus} | ${p.description || 'Sin descripción'}`;
+        }).join('\n');
         return aiPrompt || `Eres un asistente virtual amable y servicial para la tienda "${storeName}".
             Descripción de la tienda: ${storeDescription || 'Tienda minorista'}.
             Dirección física/Ubicación: ${storeAddress || 'Consultar por WhatsApp'}.
@@ -61,7 +68,8 @@ export function ChatBotWidget({
             3. Si no sabes algo, o si el cliente quiere atención humana, sugiérele contactar por WhatsApp.
             4. Usa emojis (pero no en exceso) para que sea ameno.
             5. Si preguntan por precios o detalles, usa SIEMPRE la lista de productos provista.
-            6. Responde SIEMPRE en Español.`;
+            6. Responde SIEMPRE en Español.
+            7. DISPONIBILIDAD DE STOCK: Si un producto figura como "SIN STOCK / agotado", informa al cliente que no está disponible en este momento. Si tiene stock o es ilimitado, indícale que está disponible.`;
     }, [products, aiPrompt, storeName, storeDescription, storeAddress]);
 
     useEffect(() => {
