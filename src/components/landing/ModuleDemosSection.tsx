@@ -450,14 +450,14 @@ const ModuleDemosSection = () => {
             {/* Input */}
             <form
               onSubmit={handleCustomSend}
-              className="px-4 py-3 border-t border-slate-100 flex gap-2 bg-white"
+              className="px-4 py-3 border-t border-violet-100 flex gap-2 bg-violet-50/50"
             >
               <input
                 type="text"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
                 placeholder={`Escribí un comando para ${mod.label}...`}
-                className="flex-1 bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-violet-500/40 transition-all"
+                className="flex-1 bg-white border border-violet-200 text-slate-900 placeholder-slate-400 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-violet-500/40 transition-all"
               />
               <button
                 type="submit"
