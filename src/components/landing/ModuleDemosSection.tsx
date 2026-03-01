@@ -268,7 +268,7 @@ const ModuleDemosSection = () => {
   return (
     <section
       id="ia"
-      className="relative py-24 md:py-32 bg-slate-950 overflow-hidden scroll-mt-28"
+      className="relative py-24 md:py-32 bg-white overflow-hidden scroll-mt-28"
     >
       {/* Background glows */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -281,7 +281,7 @@ const ModuleDemosSection = () => {
         {/* Header */}
         <div className="max-w-5xl mx-auto text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-black leading-tight tracking-tighter whitespace-nowrap">
-            <span className="text-white">Todo lo que puede hacer </span>
+            <span className="text-slate-900">Todo lo que puede hacer </span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">VENDExChat.IA</span>
           </h2>
         </div>
@@ -303,11 +303,11 @@ const ModuleDemosSection = () => {
                   className={`flex-1 flex items-center gap-4 px-6 py-4 rounded-2xl border transition-all duration-300 text-left ${
                     active
                       ? colors.active + " shadow-lg"
-                      : "border-white/10 bg-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-200"
+                      : "border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
                   }`}
                 >
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    active ? "bg-white/20" : "bg-white/5"
+                    active ? "bg-white/20" : "bg-slate-100"
                   }`}>
                     <tab.icon className="w-5 h-5" />
                   </div>
@@ -340,13 +340,13 @@ const ModuleDemosSection = () => {
                   onClick={() => setActiveModule(m.id)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all duration-200 w-full ${
                     active
-                      ? "bg-white/10 ring-1 " + m.accentRing + " text-white"
-                      : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+                      ? "bg-slate-100 ring-1 " + m.accentRing + " text-slate-900"
+                      : "text-slate-500 hover:bg-slate-100 hover:text-slate-700"
                   }`}
                 >
                   <div
                     className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${
-                      active ? m.accentBg + " text-white" : "bg-white/5 text-slate-500"
+                      active ? m.accentBg + " text-white" : "bg-slate-100 text-slate-400"
                     }`}
                   >
                     <m.icon className="w-4 h-4" />
@@ -361,14 +361,14 @@ const ModuleDemosSection = () => {
           </div>
 
           {/* Chat panel */}
-          <div className="rounded-3xl bg-slate-900 border border-white/10 overflow-hidden flex flex-col shadow-2xl shadow-black/50">
+          <div className="rounded-3xl bg-white border border-slate-200 overflow-hidden flex flex-col shadow-2xl shadow-slate-200/60">
             {/* Panel header */}
-            <div className="px-6 py-4 border-b border-white/10 flex items-center gap-3 bg-slate-900/80">
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-3 bg-white">
               <div className={`w-10 h-10 rounded-2xl ${mod.accentBg} flex items-center justify-center text-white shadow-lg`}>
                 <mod.icon className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-sm font-black text-white">{mod.label}</div>
+                <div className="text-sm font-black text-slate-900">{mod.label}</div>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${mod.accentDot}`} />
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
@@ -378,15 +378,15 @@ const ModuleDemosSection = () => {
               </div>
               {/* Tab badge */}
               <div className="ml-auto">
-                <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-white/5 text-slate-500 border border-white/10">
+                <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-slate-50 text-slate-500 border border-slate-200">
                   {currentTab.label}
                 </span>
               </div>
             </div>
 
             {/* Command suggestions */}
-            <div className="px-5 py-3 border-b border-white/5 flex flex-wrap gap-2 bg-slate-950/40">
-              <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest self-center mr-1">
+            <div className="px-5 py-3 border-b border-slate-100 flex flex-wrap gap-2 bg-slate-50">
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest self-center mr-1">
                 Probá:
               </span>
               {mod.commands.map((cmd) => (
@@ -396,8 +396,8 @@ const ModuleDemosSection = () => {
                   disabled={isTyping}
                   className={`text-[11px] font-semibold px-3 py-1.5 rounded-xl border transition-all ${
                     isTyping
-                      ? "text-slate-600 border-slate-800 cursor-not-allowed"
-                      : "text-slate-300 border-slate-700 hover:border-slate-500 hover:text-white hover:bg-white/5 cursor-pointer"
+                      ? "text-slate-300 border-slate-100 cursor-not-allowed"
+                      : "text-slate-600 border-slate-200 hover:border-slate-400 hover:text-slate-800 hover:bg-slate-100 cursor-pointer"
                   }`}
                 >
                   {cmd.prompt}
@@ -431,7 +431,7 @@ const ModuleDemosSection = () => {
                     className={`max-w-[85%] px-4 py-3 rounded-2xl text-xs font-medium leading-relaxed whitespace-pre-line ${
                       msg.role === "user"
                         ? "bg-violet-600 text-white rounded-tr-none"
-                        : "bg-slate-800 border border-white/10 text-slate-200 rounded-tl-none"
+                        : "bg-slate-100 border border-slate-200 text-slate-700 rounded-tl-none"
                     }`}
                   >
                     {msg.text}
@@ -440,10 +440,10 @@ const ModuleDemosSection = () => {
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-800 border border-white/10 px-4 py-3 rounded-2xl rounded-tl-none flex gap-1 items-center">
-                    <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce" />
-                    <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce [animation-delay:0.1s]" />
-                    <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce [animation-delay:0.2s]" />
+                  <div className="bg-slate-100 border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-none flex gap-1 items-center">
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" />
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.1s]" />
+                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]" />
                   </div>
                 </div>
               )}
@@ -452,14 +452,14 @@ const ModuleDemosSection = () => {
             {/* Input */}
             <form
               onSubmit={handleCustomSend}
-              className="px-4 py-3 border-t border-white/10 flex gap-2 bg-slate-900/60"
+              className="px-4 py-3 border-t border-slate-100 flex gap-2 bg-white"
             >
               <input
                 type="text"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
                 placeholder={`Escribí un comando para ${mod.label}...`}
-                className="flex-1 bg-slate-800 border border-white/10 text-white placeholder-slate-600 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-violet-500/40 transition-all"
+                className="flex-1 bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-violet-500/40 transition-all"
               />
               <button
                 type="submit"
