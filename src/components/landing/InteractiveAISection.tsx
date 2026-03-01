@@ -223,7 +223,7 @@ const InteractiveAISection = () => {
                                     RESPUESTA IA
                                 </div>
                             </div>
-                            <div className="absolute -left-4 bottom-10 p-4 rounded-2xl bg-white shadow-xl -rotate-3 border border-slate-100 animate-float delay-700 hidden md:block">
+                            <div className="absolute -left-20 bottom-10 p-4 rounded-2xl bg-white shadow-xl -rotate-3 border border-slate-100 animate-float delay-700 hidden md:block">
                                 <div className="flex items-center gap-2 text-[10px] font-black text-slate-900">
                                     <Zap className="w-4 h-4 text-amber-500" />
                                     VENTA CERRADA
