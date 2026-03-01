@@ -27,7 +27,7 @@ const steps = [
 
 const HeroSection = () => {
   return (
-    <section className="relative flex flex-col justify-center pt-24 pb-6 md:pt-28 md:pb-8 overflow-hidden bg-white">
+    <section className="relative min-h-screen flex flex-col justify-center pt-24 pb-8 md:pt-28 md:pb-10 overflow-hidden bg-white">
       {/* Background */}
       <div className="absolute top-0 left-0 w-full h-full -z-20">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-dynamic/10 rounded-full blur-[120px] animate-pulse-subtle" />
@@ -96,7 +96,7 @@ const HeroSection = () => {
         </div>
 
         {/* Steps */}
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto bg-white/60 backdrop-blur-sm rounded-3xl px-6 py-6 shadow-[0_-4px_24px_-4px_rgba(109,40,217,0.08),0_4px_24px_-4px_rgba(0,0,0,0.06)] border border-slate-100/80">
           <p className="text-center text-[10px] font-black text-primary-dynamic uppercase tracking-[0.3em] mb-5">
             Un flujo simple que entienden al instante
           </p>
