@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Plus, Minus, Calendar, Info, CheckCircle2 } from 'lucide-react'
 import type { Product, Category } from '../../types'
 import { useCartState } from '../state/useCartStore'
@@ -21,7 +21,7 @@ export function WeeklyMenuGrid({ categories, primaryColor }: WeeklyMenuGridProps
     const { addItem, updateQuantity, getItemQuantity } = useCartState()
     const [activeDay, setActiveDay] = useState(DAYS[0].id)
 
-    const allProducts = categories.flatMap(cat => cat.products || [])
+    const allProducts = useMemo(() => categories.flatMap(cat => cat.products || []), [categories])
 
     return (
         <div className="space-y-8 animate-fade-in">
@@ -87,7 +87,7 @@ export function WeeklyMenuGrid({ categories, primaryColor }: WeeklyMenuGridProps
                                     >
                                         {p.image_url && (
                                             <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-sm shrink-0">
-                                                <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                                                <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                                             </div>
                                         )}
 

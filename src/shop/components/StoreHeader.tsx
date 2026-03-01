@@ -92,7 +92,7 @@ export function StoreHeader({
             {/* Store Information Banner */}
             <div className="relative h-40 md:h-56 bg-slate-200 overflow-hidden">
                 {banner ? (
-                    <img src={banner} alt={name} className="w-full h-full object-cover" />
+                    <img src={banner} alt={name} className="w-full h-full object-cover" loading="eager" decoding="async" />
                 ) : (
                     <div className="w-full h-full bg-primary-dynamic flex items-center justify-center">
                         <span className="text-white font-black text-6xl opacity-20">{name}</span>
@@ -104,7 +104,7 @@ export function StoreHeader({
                 <div className="absolute bottom-4 left-4 right-4 flex items-end gap-4">
                     <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-2xl p-1 shadow-2xl flex-shrink-0 border-2 border-white overflow-hidden">
                         {logo ? (
-                            <img src={logo} alt={name} className="w-full h-full object-cover rounded-[0.8rem]" />
+                            <img src={logo} alt={name} className="w-full h-full object-cover rounded-[0.8rem]" loading="eager" decoding="async" />
                         ) : (
                             <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300 font-black text-xl uppercase">
                                 {name.charAt(0)}

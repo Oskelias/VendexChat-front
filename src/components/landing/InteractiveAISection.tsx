@@ -1,19 +1,51 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, Bot, Sparkles, ShoppingBag, Zap } from "lucide-react";
+import { Send, Bot, Sparkles, ShoppingBag, Zap, UtensilsCrossed, Wine, BookOpen } from "lucide-react";
+import { supabase } from "@/supabaseClient";
+
+type StoreType = "hamburgueseria" | "bebidas" | "libreria";
+
+const STORES: { id: StoreType; label: string; icon: React.ElementType; name: string; greeting: string; color: string }[] = [
+    {
+        id: "hamburgueseria",
+        label: "Hamburguesería",
+        icon: UtensilsCrossed,
+        name: "Don Bruno Burgers",
+        greeting: "¡Hola! Soy el asistente IA de Don Bruno Burgers 🍔 ¿Qué se te antoja hoy? Tenemos hamburguesas clásicas, dobles y combos.",
+        color: "bg-amber-500",
+    },
+    {
+        id: "bebidas",
+        label: "Vinoteca",
+        icon: Wine,
+        name: "La Vinoteca de Marta",
+        greeting: "¡Bienvenido/a! Soy el asistente de La Vinoteca de Marta 🍷 ¿Buscás vinos, cervezas o algo especial para una ocasión?",
+        color: "bg-purple-500",
+    },
+    {
+        id: "libreria",
+        label: "Librería",
+        icon: BookOpen,
+        name: "El Rincón del Saber",
+        greeting: "¡Hola! Soy el asistente de El Rincón del Saber 📚 ¿Buscás un libro, útiles escolares o algo de papelería?",
+        color: "bg-emerald-500",
+    },
+];
 
 const InteractiveAISection = () => {
+    const [selectedStore, setSelectedStore] = useState<StoreType>("hamburgueseria");
     const [messages, setMessages] = useState<any[]>([]);
     const [userInput, setUserInput] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    const currentStore = STORES.find(s => s.id === selectedStore)!;
+
     useEffect(() => {
-        // Initial bot message
         const timer = setTimeout(() => {
-            setMessages([{ role: "bot", text: "¡Hola! Soy tu asistente IA de demostración. ¿Querés ver cómo atiendo a tus clientes? Probá preguntarme algo sobre el menú." }]);
-        }, 500);
+            setMessages([{ role: "bot", text: currentStore.greeting }]);
+        }, 300);
         return () => clearTimeout(timer);
-    }, []);
+    }, [selectedStore]);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -21,28 +53,42 @@ const InteractiveAISection = () => {
         }
     }, [messages, isTyping]);
 
-    const handleSend = (e?: React.FormEvent) => {
+    const handleStoreChange = (storeId: StoreType) => {
+        if (storeId === selectedStore) return;
+        setMessages([]);
+        setUserInput("");
+        setIsTyping(false);
+        setSelectedStore(storeId);
+    };
+
+    const handleSend = async (e?: React.FormEvent) => {
         e?.preventDefault();
-        if (!userInput.trim()) return;
+        if (!userInput.trim() || isTyping) return;
 
         const newMsg = { role: "user", text: userInput };
-        setMessages(prev => [...prev, newMsg]);
+        const updatedMessages = [...messages, newMsg];
+        setMessages(updatedMessages);
         setUserInput("");
         setIsTyping(true);
 
-        // Simulate AI response
-        setTimeout(() => {
-            setIsTyping(false);
-            const response = getMockResponse(newMsg.text.toLowerCase());
-            setMessages(prev => [...prev, { role: "bot", text: response }]);
-        }, 1500);
-    };
+        try {
+            const { data, error } = await supabase.functions.invoke("demo-ai-chat", {
+                body: {
+                    storeType: selectedStore,
+                    messages: updatedMessages.filter(m => m.role === "user" || m.role === "bot").map(m => ({
+                        role: m.role,
+                        text: m.text,
+                    })),
+                },
+            });
 
-    const getMockResponse = (input: string) => {
-        if (input.includes("precio") || input.includes("cuanto cuesta")) return "Todos los precios están actualizados en el catálogo digital. Por ejemplo, el Combo Pro sale $12.500.";
-        if (input.includes("envio") || input.includes("delivery")) return "Hacemos envíos a toda la zona. El costo se calcula automáticamente cuando pongas tu ubicación.";
-        if (input.includes("pago") || input.includes("mercado pago")) return "Aceptamos efectivo, transferencia y Mercado Pago para que sea súper fácil.";
-        return "¡Entendido! Puedo ayudarte con eso y mucho más. Mi objetivo es que vos no tengas que responder las mismas preguntas 100 veces al día.";
+            if (error) throw error;
+            setMessages(prev => [...prev, { role: "bot", text: data.reply }]);
+        } catch {
+            setMessages(prev => [...prev, { role: "bot", text: "¡Ups! Algo salió mal. Probá de nuevo en un momento." }]);
+        } finally {
+            setIsTyping(false);
+        }
     };
 
     return (
@@ -70,6 +116,27 @@ const InteractiveAISection = () => {
                             <span className="text-white font-bold"> Nuestra IA lo hace posible 24/7.</span>
                         </p>
 
+                        {/* Store selector */}
+                        <div className="mb-10">
+                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Elegí un rubro para probarlo:</p>
+                            <div className="flex flex-wrap gap-3">
+                                {STORES.map(store => (
+                                    <button
+                                        key={store.id}
+                                        onClick={() => handleStoreChange(store.id)}
+                                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all border ${
+                                            selectedStore === store.id
+                                                ? "bg-slate-900 text-white border-slate-900 shadow-lg"
+                                                : "bg-white text-slate-500 border-slate-200 hover:border-slate-400 hover:text-slate-900"
+                                        }`}
+                                    >
+                                        <store.icon className="w-3.5 h-3.5" />
+                                        {store.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                         <div className="grid gap-6">
                             {[
                                 { icon: Zap, title: "Respuestas al instante", text: "Menos de 2 segundos para responder cualquier duda de stock o precios." },
@@ -94,14 +161,14 @@ const InteractiveAISection = () => {
                             <div className="relative h-full w-full overflow-hidden rounded-[2.5rem] bg-white flex flex-col">
                                 {/* Chat Header */}
                                 <div className="p-5 border-b border-slate-100 flex items-center gap-3 bg-white">
-                                    <div className="w-10 h-10 rounded-full bg-primary-dynamic flex items-center justify-center text-white">
-                                        <Bot className="w-6 h-6" />
+                                    <div className={`w-10 h-10 rounded-full ${currentStore.color} flex items-center justify-center text-white transition-colors duration-300`}>
+                                        <currentStore.icon className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <div className="text-sm font-black text-slate-900">Vendex AI Bot</div>
+                                        <div className="text-sm font-black text-slate-900">{currentStore.name}</div>
                                         <div className="flex items-center gap-1.5">
                                             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">En línea</span>
+                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Asistente IA · En línea</span>
                                         </div>
                                     </div>
                                 </div>

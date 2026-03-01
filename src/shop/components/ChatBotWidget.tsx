@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Send, X, MessageCircle, Bot } from "lucide-react";
 import { sanitizePhoneNumber } from "../../utils/format";
 
@@ -45,6 +45,25 @@ export function ChatBotWidget({
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const hasTriggeredInitial = useRef(false);
 
+    const systemPrompt = useMemo(() => {
+        const productList = products.map(p => `- ${p.name}: $${p.price} (${p.description || 'Sin descripción'})`).join('\n');
+        return aiPrompt || `Eres un asistente virtual amable y servicial para la tienda "${storeName}".
+            Descripción de la tienda: ${storeDescription || 'Tienda minorista'}.
+            Dirección física/Ubicación: ${storeAddress || 'Consultar por WhatsApp'}.
+            Tu objetivo es ayudar a los clientes con sus dudas sobre los productos y la tienda de forma fluida.
+
+            Aquí tienes el catálogo de productos actual:
+            ${productList}
+
+            REGLAS DE COMPORTAMIENTO:
+            1. Responde de forma concisa y natural, como un humano en un chat.
+            2. MANTÉN EL HILO: No vuelvas a decir "Hola" o presentarte si ya estás hablando con el cliente.
+            3. Si no sabes algo, o si el cliente quiere atención humana, sugiérele contactar por WhatsApp.
+            4. Usa emojis (pero no en exceso) para que sea ameno.
+            5. Si preguntan por precios o detalles, usa SIEMPRE la lista de productos provista.
+            6. Responde SIEMPRE en Español.`;
+    }, [products, aiPrompt, storeName, storeDescription, storeAddress]);
+
     useEffect(() => {
         if (isOpen && initialMessage && !hasTriggeredInitial.current) {
             hasTriggeredInitial.current = true;
@@ -78,24 +97,6 @@ export function ChatBotWidget({
         setIsLoading(true);
 
         try {
-            // Preparar el contexto para la IA
-            const productList = products.map(p => `- ${p.name}: $${p.price} (${p.description || 'Sin descripción'})`).join('\n');
-            const systemPrompt = aiPrompt || `Eres un asistente virtual amable y servicial para la tienda "${storeName}". 
-            Descripción de la tienda: ${storeDescription || 'Tienda minorista'}.
-            Dirección física/Ubicación: ${storeAddress || 'Consultar por WhatsApp'}.
-            Tu objetivo es ayudar a los clientes con sus dudas sobre los productos y la tienda de forma fluida.
-            
-            Aquí tienes el catálogo de productos actual:
-            ${productList}
-            
-            REGLAS DE COMPORTAMIENTO:
-            1. Responde de forma concisa y natural, como un humano en un chat.
-            2. MANTÉN EL HILO: No vuelvas a decir "Hola" o presentarte si ya estás hablando con el cliente.
-            3. Si no sabes algo, o si el cliente quiere atención humana, sugiérele contactar por WhatsApp.
-            4. Usa emojis (pero no en exceso) para que sea ameno.
-            5. Si preguntan por precios o detalles, usa SIEMPRE la lista de productos provista.
-            6. Responde SIEMPRE en Español.`;
-
             const chatHistory = messages.filter(m => m.id !== '1').map(m => ({ role: m.role, content: m.content }));
             chatHistory.push({ role: "user", content: textToSend.trim() });
 
