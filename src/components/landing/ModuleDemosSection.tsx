@@ -268,7 +268,7 @@ const ModuleDemosSection = () => {
   return (
     <section
       id="ia"
-      className="relative py-24 md:py-32 bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-800 overflow-hidden scroll-mt-28"
+      className="relative py-10 md:py-14 bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-800 overflow-hidden scroll-mt-28"
     >
       {/* Background glows */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
