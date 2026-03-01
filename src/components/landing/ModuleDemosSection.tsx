@@ -410,12 +410,15 @@ const ModuleDemosSection = () => {
             >
               {messages.length === 0 && (
                 <div className="flex items-center justify-center h-full">
-                  <div className="text-center">
-                    <div className={`w-14 h-14 rounded-2xl ${mod.accentBg}/20 flex items-center justify-center mx-auto mb-3`}>
-                      <mod.icon className={`w-7 h-7 ${mod.accentText}`} />
+                  <div className="text-center px-4">
+                    <div className={`w-20 h-20 rounded-3xl ${mod.accentBg}/20 flex items-center justify-center mx-auto mb-5`}>
+                      <mod.icon className={`w-10 h-10 ${mod.accentText}`} />
                     </div>
-                    <p className="text-slate-500 text-sm font-medium">
+                    <p className="text-slate-700 text-base font-semibold mb-2">
                       Hacé clic en un comando de arriba para ver la demo
+                    </p>
+                    <p className="text-slate-400 text-sm font-medium">
+                      o escribí una consulta para que la IA te responda
                     </p>
                   </div>
                 </div>
