@@ -74,7 +74,7 @@ const HeroSection = () => {
               Vender con IA ahora <ArrowRight className="w-5 h-5" />
             </a>
             <a
-              href="#ia-demo"
+              href="#cliente"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-white text-slate-900 font-bold text-sm shadow-xl shadow-slate-200/50 hover:bg-slate-50 transition-all border border-slate-100"
               onClick={() => trackEvent("hero_request_demo_click")}
             >
