@@ -1,5 +1,6 @@
-import { ArrowRight, Link, ShoppingCart, MessageCircle, Bot } from "lucide-react";
+import { ArrowRight, Play, Zap, Link, ShoppingCart, MessageCircle, Bot } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import heroMockup from "@/assets/hero-mockup.png";
 
 const steps = [
   {
@@ -38,49 +39,63 @@ const HeroSection = () => {
       <div className="absolute bottom-1/4 left-0 w-48 h-48 bg-white/20 backdrop-blur-3xl border border-white/30 rounded-[3rem] -z-10 -translate-x-1/2 -rotate-12 animate-float" />
 
       <div className="container mx-auto px-4 sm:px-6 w-full relative">
-        {/* Hero text */}
-        <div className="max-w-4xl mx-auto text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-violet-900 text-white text-[10px] font-black uppercase tracking-[0.2em] mb-4 animate-fade-up shadow-xl shadow-violet-900/30">
-            <span className="w-2 h-2 rounded-full bg-primary-dynamic animate-pulse" />
-            Tu tienda inteligente en WhatsApp
+        {/* Hero content: text + mockup */}
+        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 mb-8">
+          {/* Left: text */}
+          <div className="flex-1 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-5 animate-fade-up border border-emerald-100">
+              <Zap className="w-4 h-4" />
+              Automatización real para negocios
+            </div>
+
+            <h1
+              className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.08] mb-5 animate-fade-up tracking-tight"
+              style={{ animationDelay: "0.1s" }}
+            >
+              Convierte tu negocio{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400">
+                en una máquina de ventas
+              </span>
+            </h1>
+
+            <p
+              className="text-base md:text-lg text-slate-500 max-w-xl mx-auto lg:mx-0 mb-7 animate-fade-up font-medium leading-relaxed"
+              style={{ animationDelay: "0.2s" }}
+            >
+              Crea tu tienda, recibe pedidos y deja que un asistente con inteligencia artificial venda por vos.
+            </p>
+
+            <div
+              className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 animate-fade-up"
+              style={{ animationDelay: "0.3s" }}
+            >
+              <a
+                href="https://admin.vendexchat.app/register"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-primary-dynamic text-white font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-primary-dynamic/30"
+                onClick={() => trackEvent("hero_demo_click")}
+              >
+                Probar gratis <ArrowRight className="w-5 h-5" />
+              </a>
+              <a
+                href="#cliente"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-white text-slate-900 font-bold text-sm shadow-xl shadow-slate-200/50 hover:bg-slate-50 transition-all border border-slate-100"
+                onClick={() => trackEvent("hero_request_demo_click")}
+              >
+                <Play className="w-4 h-4 fill-current" /> Ver demo interactiva
+              </a>
+            </div>
           </div>
 
-          <h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.05] md:leading-[0.95] mb-4 animate-fade-up tracking-tighter"
-            style={{ animationDelay: "0.1s" }}
-          >
-            Vende más <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-dynamic via-violet-500 to-indigo-400">sin estar ahí</span>
-          </h1>
-
-          <p
-            className="text-base md:text-lg text-slate-500 max-w-xl mx-auto mb-6 animate-fade-up font-medium leading-snug"
-            style={{ animationDelay: "0.2s" }}
-          >
-            Transformamos tu WhatsApp en una <span className="text-slate-900 font-bold">terminal de ventas inteligente</span>. Desde digitalizar menús hasta cerrar ventas 24/7.
-          </p>
-
-          <div
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-up mb-6"
-            style={{ animationDelay: "0.3s" }}
-          >
-            <a
-              href="https://admin.vendexchat.app/register"
-              target="_blank"
-              rel="noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 rounded-2xl bg-primary-dynamic text-white font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-primary-dynamic/30"
-              onClick={() => trackEvent("hero_demo_click")}
-            >
-              Vender con IA ahora <ArrowRight className="w-5 h-5" />
-            </a>
-            <a
-              href="#cliente"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-white text-slate-900 font-bold text-sm shadow-xl shadow-slate-200/50 hover:bg-slate-50 transition-all border border-slate-100"
-              onClick={() => trackEvent("hero_request_demo_click")}
-            >
-              Ver Demo Interactiva
-            </a>
+          {/* Right: mockup */}
+          <div className="flex-1 flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: "0.4s" }}>
+            <img
+              src={heroMockup}
+              alt="VendexChat demo en celular"
+              className="w-full max-w-md lg:max-w-lg drop-shadow-2xl"
+            />
           </div>
-
         </div>
 
         {/* Steps */}
