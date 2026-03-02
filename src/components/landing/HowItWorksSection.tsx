@@ -297,20 +297,21 @@ const HowItWorksSection = () => {
 
         {/* Header */}
         <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter mb-2 whitespace-nowrap">
+          <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter mb-2">
             Todo tu negocio en{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
               un solo lugar
             </span>
           </h2>
-          <p className="text-sm text-slate-500 font-medium whitespace-nowrap">
+          <p className="text-sm text-slate-500 font-medium max-w-xl mx-auto">
             Pedidos, catálogo, clientes y envíos — todo centralizado en un panel simple, diseñado para que no pierdas tiempo.
           </p>
         </div>
 
         {/* Interactive dashboard mockup */}
         <div className="max-w-5xl mx-auto">
-          <div className="rounded-2xl overflow-hidden shadow-2xl shadow-slate-300/40 border border-slate-200 bg-white">
+          <div className="rounded-2xl overflow-x-auto shadow-2xl shadow-slate-300/40 border border-slate-200 bg-white">
+          <div className="min-w-[700px]">
 
             {/* Browser chrome */}
             <div className="flex items-center gap-2 px-5 py-3 bg-slate-100 border-b border-slate-200">
@@ -394,6 +395,7 @@ const HowItWorksSection = () => {
                 </div>
               </div>
             </div>
+          </div>
           </div>
 
           {/* Tab hint pills below */}

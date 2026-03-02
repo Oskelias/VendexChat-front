@@ -46,14 +46,14 @@ const HeroSection = () => {
           </div>
 
           <h1
-            className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-[0.95] mb-4 animate-fade-up tracking-tighter whitespace-nowrap"
+            className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.05] md:leading-[0.95] mb-4 animate-fade-up tracking-tighter"
             style={{ animationDelay: "0.1s" }}
           >
             Vende más <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-dynamic via-violet-500 to-indigo-400">sin estar ahí</span>
           </h1>
 
           <p
-            className="text-base md:text-lg text-slate-500 mx-auto mb-6 animate-fade-up font-medium leading-snug whitespace-nowrap"
+            className="text-base md:text-lg text-slate-500 max-w-xl mx-auto mb-6 animate-fade-up font-medium leading-snug"
             style={{ animationDelay: "0.2s" }}
           >
             Transformamos tu WhatsApp en una <span className="text-slate-900 font-bold">terminal de ventas inteligente</span>. Desde digitalizar menús hasta cerrar ventas 24/7.
