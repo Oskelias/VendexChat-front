@@ -28,7 +28,7 @@ const steps = [
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center pt-28 pb-20 md:pt-36 md:pb-28 overflow-hidden bg-white">
+    <section className="relative min-h-screen flex flex-col justify-center pt-20 pb-8 md:pt-28 md:pb-12 overflow-hidden bg-white">
       {/* Background */}
       <div className="absolute top-0 left-0 w-full h-full -z-20">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-dynamic/10 rounded-full blur-[120px] animate-pulse-subtle" />
@@ -40,7 +40,7 @@ const HeroSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 w-full relative">
         {/* Hero content: text + mockup */}
-        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 mb-8">
+        <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-10 mb-6">
           {/* Left: text */}
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-5 animate-fade-up border border-emerald-100">
