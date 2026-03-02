@@ -31,6 +31,19 @@ function setCachedCatalog(identifier: string, data: CatalogResponse) {
   }
 }
 
+async function fetchCatalogWithRetry(identifier: string, retries = 3): Promise<{ data: any; error: any }> {
+  let lastError: any = null;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    if (attempt > 0) {
+      await new Promise((res) => setTimeout(res, 2 ** (attempt - 1) * 500));
+    }
+    const result = await supabase.rpc("get_catalog", { p_identifier: identifier });
+    if (!result.error) return result;
+    lastError = result.error;
+  }
+  return { data: null, error: lastError };
+}
+
 export async function fetchCatalog(identifier: string): Promise<CatalogResponse> {
   // Servir desde caché si existe (localStorage persiste entre sesiones)
   const cached = getCachedCatalog(identifier);
@@ -38,7 +51,7 @@ export async function fetchCatalog(identifier: string): Promise<CatalogResponse>
 
   // Una sola llamada RPC que devuelve store + categorías + productos + anuncio global.
   // Elimina el waterfall de 2 round-trips (store → categories+products).
-  const { data, error } = await supabase.rpc("get_catalog", { p_identifier: identifier });
+  const { data, error } = await fetchCatalogWithRetry(identifier);
 
   if (error || !data) {
     throw new Error(`Store not found for identifier: ${identifier}`);

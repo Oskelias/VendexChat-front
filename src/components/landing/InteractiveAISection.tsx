@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Send, Bot, Sparkles, ShoppingBag, Zap, UtensilsCrossed, Wine, BookOpen } from "lucide-react";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "@/lib/supabase";
 
 type StoreType = "hamburgueseria" | "bebidas" | "libreria";
 
