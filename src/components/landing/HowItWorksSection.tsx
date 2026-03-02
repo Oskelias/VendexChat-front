@@ -290,7 +290,7 @@ const HowItWorksSection = () => {
   const [active, setActive] = useState<SectionId>("dashboard");
 
   return (
-    <section id="gestion" className="relative py-24 md:py-32 bg-slate-50 scroll-mt-28 overflow-hidden">
+    <section id="gestion" className="relative py-24 md:py-32 min-h-screen bg-slate-50 overflow-hidden">
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[140px] -z-10 translate-x-1/3 -translate-y-1/3" />
 
       <div className="container mx-auto px-4 sm:px-6">

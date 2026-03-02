@@ -92,7 +92,7 @@ const InteractiveAISection = () => {
     };
 
     return (
-        <section id="cliente" className="relative py-24 md:py-32 bg-gradient-to-br from-violet-950 via-indigo-950 to-emerald-950 overflow-hidden scroll-mt-28">
+        <section id="cliente" className="relative py-24 md:py-32 min-h-screen bg-gradient-to-br from-violet-950 via-indigo-950 to-emerald-950 overflow-hidden">
             {/* Top accent border */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-primary-dynamic to-emerald-400" />
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full -z-10">
