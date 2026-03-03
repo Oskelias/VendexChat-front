@@ -110,7 +110,7 @@ const PricingSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative">
         <div className="max-w-4xl mx-auto text-center mb-10">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 mb-6 leading-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 mb-6 leading-tight whitespace-nowrap">
             Planes que escalan <span className="text-primary-dynamic text-gradient">con tu negocio</span>
           </h2>
           <p className="text-slate-500 text-lg font-medium max-w-2xl mx-auto">
