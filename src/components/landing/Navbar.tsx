@@ -26,6 +26,18 @@ const NAV_LINKS = [
     color: "text-muted-foreground hover:text-foreground",
     dot: null,
   },
+  {
+    label: "Testimonios",
+    href: "#testimonios",
+    color: "text-muted-foreground hover:text-foreground",
+    dot: null,
+  },
+  {
+    label: "FAQ",
+    href: "#faq",
+    color: "text-muted-foreground hover:text-foreground",
+    dot: null,
+  },
 ];
 
 const Navbar = () => {
