@@ -52,9 +52,9 @@ const HeroSection = () => {
               className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.08] mb-5 animate-fade-up tracking-tight"
               style={{ animationDelay: "0.1s" }}
             >
-              Convierte tu negocio{" "}
+              Armá tu web de productos con IA{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400">
-                en una máquina de ventas
+                en pocos minutos
               </span>
             </h1>
 
@@ -62,7 +62,7 @@ const HeroSection = () => {
               className="text-base md:text-lg text-slate-500 max-w-xl mx-auto lg:mx-0 mb-7 animate-fade-up font-medium leading-relaxed"
               style={{ animationDelay: "0.2s" }}
             >
-              Crea tu tienda, recibe pedidos y deja que un asistente con inteligencia artificial venda por vos.
+              Chico o grande, no importa. Lo hacemos posible. Subite a la revolución IA.
             </p>
 
             <div
