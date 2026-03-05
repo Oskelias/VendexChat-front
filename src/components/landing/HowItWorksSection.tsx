@@ -297,13 +297,13 @@ const HowItWorksSection = () => {
 
         {/* Header */}
         <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter mb-2">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tighter mb-3 md:whitespace-nowrap">
             Todo tu negocio en{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
               un solo lugar
             </span>
           </h2>
-          <p className="text-sm text-slate-500 font-medium max-w-xl mx-auto">
+          <p className="text-base md:text-xl text-slate-500 font-medium mx-auto md:whitespace-nowrap">
             Pedidos, catálogo, clientes y envíos — todo centralizado en un panel simple, diseñado para que no pierdas tiempo.
           </p>
         </div>

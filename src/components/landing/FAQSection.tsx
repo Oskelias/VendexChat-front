@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 const faqs = [
   {
@@ -72,7 +73,7 @@ const FAQSection = () => {
             <span className="w-1.5 h-1.5 rounded-full bg-primary-dynamic" />
             Preguntas frecuentes
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-4 md:whitespace-nowrap">
             ¿Tenés dudas?{" "}
             <span className="text-primary-dynamic text-gradient">Las respondemos</span>
           </h2>
@@ -99,7 +100,7 @@ const FAQSection = () => {
           <p className="text-slate-500 text-sm">
             ¿No encontraste tu respuesta?{" "}
             <a
-              href="https://wa.me/5491100000000"
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="font-bold text-primary-dynamic hover:underline"
