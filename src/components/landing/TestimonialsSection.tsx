@@ -97,6 +97,10 @@ const TestimonialsSection = () => {
                   <p className="text-sm font-bold text-slate-900">{t.name}</p>
                   <p className="text-xs text-slate-400 font-medium">{t.role} · {t.location}</p>
                 </div>
+                <div className="ml-auto flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                  <Building2 className="w-3 h-3 text-slate-500" />
+                  <span className="text-[10px] font-black text-slate-600 tracking-wide">Logo {t.logo}</span>
+                </div>
               </div>
             </div>
           ))}
