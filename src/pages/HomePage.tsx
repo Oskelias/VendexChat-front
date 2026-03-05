@@ -2,6 +2,7 @@ import Navbar from "@/components/landing/Navbar";
 import HeroSection from "@/components/landing/HeroSection";
 import InteractiveAISection from "@/components/landing/InteractiveAISection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
+import DemoSection from "@/components/landing/DemoSection";
 import ModuleDemosSection from "@/components/landing/ModuleDemosSection";
 import PricingSection from "@/components/landing/PricingSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
@@ -19,6 +20,8 @@ export function HomePage() {
       <InteractiveAISection />
       {/* BLOQUE 2: Gestión de tienda */}
       <HowItWorksSection />
+      {/* Demo: tienda del cliente + dashboard IA */}
+      <DemoSection />
       {/* BLOQUE 3: Inteligencia IA (tabs: Cliente / Gestión / IA) */}
       <ModuleDemosSection />
       <PricingSection />
