@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { WHATSAPP_URL } from "@/lib/whatsapp";
 
 const faqs = [
   {
@@ -99,7 +100,7 @@ const FAQSection = () => {
           <p className="text-slate-500 text-sm">
             ¿No encontraste tu respuesta?{" "}
             <a
-              href="https://wa.me/5491100000000"
+              href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="font-bold text-primary-dynamic hover:underline"
