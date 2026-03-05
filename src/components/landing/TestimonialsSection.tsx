@@ -1,12 +1,11 @@
-import { BadgeCheck, Building2, Star } from "lucide-react";
+import { BadgeCheck, Star } from "lucide-react";
 
 const testimonials = [
   {
     name: "Morfi Viandas",
     role: "Viandas saludables",
     location: "Buenos Aires",
-    logo: "MV",
-    color: "bg-emerald-600",
+    logoSrc: "/logos/morfi.svg",
     stars: 5,
     text: "Antes tomábamos pedidos por WhatsApp de forma desordenada y se nos mezclaban horarios y menús. Ahora el cliente elige solo desde la tienda, el bot resuelve dudas y a cocina le llega todo mucho más claro.",
   },
@@ -14,8 +13,7 @@ const testimonials = [
     name: "Central Tienda de Bebidas",
     role: "Bebidas y combos",
     location: "Palermo",
-    logo: "CB",
-    color: "bg-blue-600",
+    logoSrc: "/logos/central.svg",
     stars: 5,
     text: "En hora pico nos explotaban las consultas de stock y promos. Con VendexChat los clientes ven el catálogo actualizado y preguntan menos; nosotros nos enfocamos en preparar y despachar más rápido.",
   },
@@ -23,8 +21,7 @@ const testimonials = [
     name: "Mundo Electrónico",
     role: "Ecommerce de electrónica",
     location: "Online",
-    logo: "ME",
-    color: "bg-violet-600",
+    logoSrc: "/logos/mundo-electronico.svg",
     stars: 5,
     text: "Tenemos muchos SKU y actualizar precios era eterno. El importador IA nos ahorró horas y el asistente responde preguntas técnicas básicas antes de que intervenga el equipo.",
   },
@@ -32,8 +29,7 @@ const testimonials = [
     name: "Distribuidora de Bebidas Humahuaca",
     role: "Distribución mayorista y minorista",
     location: "Humahuaca",
-    logo: "DH",
-    color: "bg-amber-600",
+    logoSrc: "/logos/dbh.svg",
     stars: 5,
     text: "Pasamos de anotar pedidos en varios chats a tener un flujo ordenado por zonas y horarios. Se redujeron los errores de entrega y mejoró mucho el seguimiento diario.",
   },
@@ -41,8 +37,7 @@ const testimonials = [
     name: "Era para vos",
     role: "Indumentaria femenina",
     location: "Córdoba",
-    logo: "EV",
-    color: "bg-pink-600",
+    logoSrc: "/logos/era-para-vos.svg",
     stars: 5,
     text: "Con los cambios de temporada necesitábamos mover rápido catálogo y promos. Ahora publicamos novedades en minutos y el bot guía mejor a las clientas entre talles y modelos.",
   },
@@ -92,9 +87,12 @@ const TestimonialsSection = () => {
               </p>
 
               <div className="mt-6 flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-full ${t.color} flex items-center justify-center text-white text-xs font-black flex-shrink-0`}>
-                  {t.logo}
-                </div>
+                <img
+                  src={t.logoSrc}
+                  alt={`Logo ${t.name}`}
+                  className="w-10 h-10 rounded-full object-cover border border-slate-200 flex-shrink-0"
+                  loading="lazy"
+                />
                 <div>
                   <p className="text-sm font-bold text-slate-900">{t.name}</p>
                   <p className="text-xs text-slate-400 font-medium">{t.role} · {t.location}</p>
