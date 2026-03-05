@@ -1,59 +1,45 @@
-import { Star } from "lucide-react";
+import { BadgeCheck, Star } from "lucide-react";
 
 const testimonials = [
   {
-    name: "María González",
-    role: "Tienda de ropa",
-    location: "Córdoba",
-    avatar: "MG",
-    color: "bg-violet-600",
-    stars: 5,
-    text: "Antes perdía pedidos porque no daba abasto con los mensajes. Ahora el bot responde solo y yo me enfoco en preparar los paquetes. Vendí el doble en el primer mes.",
-  },
-  {
-    name: "Lucas Ferreyra",
-    role: "Rotisería",
-    location: "Rosario",
-    avatar: "LF",
-    color: "bg-blue-600",
-    stars: 5,
-    text: "El menú digital por QR fue un cambio enorme. Los clientes eligen solos, pagan y ya. Casi no tengo que atender el teléfono a la hora pico.",
-  },
-  {
-    name: "Sofía Martínez",
-    role: "Perfumería online",
+    name: "Morfi Viandas",
+    role: "Viandas saludables",
     location: "Buenos Aires",
-    avatar: "SM",
-    color: "bg-emerald-600",
+    logoSrc: "/logos/morfi.svg",
     stars: 5,
-    text: "Lo que más me gustó es que subí todo el catálogo con fotos y el sistema lo cargó solo con la IA. Me ahorró horas de trabajo y quedó perfecto.",
+    text: "Antes tomábamos pedidos por WhatsApp de forma desordenada y se nos mezclaban horarios y menús. Ahora el cliente elige solo desde la tienda, el bot resuelve dudas y a cocina le llega todo mucho más claro.",
   },
   {
-    name: "Rodrigo Paz",
-    role: "Ferretería",
-    location: "Mendoza",
-    avatar: "RP",
-    color: "bg-amber-600",
+    name: "Central Tienda de Bebidas",
+    role: "Bebidas y combos",
+    location: "Palermo",
+    logoSrc: "/logos/central.svg",
     stars: 5,
-    text: "Tengo más de 500 productos y nunca pensé que iba a poder tenerlos en línea. Con VENDExChat armé el catálogo en un día. Los pedidos llegaban solos.",
+    text: "En hora pico nos explotaban las consultas de stock y promos. Con VendexChat los clientes ven el catálogo actualizado y preguntan menos; nosotros nos enfocamos en preparar y despachar más rápido.",
   },
   {
-    name: "Carolina Vidal",
-    role: "Pastelería artesanal",
-    location: "La Plata",
-    avatar: "CV",
-    color: "bg-pink-600",
+    name: "Mundo Electrónico",
+    role: "Ecommerce de electrónica",
+    location: "Online",
+    logoSrc: "/logos/mundo-electronico.svg",
     stars: 5,
-    text: "Mis clientas piden por WhatsApp y el bot les muestra las tortas, los precios y les confirma la entrega. Yo solo me encargo de hornear. Increíble.",
+    text: "Tenemos muchos SKU y actualizar precios era eterno. El importador IA nos ahorró horas y el asistente responde preguntas técnicas básicas antes de que intervenga el equipo.",
   },
   {
-    name: "Tomás Ibáñez",
-    role: "Electrónica",
-    location: "Tucumán",
-    avatar: "TI",
-    color: "bg-cyan-600",
+    name: "Distribuidora de Bebidas Humahuaca",
+    role: "Distribución mayorista y minorista",
+    location: "Humahuaca",
+    logoSrc: "/logos/dbh.svg",
     stars: 5,
-    text: "El control de stock en tiempo real me salvó de vender productos que no tenía. Y el reporte semanal me dice qué se vende más. Muy completo.",
+    text: "Pasamos de anotar pedidos en varios chats a tener un flujo ordenado por zonas y horarios. Se redujeron los errores de entrega y mejoró mucho el seguimiento diario.",
+  },
+  {
+    name: "Era para vos",
+    role: "Indumentaria femenina",
+    location: "Córdoba",
+    logoSrc: "/logos/era-para-vos.svg",
+    stars: 5,
+    text: "Con los cambios de temporada necesitábamos mover rápido catálogo y promos. Ahora publicamos novedades en minutos y el bot guía mejor a las clientas entre talles y modelos.",
   },
 ];
 
@@ -78,13 +64,10 @@ const TestimonialsSection = () => {
             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
             Lo que dicen nuestros clientes
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-4 md:whitespace-nowrap">
             Negocios reales,{" "}
             <span className="text-primary-dynamic text-gradient">resultados reales</span>
           </h2>
-          <p className="text-slate-500 text-lg font-medium">
-            Miles de comercios en Argentina ya venden más con VENDExChat.
-          </p>
         </div>
 
         {/* Grid */}
@@ -104,12 +87,19 @@ const TestimonialsSection = () => {
               </p>
 
               <div className="mt-6 flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-full ${t.color} flex items-center justify-center text-white text-xs font-black flex-shrink-0`}>
-                  {t.avatar}
-                </div>
+                <img
+                  src={t.logoSrc}
+                  alt={`Logo ${t.name}`}
+                  className="w-10 h-10 rounded-full object-cover border border-slate-200 flex-shrink-0"
+                  loading="lazy"
+                />
                 <div>
                   <p className="text-sm font-bold text-slate-900">{t.name}</p>
                   <p className="text-xs text-slate-400 font-medium">{t.role} · {t.location}</p>
+                </div>
+                <div className="ml-auto flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                  <Building2 className="w-3 h-3 text-slate-500" />
+                  <span className="text-[10px] font-black text-slate-600 tracking-wide">Logo {t.logo}</span>
                 </div>
               </div>
             </div>
@@ -119,12 +109,12 @@ const TestimonialsSection = () => {
         {/* Bottom trust bar */}
         <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-center">
           {[
-            { value: "5.000+", label: "comercios activos" },
-            { value: "4.9 / 5", label: "valoración promedio" },
-            { value: "98%", label: "clientes satisfechos" },
+            { value: "Casos reales", label: "de rubros distintos" },
+            { value: "Implementación simple", label: "sin fricción operativa" },
+            { value: "Soporte cercano", label: "en cada etapa" },
           ].map((stat) => (
             <div key={stat.label}>
-              <p className="text-2xl font-black text-slate-900">{stat.value}</p>
+              <p className="text-sm md:text-base font-black text-slate-900 flex items-center gap-1 justify-center"><BadgeCheck className="w-4 h-4 text-primary-dynamic" />{stat.value}</p>
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{stat.label}</p>
             </div>
           ))}
