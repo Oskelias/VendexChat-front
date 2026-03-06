@@ -97,10 +97,10 @@ const DemoSection = () => {
                 </div>
                 <div className="flex-1 bg-white rounded-lg px-3 py-1 text-xs text-slate-400 font-medium border border-slate-200 flex items-center gap-2">
                   <span className="text-slate-300">🔒</span>
-                  vendexchat.app/morfi-demo
+                  vendexchat.app/demo
                 </div>
                 <a
-                  href="/morfi-demo"
+                  href="/demo"
                   target="_blank"
                   rel="noreferrer"
                   className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition-colors"
@@ -113,7 +113,7 @@ const DemoSection = () => {
               {/* Iframe */}
               <div className="relative" style={{ height: "480px" }}>
                 <iframe
-                  src="/morfi-demo"
+                  src="/demo"
                   title="Demo tienda - Vista del cliente"
                   className="w-full h-full border-0"
                   loading="lazy"
