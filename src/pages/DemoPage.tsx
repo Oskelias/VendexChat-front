@@ -2,7 +2,9 @@ import { useState, useMemo } from "react";
 import { StoreHeader } from "@/shop/components/StoreHeader";
 import { CategoryChips } from "@/shop/components/CategoryChips";
 import { ProductCard } from "@/shop/components/ProductCard";
-import type { Product, Category } from "@/types";
+import { CartBar } from "@/shop/components/CartBar";
+import { CartDrawer } from "@/shop/components/CartDrawer";
+import type { Product, Category, CartItem } from "@/types";
 
 /* ── Hardcoded demo data ── */
 
@@ -115,8 +117,11 @@ export default function DemoPage() {
   const [activeCategory, setActiveCategory] = useState<string | number | null>("cat-1");
   const [searchTerm, setSearchTerm] = useState("");
   const [cart, setCart] = useState<Record<string, number>>({});
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const getItemQuantity = (id: string) => cart[id] || 0;
+
+  const allProducts = useMemo(() => DEMO_CATEGORIES.flatMap((c) => c.products || []), []);
 
   const addItem = (p: Product) => {
     setCart((prev) => ({ ...prev, [p.id]: (prev[p.id] || 0) + 1 }));
@@ -132,6 +137,33 @@ export default function DemoPage() {
   };
 
   const totalItems = Object.values(cart).reduce((s, q) => s + q, 0);
+
+  const cartItems: CartItem[] = useMemo(
+    () =>
+      Object.entries(cart)
+        .map(([id, qty]) => {
+          const product = allProducts.find((p) => p.id === id);
+          return product ? { product, quantity: qty } : null;
+        })
+        .filter(Boolean) as CartItem[],
+    [cart, allProducts]
+  );
+
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + (item.product.offer_price ?? item.product.price) * item.quantity,
+    0
+  );
+
+  const handleCartUpdateQuantity = (id: string | number, delta: number) => {
+    const strId = String(id);
+    setCart((prev) => {
+      const next = { ...prev };
+      const newQ = (next[strId] || 0) + delta;
+      if (newQ <= 0) delete next[strId];
+      else next[strId] = newQ;
+      return next;
+    });
+  };
 
   const filteredCategories = useMemo(() => {
     const all = DEMO_CATEGORIES.map((cat) => ({
@@ -163,7 +195,7 @@ export default function DemoPage() {
         totalItems={totalItems}
         onSearch={setSearchTerm}
         onChatClick={() => {}}
-        onCartClick={() => {}}
+        onCartClick={() => setIsCartOpen(true)}
       />
 
       <CategoryChips
@@ -217,6 +249,24 @@ export default function DemoPage() {
           </a>
         </p>
       </div>
+
+      <CartBar
+        totalItems={totalItems}
+        totalPrice={totalPrice}
+        onClick={() => setIsCartOpen(true)}
+      />
+
+      <CartDrawer
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        items={cartItems}
+        totalPrice={totalPrice}
+        onUpdateQuantity={handleCartUpdateQuantity}
+        onClear={() => setCart({})}
+        whatsappNumber="+5491112345678"
+        storeId="demo"
+        couponsEnabled={false}
+      />
     </div>
   );
 }
