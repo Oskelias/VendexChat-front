@@ -75,7 +75,7 @@ const Navbar = () => {
         {/* CTA — desktop */}
         <div className="hidden md:flex items-center gap-3">
           <a
-            href="/morfi-demo"
+            href="/demo"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Ver ejemplo <ExternalLink className="w-3.5 h-3.5" />
@@ -127,7 +127,7 @@ const Navbar = () => {
             </a>
           ))}
           <a
-            href="/morfi-demo"
+            href="/demo"
             onClick={() => setMenuOpen(false)}
             className="flex items-center gap-1.5 px-3 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >

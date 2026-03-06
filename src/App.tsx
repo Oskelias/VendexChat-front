@@ -4,6 +4,7 @@ import ShopPage from "./shop/pages/ShopPage";
 import { CartProvider } from "./context/CartContext";
 
 const HomePage = lazy(() => import("./pages/HomePage").then(m => ({ default: m.HomePage })));
+const DemoPage = lazy(() => import("./pages/DemoPage"));
 
 export default function App() {
   return (
@@ -12,6 +13,9 @@ export default function App() {
         <Routes>
           {/* Landing Page en la raíz */}
           <Route path="/" element={<Suspense fallback={null}><HomePage /></Suspense>} />
+
+          {/* Demo page */}
+          <Route path="/demo" element={<Suspense fallback={null}><DemoPage /></Suspense>} />
 
           {/* Rutas reservadas que no deben ser capturadas por el shop */}
           <Route path="/admin" element={<div className="p-10 font-bold">Admin Panel (Separated deployment)</div>} />
