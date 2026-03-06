@@ -1,140 +1,57 @@
-import { ArrowRight, Play, Zap, Link, ShoppingCart, MessageCircle, Bot } from "lucide-react";
+import { ArrowRight, Play, Zap } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import HeroMockup from "@/components/landing/HeroMockup";
 
-const steps = [
-  {
-    icon: Link,
-    title: "El cliente abre el link de tu tienda",
-    description: "Funciona en cualquier dispositivo y carga rápido.",
-  },
-  {
-    icon: ShoppingCart,
-    title: "Selecciona productos del catálogo",
-    description: "Elige ítems, cantidades y extras por su cuenta.",
-  },
-  {
-    icon: Bot,
-    title: "Asistente IA lo ayuda a elegir",
-    description: "Tu bot inteligente responde dudas y sugiere productos en tiempo real.",
-    highlight: true,
-  },
-  {
-    icon: MessageCircle,
-    title: "El pedido llega listo a WhatsApp",
-    description: "Te llega el pedido por WhatsApp y coordinás los detalles finales con el comprador.",
-  },
-];
-
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center pt-20 pb-8 md:pt-28 md:pb-12 overflow-hidden bg-white">
-      {/* Background */}
-      <div className="absolute top-0 left-0 w-full h-full -z-20">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-dynamic/10 rounded-full blur-[120px] animate-pulse-subtle" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-violet-100/30 rounded-full blur-[150px] animate-pulse-subtle delay-1000" />
-        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-emerald-50/40 rounded-full blur-[100px] animate-pulse-subtle delay-700" />
+    <section className="relative overflow-hidden bg-[#f8fafc] pt-24 pb-14 md:pt-32 md:pb-20">
+      <div className="absolute inset-0 -z-20">
+        <div className="absolute -top-32 -left-24 h-80 w-80 rounded-full bg-emerald-200/50 blur-3xl" />
+        <div className="absolute top-20 right-8 h-[28rem] w-[28rem] rounded-full bg-violet-300/30 blur-3xl" />
+        <div className="absolute bottom-0 right-1/3 h-56 w-56 rounded-full bg-cyan-200/40 blur-3xl" />
       </div>
-      <div className="absolute top-1/4 right-0 w-64 h-64 bg-white/10 backdrop-blur-3xl border border-white/20 rounded-full -z-10 translate-x-1/2 rotate-12" />
-      <div className="absolute bottom-1/4 left-0 w-48 h-48 bg-white/20 backdrop-blur-3xl border border-white/30 rounded-[3rem] -z-10 -translate-x-1/2 -rotate-12 animate-float" />
 
-      <div className="container mx-auto px-4 sm:px-6 w-full relative">
-        {/* Hero content: text + mockup */}
-        <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-10 mb-6">
-          {/* Left: text */}
-          <div className="flex-1 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-5 animate-fade-up border border-emerald-100">
-              <Zap className="w-4 h-4" />
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="text-center lg:text-left">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-5 py-2 text-xs font-bold text-emerald-700">
+              <Zap className="h-4 w-4" />
               Tu negocio organizado con herramientas de IA, tu tiempo es lo más valioso
             </div>
 
-            <h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.08] mb-5 animate-fade-up tracking-tight"
-              style={{ animationDelay: "0.1s" }}
-            >
+            <h1 className="mb-6 text-4xl font-black leading-[1.08] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
               Armá tu web de productos con IA{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400">
+              <span className="bg-gradient-to-r from-emerald-500 to-violet-600 bg-clip-text text-transparent">
                 en pocos minutos
               </span>
             </h1>
 
-            <p
-              className="text-base md:text-lg text-slate-500 max-w-xl mx-auto lg:mx-0 mb-7 animate-fade-up font-medium leading-relaxed"
-              style={{ animationDelay: "0.2s" }}
-            >
+            <p className="mx-auto mb-8 max-w-2xl text-lg font-medium leading-relaxed text-slate-600 lg:mx-0">
               Chico o grande, no importa. Lo hacemos posible. Subite a la revolución IA.
             </p>
 
-            <div
-              className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 animate-fade-up"
-              style={{ animationDelay: "0.3s" }}
-            >
+            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
               <a
                 href="https://admin.vendexchat.app/register"
                 target="_blank"
                 rel="noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-primary-dynamic text-white font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-primary-dynamic/30"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary-dynamic px-8 py-3.5 text-sm font-bold text-white shadow-xl shadow-emerald-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] sm:w-auto"
                 onClick={() => trackEvent("hero_demo_click")}
               >
-                Probar gratis <ArrowRight className="w-5 h-5" />
+                Probar gratis <ArrowRight className="h-5 w-5" />
               </a>
               <a
                 href="#cliente"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-white text-slate-900 font-bold text-sm shadow-xl shadow-slate-200/50 hover:bg-slate-50 transition-all border border-slate-100"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-8 py-3.5 text-sm font-bold text-slate-900 shadow-lg shadow-slate-300/30 transition hover:bg-slate-50 sm:w-auto"
                 onClick={() => trackEvent("hero_request_demo_click")}
               >
-                <Play className="w-4 h-4 fill-current" /> Ver demo interactiva
+                <Play className="h-4 w-4 fill-current" /> Ver demo interactiva
               </a>
             </div>
           </div>
 
-          {/* Right: mockup */}
-          <div className="flex-1 flex justify-center lg:justify-end animate-fade-up" style={{ animationDelay: "0.4s" }}>
+          <div className="flex justify-center lg:justify-end">
             <HeroMockup />
-          </div>
-        </div>
-
-        {/* Steps */}
-        <div className="max-w-6xl mx-auto bg-white/60 backdrop-blur-sm rounded-3xl px-6 py-6 shadow-[0_-4px_24px_-4px_rgba(109,40,217,0.08),0_4px_24px_-4px_rgba(0,0,0,0.06)] border border-slate-100/80">
-          <p className="text-center text-[10px] font-black text-primary-dynamic uppercase tracking-[0.3em] mb-5">
-            Un flujo simple que entienden al instante
-          </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {steps.map((step, index) => (
-              <div
-                key={step.title}
-                className={`group relative p-5 rounded-[2rem] transition-all duration-500 hover:-translate-y-2 ${
-                  step.highlight
-                    ? "bg-white border-2 border-primary-dynamic/30 shadow-2xl shadow-primary-dynamic/10"
-                    : "bg-white/70 backdrop-blur-sm border border-slate-100 shadow-xl shadow-slate-200/50 hover:bg-white hover:border-primary-dynamic/10"
-                }`}
-              >
-                {step.highlight && (
-                  <div className="absolute -top-3 left-8 px-3 py-1 bg-primary-dynamic text-[8px] font-black text-white uppercase tracking-widest rounded-full animate-bounce">
-                    IA activa
-                  </div>
-                )}
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 ${
-                    step.highlight
-                      ? "bg-primary-dynamic text-white shadow-lg shadow-primary-dynamic/30"
-                      : "bg-slate-50 text-primary-dynamic border border-slate-100"
-                  }`}>
-                    <step.icon className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">0{index + 1}</span>
-                </div>
-                <h3 className="text-base font-black text-slate-900 mb-2 leading-tight group-hover:text-primary-dynamic transition-colors">
-                  {step.title}
-                </h3>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                  {step.description}
-                </p>
-                {index < 3 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-px bg-gradient-to-r from-slate-200 to-transparent -z-10" />
-                )}
-              </div>
-            ))}
           </div>
         </div>
       </div>
