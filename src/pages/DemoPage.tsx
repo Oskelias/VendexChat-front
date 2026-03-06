@@ -153,7 +153,7 @@ export default function DemoPage() {
     <div className="min-h-screen bg-white pb-24" style={{ "--primary-color": "#14b8a6" } as React.CSSProperties}>
       <StoreHeader
         name="Sabor Casero"
-        logo=""
+        logo="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop"
         banner="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=400&fit=crop"
         description="Viandas caseras con delivery a todo CABA. Pedidos hasta las 10hs."
         address="Palermo, CABA"
