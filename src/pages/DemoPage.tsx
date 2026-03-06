@@ -152,7 +152,7 @@ export default function DemoPage() {
   return (
     <div className="min-h-screen bg-white pb-24" style={{ "--primary-color": "#14b8a6" } as React.CSSProperties}>
       <StoreHeader
-        name="Morfi Viandas"
+        name="Sabor Casero"
         logo=""
         banner="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=400&fit=crop"
         description="Viandas caseras con delivery a todo CABA. Pedidos hasta las 10hs."
