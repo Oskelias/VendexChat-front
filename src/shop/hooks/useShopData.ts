@@ -29,13 +29,18 @@ export function useShopData(slug: string | undefined) {
         const fetchId = identifier; // Para evitar race conditions si cambiara (aunque poco probable aquí)
         const fetchFn = USE_MOCK ? fetchMockCatalog : fetchCatalog;
 
-        fetchFn(fetchId)
+        const TIMEOUT_MS = 12_000;
+        const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Tiempo de espera agotado. Revisá tu conexión e intentá de nuevo.")), TIMEOUT_MS)
+        );
+
+        Promise.race([fetchFn(fetchId), timeoutPromise])
             .then((res) => {
                 setData(res);
                 setLoading(false);
             })
             .catch((err) => {
-                setError(err.message);
+                setError(err instanceof Error ? err.message : String(err));
                 setLoading(false);
             });
     }, [slug]);
