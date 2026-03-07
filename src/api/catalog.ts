@@ -75,7 +75,7 @@ export async function fetchStorePreview(identifier: string): Promise<import("../
 
 // Llama a Supabase con hasta `maxAttempts` reintentos (útil para cold starts).
 export async function fetchFreshCatalog(identifier: string, maxAttempts = 3): Promise<CatalogResponse> {
-  let lastError: Error = new Error(`Store not found for identifier: ${identifier}`);
+  let lastError: Error = new Error(`STORE_NOT_FOUND:${identifier}`);
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     if (attempt > 0) {
@@ -90,12 +90,15 @@ export async function fetchFreshCatalog(identifier: string, maxAttempts = 3): Pr
         setCachedCatalog(identifier, result);
         return result;
       } catch (e) {
-        lastError = e as Error;
-        break; // store no encontrada: no tiene sentido reintentar
+        // processRpcResult lanzó → store genuinamente no existe en la DB
+        lastError = new Error(`STORE_NOT_FOUND:${identifier}`);
+        break; // no tiene sentido reintentar
       }
     }
 
-    lastError = new Error(`Store not found for identifier: ${identifier}`);
+    // Error de Supabase (timeout, conexión, función no encontrada, etc.)
+    const supabaseMsg = (error as any)?.message || (error as any)?.details || String(error);
+    lastError = new Error(`LOAD_ERROR:${supabaseMsg}`);
   }
 
   throw lastError;

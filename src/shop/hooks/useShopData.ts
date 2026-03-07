@@ -67,7 +67,7 @@ export function useShopData(slug: string | undefined) {
 
         // Timeout de 90 segundos
         const timeoutPromise = new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("No pudimos cargar la tienda. Revisá tu conexión e intentá de nuevo.")), 90_000)
+            setTimeout(() => reject(new Error("LOAD_ERROR:timeout")), 90_000)
         );
 
         // Fase 2: catálogo completo con productos

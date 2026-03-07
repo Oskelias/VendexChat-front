@@ -179,11 +179,27 @@ export default function ShopPage() {
     }
 
     if (error || !data) {
+        const isNotFound = !error || error.startsWith("STORE_NOT_FOUND:");
         return (
             <div className="h-screen flex flex-col items-center justify-center p-6 text-center bg-slate-50">
                 <div className="text-slate-300 mb-4 text-6xl">⚠️</div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Tienda no encontrada</h2>
-                <p className="text-slate-600 font-medium max-w-sm">No pudimos encontrar la tienda <span className="text-slate-900 font-bold">"{slug}"</span>. Verifica que la URL sea correcta.</p>
+                {isNotFound ? (
+                    <>
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2">Tienda no encontrada</h2>
+                        <p className="text-slate-600 font-medium max-w-sm">No pudimos encontrar la tienda <span className="text-slate-900 font-bold">"{slug}"</span>. Verifica que la URL sea correcta.</p>
+                    </>
+                ) : (
+                    <>
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2">Error al cargar la tienda</h2>
+                        <p className="text-slate-600 font-medium max-w-sm mb-6">No pudimos cargar la tienda <span className="text-slate-900 font-bold">"{slug}"</span>. Revisá tu conexión e intentá de nuevo.</p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="px-6 py-3 bg-slate-900 text-white text-sm font-bold rounded-2xl hover:bg-slate-700 transition-colors"
+                        >
+                            Reintentar
+                        </button>
+                    </>
+                )}
             </div>
         );
     }
