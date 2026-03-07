@@ -92,7 +92,7 @@ export function StoreHeader({
             {/* Store Information Banner */}
             <div className="relative h-40 md:h-56 bg-slate-200 overflow-hidden">
                 {banner ? (
-                    <img src={banner} alt={name} className="w-full h-full object-cover" loading="eager" decoding="async" />
+                    <img src={banner} alt={name} className="w-full h-full object-cover" loading="eager" decoding="async" fetchPriority="high" />
                 ) : (
                     <div className="w-full h-full bg-primary-dynamic flex items-center justify-center">
                         <span className="text-white font-black text-6xl opacity-20">{name}</span>

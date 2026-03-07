@@ -55,18 +55,16 @@ export default function ShopPage() {
             })
         })).filter(cat => cat.products.length > 0);
 
-        if (activeCategory !== null) {
-            return allWithFilteredProducts.filter(cat => String(cat.id) === String(activeCategory));
+        // When no search term, filter to active category (default to first)
+        if (!searchTerm) {
+            const effectiveCategory = activeCategory ?? data.categories[0]?.id ?? null;
+            if (effectiveCategory !== null) {
+                return allWithFilteredProducts.filter(cat => String(cat.id) === String(effectiveCategory));
+            }
         }
 
         return allWithFilteredProducts;
     }, [data, searchTerm, activeCategory]);
-
-    useEffect(() => {
-        if (!activeCategory && data?.categories && data.categories.length > 0 && !searchTerm) {
-            setActiveCategory(data.categories[0].id);
-        }
-    }, [data, activeCategory, searchTerm]);
 
     useEffect(() => {
         if (data?.store?.primary_color) {
@@ -76,9 +74,47 @@ export default function ShopPage() {
 
     if (loading) {
         return (
-            <div className="h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
-                <div className="w-12 h-12 border-4 border-primary-dynamic border-t-transparent rounded-full animate-spin" />
-                <p className="text-slate-500 font-medium animate-pulse">Cargando tienda...</p>
+            <div className="min-h-screen bg-white animate-pulse">
+                {/* Sticky nav bar skeleton */}
+                <div className="sticky top-0 z-50 bg-white border-b border-slate-50 px-4 py-3 shadow-sm">
+                    <div className="max-w-4xl mx-auto flex items-center gap-3">
+                        <div className="flex-1 h-10 bg-slate-100 rounded-2xl" />
+                        <div className="w-10 h-10 bg-slate-100 rounded-xl" />
+                        <div className="w-20 h-10 bg-slate-100 rounded-xl" />
+                    </div>
+                </div>
+                {/* Banner skeleton */}
+                <div className="relative h-40 md:h-56 bg-slate-100 overflow-hidden">
+                    <div className="absolute bottom-4 left-4 flex items-end gap-4">
+                        <div className="w-20 h-20 md:w-24 md:h-24 bg-slate-200 rounded-2xl" />
+                        <div className="space-y-2 pb-1">
+                            <div className="h-5 w-36 bg-slate-200 rounded-lg" />
+                            <div className="h-3 w-24 bg-slate-200 rounded-lg" />
+                        </div>
+                    </div>
+                </div>
+                {/* Category chips skeleton */}
+                <div className="flex gap-2 px-4 py-4 overflow-hidden">
+                    {[1,2,3,4].map(i => (
+                        <div key={i} className="h-8 w-20 bg-slate-100 rounded-full flex-shrink-0" />
+                    ))}
+                </div>
+                {/* Product cards skeleton */}
+                <div className="max-w-4xl mx-auto px-4 py-4">
+                    <div className="h-4 w-32 bg-slate-100 rounded mb-4" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {[1,2,3,4,5,6].map(i => (
+                            <div key={i} className="flex h-28 rounded-2xl border border-slate-100 overflow-hidden">
+                                <div className="w-24 bg-slate-100 flex-shrink-0" />
+                                <div className="flex-1 p-3 space-y-2">
+                                    <div className="h-3 w-3/4 bg-slate-100 rounded" />
+                                    <div className="h-3 w-1/2 bg-slate-100 rounded" />
+                                    <div className="h-4 w-12 bg-slate-100 rounded mt-auto" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         );
     }
