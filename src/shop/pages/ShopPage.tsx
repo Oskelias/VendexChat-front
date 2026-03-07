@@ -24,6 +24,7 @@ export default function ShopPage() {
 
     const [activeCategory, setActiveCategory] = useState<string | number | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [expandedCategories, setExpandedCategories] = useState<Set<string | number>>(new Set());
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [chatInitialMessage, setChatInitialMessage] = useState<string | null>(null);
@@ -44,6 +45,11 @@ export default function ShopPage() {
         }
     }, [data]);
 
+    const effectiveActiveCategory = useMemo(() => {
+        if (!data) return null;
+        return activeCategory ?? data.categories[0]?.id ?? null;
+    }, [data, activeCategory]);
+
     const filteredCategories = useMemo(() => {
         if (!data) return [];
 
@@ -56,15 +62,12 @@ export default function ShopPage() {
         })).filter(cat => cat.products.length > 0);
 
         // When no search term, filter to active category (default to first)
-        if (!searchTerm) {
-            const effectiveCategory = activeCategory ?? data.categories[0]?.id ?? null;
-            if (effectiveCategory !== null) {
-                return allWithFilteredProducts.filter(cat => String(cat.id) === String(effectiveCategory));
-            }
+        if (!searchTerm && effectiveActiveCategory !== null) {
+            return allWithFilteredProducts.filter(cat => String(cat.id) === String(effectiveActiveCategory));
         }
 
         return allWithFilteredProducts;
-    }, [data, searchTerm, activeCategory]);
+    }, [data, searchTerm, effectiveActiveCategory]);
 
     useEffect(() => {
         if (data?.store?.primary_color) {
@@ -172,7 +175,7 @@ export default function ShopPage() {
             {viewMode === 'standard' && (
                 <CategoryChips
                     categories={data.categories}
-                    activeId={activeCategory}
+                    activeId={effectiveActiveCategory}
                     onSelect={setActiveCategory}
                 />
             )}
@@ -189,32 +192,47 @@ export default function ShopPage() {
                         <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No se encontraron productos</p>
                     </div>
                 ) : (
-                    filteredCategories.map((cat) => (
-                        <section key={cat.id} className="mb-12">
-                            <div className="flex items-center gap-4 mb-6">
-                                <h2 className="text-sm md:text-lg font-black text-slate-900 uppercase tracking-tight">
-                                    {cat.name}
-                                </h2>
-                                <div className="h-[1px] flex-1 bg-slate-100" />
-                                <span className="text-[9px] font-black bg-slate-50 text-slate-400 px-3 py-1 rounded-full uppercase tracking-tighter">
-                                    {cat.products.length} Items
-                                </span>
-                            </div>
+                    filteredCategories.map((cat) => {
+                        const PAGE_SIZE = 12;
+                        const isExpanded = expandedCategories.has(cat.id);
+                        const visibleProducts = isExpanded ? cat.products : cat.products.slice(0, PAGE_SIZE);
+                        const remaining = cat.products.length - PAGE_SIZE;
+                        return (
+                            <section key={cat.id} className="mb-12">
+                                <div className="flex items-center gap-4 mb-6">
+                                    <h2 className="text-sm md:text-lg font-black text-slate-900 uppercase tracking-tight">
+                                        {cat.name}
+                                    </h2>
+                                    <div className="h-[1px] flex-1 bg-slate-100" />
+                                    <span className="text-[9px] font-black bg-slate-50 text-slate-400 px-3 py-1 rounded-full uppercase tracking-tighter">
+                                        {cat.products.length} Items
+                                    </span>
+                                </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
-                                {cat.products.map((p) => (
-                                    <div key={p.id} onClick={() => !getItemQuantity(p.id) && setQuickViewProduct(p)} className="cursor-pointer">
-                                        <ProductCard
-                                            product={p}
-                                            quantity={getItemQuantity(p.id)}
-                                            onAdd={(prod) => addItem(prod)}
-                                            onUpdate={updateQuantity}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                    ))
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+                                    {visibleProducts.map((p) => (
+                                        <div key={p.id} onClick={() => !getItemQuantity(p.id) && setQuickViewProduct(p)} className="cursor-pointer">
+                                            <ProductCard
+                                                product={p}
+                                                quantity={getItemQuantity(p.id)}
+                                                onAdd={(prod) => addItem(prod)}
+                                                onUpdate={updateQuantity}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {!isExpanded && remaining > 0 && (
+                                    <button
+                                        onClick={() => setExpandedCategories(prev => new Set(prev).add(cat.id))}
+                                        className="mt-4 w-full py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-700 border border-dashed border-slate-200 hover:border-slate-400 rounded-2xl transition-all"
+                                    >
+                                        Ver {remaining} productos más
+                                    </button>
+                                )}
+                            </section>
+                        );
+                    })
                 )}
             </main>
 
