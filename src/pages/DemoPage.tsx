@@ -1,4 +1,17 @@
 import { useState, useMemo } from "react";
+import {
+  ExternalLink,
+  ShoppingCart,
+  BarChart2,
+  TrendingUp,
+  Package,
+  MessageCircle,
+  Users,
+  Bot,
+  FileUp,
+  Truck,
+  Brain
+} from "lucide-react";
 import { StoreHeader } from "@/shop/components/StoreHeader";
 import { CategoryChips } from "@/shop/components/CategoryChips";
 import { ProductCard } from "@/shop/components/ProductCard";
@@ -111,6 +124,15 @@ const DEMO_CATEGORIES: Category[] = [
   },
 ];
 
+const dashboardModules = [
+  { icon: Bot, label: "VENDEx Bot", stat: "24/7 activo", color: "bg-violet-500" },
+  { icon: FileUp, label: "Importador IA", stat: "80 productos en 4s", color: "bg-blue-500" },
+  { icon: Users, label: "CRM Inteligente", stat: "144 clientes", color: "bg-emerald-500" },
+  { icon: Truck, label: "Logística", stat: "97% entregados", color: "bg-amber-500" },
+  { icon: Brain, label: "IA Predictiva", stat: "Predicción demanda", color: "bg-pink-500" },
+  { icon: BarChart2, label: "Estadísticas", stat: "$847k este mes", color: "bg-cyan-500" },
+];
+
 export default function DemoPage() {
   const [activeCategory, setActiveCategory] = useState<string | number | null>("cat-1");
   const [searchTerm, setSearchTerm] = useState("");
@@ -150,71 +172,192 @@ export default function DemoPage() {
   }, [searchTerm, activeCategory]);
 
   return (
-    <div className="min-h-screen bg-white pb-24" style={{ "--primary-color": "#14b8a6" } as React.CSSProperties}>
-      <StoreHeader
-        name="Sabor Casero"
-        logo="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop"
-        banner="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=400&fit=crop"
-        description="Viandas caseras con delivery a todo CABA. Pedidos hasta las 10hs."
-        address="Palermo, CABA"
-        whatsapp=""
-        instagram=""
-        facebook=""
-        totalItems={totalItems}
-        onSearch={setSearchTerm}
-        onChatClick={() => {}}
-        onCartClick={() => {}}
-      />
+    <div className="min-h-screen bg-slate-50 py-12 md:py-20" style={{ "--primary-color": "#14b8a6" } as React.CSSProperties}>
+      <div className="container mx-auto px-4 max-w-6xl space-y-16">
 
-      <CategoryChips
-        categories={DEMO_CATEGORIES}
-        activeId={activeCategory}
-        onSelect={setActiveCategory}
-      />
+        {/* Header de la página */}
+        <div className="text-center max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+            Experiencia <span className="text-emerald-500">VENDEx</span> Demo
+          </h1>
+          <p className="text-lg text-slate-500 font-medium">
+            Explora cómo interactúan tus clientes con la tienda y cómo gestionas todo con inteligencia artificial desde tu panel.
+          </p>
+        </div>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        {filteredCategories.length === 0 ? (
-          <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100">
-            <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
-              No se encontraron productos
-            </p>
+        {/* ── SECCIÓN 1: TIENDA DEL CLIENTE ── */}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-2 bg-emerald-100 rounded-lg">
+              <ShoppingCart className="w-5 h-5 text-emerald-600" />
+            </div>
+            <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">
+              Vista del Cliente
+            </h2>
           </div>
-        ) : (
-          filteredCategories.map((cat) => (
-            <section key={cat.id} className="mb-12">
-              <div className="flex items-center gap-4 mb-6">
-                <h2 className="text-sm md:text-lg font-black text-slate-900 uppercase tracking-tight">
-                  {cat.name}
-                </h2>
-                <div className="h-[1px] flex-1 bg-slate-100" />
-                <span className="text-[9px] font-black bg-slate-50 text-slate-400 px-3 py-1 rounded-full uppercase tracking-tighter">
-                  {cat.products.length} Items
-                </span>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
-                {cat.products.map((p) => (
-                  <div key={p.id} className="cursor-pointer">
-                    <ProductCard
-                      product={p}
-                      quantity={getItemQuantity(p.id)}
-                      onAdd={addItem}
-                      onUpdate={updateQuantity}
-                    />
+          <div className="rounded-3xl border border-slate-200 shadow-2xl overflow-hidden bg-white">
+            {/* Browser bar */}
+            <div className="bg-slate-100 border-b border-slate-200 px-6 py-4 flex items-center gap-4">
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-400" />
+                <div className="w-3 h-3 rounded-full bg-amber-400" />
+                <div className="w-3 h-3 rounded-full bg-green-400" />
+              </div>
+              <div className="flex-1 bg-white rounded-xl px-4 py-2 text-sm text-slate-400 font-medium border border-slate-200 flex items-center gap-2">
+                <span className="text-slate-300">🔒</span>
+                tusabor.vendexchat.app
+              </div>
+            </div>
+
+            {/* Contenido de la tienda */}
+            <div className="h-[600px] overflow-y-auto bg-white">
+              <StoreHeader
+                name="Sabor Casero"
+                logo="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop"
+                banner="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&h=400&fit=crop"
+                description="Viandas caseras con delivery a todo CABA. Pedidos hasta las 10hs."
+                address="Palermo, CABA"
+                whatsapp=""
+                instagram=""
+                facebook=""
+                totalItems={totalItems}
+                onSearch={setSearchTerm}
+                onChatClick={() => { }}
+                onCartClick={() => { }}
+              />
+
+              <CategoryChips
+                categories={DEMO_CATEGORIES}
+                activeId={activeCategory}
+                onSelect={setActiveCategory}
+              />
+
+              <main className="max-w-4xl mx-auto px-4 py-8">
+                {filteredCategories.length === 0 ? (
+                  <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100">
+                    <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
+                      No se encontraron productos
+                    </p>
+                  </div>
+                ) : (
+                  filteredCategories.map((cat) => (
+                    <section key={cat.id} className="mb-12">
+                      <div className="flex items-center gap-4 mb-6">
+                        <h2 className="text-sm md:text-lg font-black text-slate-900 uppercase tracking-tight">
+                          {cat.name}
+                        </h2>
+                        <div className="h-[1px] flex-1 bg-slate-100" />
+                        <span className="text-[9px] font-black bg-slate-50 text-slate-400 px-3 py-1 rounded-full uppercase tracking-tighter">
+                          {cat.products.length} Items
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+                        {cat.products.map((p) => (
+                          <div key={p.id} className="cursor-pointer">
+                            <ProductCard
+                              product={p}
+                              quantity={getItemQuantity(p.id)}
+                              onAdd={addItem}
+                              onUpdate={updateQuantity}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  ))
+                )}
+              </main>
+            </div>
+          </div>
+        </div>
+
+        {/* ── SECCIÓN 2: DASHBOARD ADMIN ── */}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-2 bg-violet-100 rounded-lg">
+              <BarChart2 className="w-5 h-5 text-violet-600" />
+            </div>
+            <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">
+              Tu Dashboard con IA
+            </h2>
+          </div>
+
+          <div className="rounded-3xl border border-slate-200 shadow-2xl overflow-hidden bg-white">
+            {/* Browser bar admin */}
+            <div className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center gap-4">
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-400" />
+                <div className="w-3 h-3 rounded-full bg-amber-400" />
+                <div className="w-3 h-3 rounded-full bg-green-400" />
+              </div>
+              <div className="flex-1 bg-slate-700 rounded-xl px-4 py-2 text-sm text-slate-400 font-medium border border-slate-600 flex items-center gap-2">
+                <span className="text-slate-500">🔒</span>
+                admin.vendexchat.app/dashboard
+              </div>
+            </div>
+
+            {/* Dashboard content */}
+            <div className="bg-slate-50 p-6 md:p-10">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {[
+                  { label: "Ventas hoy", value: "$127.400", icon: TrendingUp, change: "+18%", color: "text-emerald-500" },
+                  { label: "Pedidos", value: "47", icon: Package, change: "+12", color: "text-blue-500" },
+                  { label: "Mensajes IA", value: "234", icon: MessageCircle, change: "activo", color: "text-violet-500" },
+                  { label: "Clientes nuevos", value: "8", icon: Users, change: "+3", color: "text-pink-500" },
+                ].map((stat) => (
+                  <div key={stat.label} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">{stat.label}</span>
+                      <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                    </div>
+                    <div className="text-2xl font-black text-slate-900">{stat.value}</div>
+                    <span className={`text-[11px] font-bold ${stat.color}`}>{stat.change}</span>
                   </div>
                 ))}
               </div>
-            </section>
-          ))
-        )}
-      </main>
 
-      <div className="bg-slate-50 border-t border-slate-100 py-6 text-center">
-        <p className="text-xs text-slate-400 font-medium">
-          Esta es una tienda de demostración creada con{" "}
-          <a href="/" className="text-emerald-500 font-bold hover:underline">
-            VENDExChat.IA
+              <div className="space-y-4">
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Herramientas IA disponibles</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {dashboardModules.map((m) => (
+                    <div key={m.label} className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex items-center gap-4 hover:shadow-md transition-all cursor-default">
+                      <div className={`w-12 h-12 rounded-2xl ${m.color} flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-slate-200`}>
+                        <m.icon className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <p className="font-black text-slate-800 tracking-tight">{m.label}</p>
+                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tighter">{m.stat}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA FINAL */}
+        <div className="text-center pt-8">
+          <a
+            href="https://admin.vendexchat.app/register"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-3 px-12 py-5 rounded-3xl bg-emerald-500 text-white font-black text-lg hover:bg-emerald-600 transition-all shadow-2xl shadow-emerald-500/30 hover:scale-105 active:scale-95"
+          >
+            CREAR MI TIENDA AHORA <ExternalLink className="w-6 h-6" />
           </a>
+          <p className="text-slate-400 text-sm font-medium mt-6 italic">
+            Empieza hoy gratis • Sin tarjeta de crédito
+          </p>
+        </div>
+
+      </div>
+
+      <div className="mt-20 py-8 text-center border-t border-slate-200 bg-white">
+        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">
+          VENDExChat.IA © 2026 • Potenciado por Inteligencia Artificial
         </p>
       </div>
     </div>
