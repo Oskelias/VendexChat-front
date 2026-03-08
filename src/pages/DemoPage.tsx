@@ -1,14 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
 import {
-  ExternalLink,
   ShoppingCart,
-  BarChart2,
   TrendingUp,
   Package,
   MessageCircle,
   Users,
-  Bot,
-  FileUp,
   Truck,
   Brain,
   X,
@@ -16,10 +12,7 @@ import {
   Minus,
   Trash2,
   CheckCircle2,
-  Info,
   ChevronRight,
-  PlusCircle,
-  Eye,
   Settings,
   Sparkles
 } from "lucide-react";
@@ -218,18 +211,23 @@ export default function DemoPage() {
   const [tutorialStep, setTutorialStep] = useState(0); // 0: Start, 1: Cart, 2: IA, 3: Dashboard, 4: Done
   const [adminPriceInput, setAdminPriceInput] = useState<number>(4500);
 
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  // Flatten products for IA
+  const allProducts = useMemo(() => categories.flatMap(c => c.products), [categories]);
+
   // Sync admin price to first product
   useEffect(() => {
-    setCategories(prev => {
-      const next = [...prev];
-      const prod = next[0].products[0];
-      if (prod.price !== adminPriceInput) {
+    const currentPrice = categories[0].products[0].price;
+    if (currentPrice !== adminPriceInput) {
+      setCategories(prev => {
+        const next = [...prev];
+        const prod = next[0].products[0];
         next[0].products[0] = { ...prod, price: adminPriceInput };
         return next;
-      }
-      return prev;
-    });
-  }, [adminPriceInput]);
+      });
+    }
+  }, [adminPriceInput, categories]);
 
   const getItemQuantity = (id: string) => cart[id] || 0;
 
@@ -459,9 +457,10 @@ export default function DemoPage() {
                     onClose={() => setTutorialStep(4)}
                   />
                   <ChatBotWidget
-                    storeId="demo"
+                    isOpen={isChatOpen}
+                    onClose={() => setIsChatOpen(false)}
                     storeName="Sabor Casero"
-                    categories={categories.map(c => ({ name: c.name, products: c.products.map(p => ({ name: p.name, price: p.price, description: p.description })) })) as any}
+                    products={allProducts}
                     initialMessage="¡Hola! Soy el asistente IA de Sabor Casero. ¿Te ayudo con el menú de hoy?"
                   />
                 </div>
@@ -690,17 +689,19 @@ export default function DemoPage() {
               ) : (
                 <>
                   <div className="space-y-4">
-                    {categories.map(c => c.products).flat().filter(p => cart[p.id]).map(p => (
+                    {categories.map(c => c.products || []).flat().filter(p => p && cart[p.id]).map(p => (
                       <div key={p.id} className="flex gap-6 items-center p-5 bg-white border border-slate-100 rounded-[2rem] shadow-sm hover:shadow-md transition-all group">
                         <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-100 shrink-0 shadow-sm border border-slate-50">
-                          <img src={p.image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          {p.image_url && <img src={p.image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />}
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="font-black text-slate-900 text-sm truncate uppercase tracking-tight">{p.name}</h4>
-                          <p className="text-emerald-500 font-black text-xs mt-1">${(p.offer_price || p.price).toLocaleString()}</p>
+                          <p className="text-emerald-500 font-black text-xs mt-1">
+                            ${((p.offer_price ?? p.price) ?? 0).toLocaleString()}
+                          </p>
                         </div>
                         <div className="flex items-center gap-4 bg-slate-50 rounded-2xl p-1.5 border border-slate-100">
-                          <button onClick={() => updateQuantity(p.id, -1)} className="w-8 h-8 flex items-center justify-center rounded-xl bg-white shadow-sm text-slate-400 hover:text-slate-900 transition-colors">
+                          <button onClick={() => updateQuantity(p.id, (cart[p.id] || 0) - 1)} className="w-8 h-8 flex items-center justify-center rounded-xl bg-white shadow-sm text-slate-400 hover:text-slate-900 transition-colors">
                             <Minus className="w-4 h-4" />
                           </button>
                           <span className="text-sm font-black w-5 text-center">{cart[p.id]}</span>
