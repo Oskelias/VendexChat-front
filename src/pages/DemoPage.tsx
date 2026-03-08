@@ -389,7 +389,7 @@ export default function DemoPage() {
               </div>
 
               {/* Contenido de la tienda */}
-              <div className="h-[750px] overflow-y-auto bg-white relative">
+              <div className="bg-white relative">
                 <StoreHeader
                   name="Sabor Casero (Demo)"
                   logo="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop"
