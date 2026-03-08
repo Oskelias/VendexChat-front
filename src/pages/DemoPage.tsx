@@ -449,7 +449,7 @@ export default function DemoPage() {
                 </main>
 
                 {/* Asistente IA INTEGRADO */}
-                <div className="fixed bottom-12 right-12 z-[150] scale-90 origin-bottom-right">
+                <div className="absolute bottom-8 right-8 z-[50]">
                   <TooltipCloud
                     text="Aclara dudas con IA"
                     visible={tutorialStep === 3}
@@ -462,7 +462,19 @@ export default function DemoPage() {
                     storeName="Sabor Casero"
                     products={allProducts}
                     initialMessage="¡Hola! Soy el asistente IA de Sabor Casero. ¿Te ayudo con el menú de hoy?"
+                    whatsappNumber="5491112345678"
                   />
+                  {!isChatOpen && (
+                    <button
+                      onClick={() => {
+                        setIsChatOpen(true);
+                        if (tutorialStep === 3) setTutorialStep(4);
+                      }}
+                      className="w-16 h-16 bg-emerald-500 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all animate-bounce"
+                    >
+                      <Bot className="w-8 h-8" />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
