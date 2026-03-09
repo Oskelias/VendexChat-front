@@ -90,6 +90,7 @@ export function StorePage() {
   }
 
   const categories = data.categories ?? [];
+  const useSidebar = categories.length > 5;
   /*
   const query = search.trim().toLowerCase();
   const filteredCategories = useMemo(() => {
@@ -114,18 +115,36 @@ export function StorePage() {
 
         {view === "catalog" && (
           <>
-            {categories.length > 0 && (
+            {categories.length > 0 && !useSidebar && (
               <CategoryNav
                 categories={categories}
                 activeId={activeCategory}
                 onSelect={setActiveCategory}
               />
             )}
-            <main className="store-page__content">
-              {categories.map((cat) => (
-                <CategorySection key={cat.id} category={cat} />
-              ))}
-            </main>
+            {useSidebar ? (
+              <div className="store-page__sidebar-layout">
+                <aside className="store-page__sidebar">
+                  <CategoryNav
+                    categories={categories}
+                    activeId={activeCategory}
+                    onSelect={setActiveCategory}
+                    vertical
+                  />
+                </aside>
+                <main className="store-page__content store-page__content--sidebar">
+                  {categories.map((cat) => (
+                    <CategorySection key={cat.id} category={cat} />
+                  ))}
+                </main>
+              </div>
+            ) : (
+              <main className="store-page__content">
+                {categories.map((cat) => (
+                  <CategorySection key={cat.id} category={cat} />
+                ))}
+              </main>
+            )}
             <FloatingCartButton onClick={() => setView("cart")} />
           </>
         )}
