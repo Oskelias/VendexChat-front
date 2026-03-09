@@ -90,23 +90,9 @@ export function StorePage() {
   }
 
   const categories = data.categories ?? [];
-  const useSidebar = categories.length > 5;
-  /*
-  const query = search.trim().toLowerCase();
-  const filteredCategories = useMemo(() => {
-    return categories.map((category) => {
-      const products = category.products ?? category.items ?? [];
-      const filteredProducts = query
-        ? products.filter((product) => {
-            const haystack = `${product.name} ${product.description ?? ""}`.toLowerCase();
-            return haystack.includes(query);
-          })
-        : products;
-      return { ...category, products: filteredProducts };
-    });
-  }, [categories, query]);
-  */
-  // const hasResults = filteredCategories.some((category) => (category.products ?? []).length > 0);
+  const topCategories = categories.slice(0, 4);
+  const sidebarCategories = categories.slice(4);
+  const hasSidebar = sidebarCategories.length > 0;
 
   return (
     <div className="store-page">
@@ -115,18 +101,18 @@ export function StorePage() {
 
         {view === "catalog" && (
           <>
-            {categories.length > 0 && !useSidebar && (
+            {topCategories.length > 0 && (
               <CategoryNav
-                categories={categories}
+                categories={topCategories}
                 activeId={activeCategory}
                 onSelect={setActiveCategory}
               />
             )}
-            {useSidebar ? (
+            {hasSidebar ? (
               <div className="store-page__sidebar-layout">
                 <aside className="store-page__sidebar">
                   <CategoryNav
-                    categories={categories}
+                    categories={sidebarCategories}
                     activeId={activeCategory}
                     onSelect={setActiveCategory}
                     vertical
