@@ -1,19 +1,38 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.   
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Vendechat Front
 
-## React Compiler
+Public storefront for Vendechat.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Customer-facing website where users:
+- browse products
+- add to cart
+- checkout
+- send orders directly to WhatsApp
 
-## Expanding the ESLint configuration
+## Stack
+- Vite (React + TypeScript)
+- Supabase (Backend & Database)
+- CSS Vanilla
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Local development
+
+1. `npm install`
+2. Create `.env` file from `.env.example` and add your Supabase credentials.
+3. `npm run dev`
+
+## Supabase Setup
+
+Run the SQL migrations found in the `supabase/migrations` folder in your Supabase SQL Editor.
+
+## Build
+
+`npm run build`
+he configuration to enable type-aware lint rules:
 
 ```js
 export default defineConfig([

@@ -1,60 +1,73 @@
-.order-confirmation {
+.confirmation {
   max-width: 500px;
   margin: 2rem auto;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   text-align: center;
   background: #fff;
   border-radius: 16px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
-.order-confirmation__icon {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 1rem;
-  background: #10b981;
-  color: #fff;
+.confirmation__icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  background: #25D366;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
 }
 
-.order-confirmation__title {
-  font-size: 1.25rem;
+.confirmation__icon svg {
+  width: 32px;
+  height: 32px;
+  fill: #fff;
+}
+
+.confirmation__title {
+  font-size: 1.375rem;
   font-weight: 700;
   color: #111827;
-  margin: 0 0 1rem;
+  margin: 0 0 0.75rem;
 }
 
-.order-confirmation__id,
-.order-confirmation__total,
-.order-confirmation__status {
-  font-size: 0.95rem;
-  color: #4b5563;
-  margin: 0.4rem 0;
+.confirmation__code {
+  display: inline-block;
+  background: #F3F4F6;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
 }
 
-.order-confirmation__msg {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin: 1rem 0;
+.confirmation__message {
+  font-size: 0.9375rem;
+  color: #6B7280;
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
 }
 
-.order-confirmation__btn {
-  margin-top: 0.5rem;
-  padding: 0.65rem 1.5rem;
-  background: #6366f1;
+.confirmation__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  background: #25D366;
   color: #fff;
   border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  border-radius: 12px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s;
 }
 
-.order-confirmation__btn:hover {
-  background: #4f46e5;
+.confirmation__btn:hover {
+  background: #1fb855;
 }

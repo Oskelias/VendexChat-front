@@ -1,0 +1,1546 @@
+From 0b321e9d65601ce3b61191019b1f5b8dc888b412 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 17 Feb 2026 18:50:20 +0000
+Subject: [PATCH] feat: migrate admin panel from REST API to Supabase direct
+ queries
+
+- Replace custom REST API backend with Supabase JS client
+- Rewrite AuthContext to use Supabase Auth (signIn, signUp, signOut)
+- Rewrite all API services to query Supabase directly
+- Add profiles table support for user-store linking
+- Update types to use UUID strings instead of numeric IDs
+- Rename order_number -> public_id, customer_address -> delivery_address
+- Update password reset flow for Supabase (no URL token param)
+- Superadmin read/update/delete works; create requires Edge Function
+
+https://claude.ai/code/session_01D3K1qWFLpRefHdHZNGjDQR
+---
+ .env                                 |   4 +-
+ package-lock.json                    | 138 +++++-
+ package.json                         |   1 +
+ src/App.tsx                          |   2 +-
+ src/contexts/AuthContext.tsx         | 137 ++++--
+ src/lib/supabase.ts                  |  12 +
+ src/pages/auth/ResetPasswordPage.tsx |  10 +-
+ src/pages/client/CategoriesPage.tsx  |   2 +-
+ src/pages/client/OrderDetailPage.tsx |  10 +-
+ src/pages/client/OrdersPage.tsx      |   2 +-
+ src/pages/client/ProductFormPage.tsx |   6 +-
+ src/pages/client/ProductsPage.tsx    |   2 +-
+ src/pages/superadmin/TenantsPage.tsx |   2 +-
+ src/pages/superadmin/UsersPage.tsx   |   8 +-
+ src/services/api.ts                  | 696 +++++++++++++++++++--------
+ src/types/index.ts                   |  53 +-
+ 16 files changed, 781 insertions(+), 304 deletions(-)
+ create mode 100644 src/lib/supabase.ts
+
+diff --git a/.env b/.env
+index f10b3c9..ea2fd61 100644
+--- a/.env
++++ b/.env
+@@ -1 +1,3 @@
+-VITE_API_URL=https://api.vendexchat.app
++VITE_SUPABASE_URL=https://pjrhfbhqdbyoljactdkj.supabase.co
++VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBqcmhmYmhxZGJ5b2xqYWN0ZGtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNzM0NTQsImV4cCI6MjA4Njg0OTQ1NH0.tpjc7aTuz23cHrpoNlvmQ72PJ89CxT8g0NCY9qkxsEo
++VITE_STOREFRONT_URL=https://vendexchat.app
+diff --git a/package-lock.json b/package-lock.json
+index 2277ba3..fb12127 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,13 +1,14 @@
+ {
+-  "name": "vendexchat-admin-tmp",
++  "name": "vendexchat-admin",
+   "version": "0.0.0",
+   "lockfileVersion": 3,
+   "requires": true,
+   "packages": {
+     "": {
+-      "name": "vendexchat-admin-tmp",
++      "name": "vendexchat-admin",
+       "version": "0.0.0",
+       "dependencies": {
++        "@supabase/supabase-js": "^2.96.0",
+         "lucide-react": "^0.563.0",
+         "react": "^19.2.0",
+         "react-dom": "^19.2.0",
+@@ -1370,6 +1371,86 @@
+         "win32"
+       ]
+     },
++    "node_modules/@supabase/auth-js": {
++      "version": "2.96.0",
++      "resolved": "https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.96.0.tgz",
++      "integrity": "sha512-nk0BQgsACgI5tiJsFCjDtZJOdWHeKplbXIV4TBvAS/i7H3k+vG3zyW8XgqNB5GEY8oHzMfMAGdNsB4RU60GWfA==",
++      "license": "MIT",
++      "dependencies": {
++        "tslib": "2.8.1"
++      },
++      "engines": {
++        "node": ">=20.0.0"
++      }
++    },
++    "node_modules/@supabase/functions-js": {
++      "version": "2.96.0",
++      "resolved": "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.96.0.tgz",
++      "integrity": "sha512-FG+zOrdbrVKjMlvbHa91mj8+mBS3/V2n2MM+r4kwqoxQYWQGcEhirR2udqwGqPG2tiqgfHnm1RsOWFvcubdjqQ==",
++      "license": "MIT",
++      "dependencies": {
++        "tslib": "2.8.1"
++      },
++      "engines": {
++        "node": ">=20.0.0"
++      }
++    },
++    "node_modules/@supabase/postgrest-js": {
++      "version": "2.96.0",
++      "resolved": "https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.96.0.tgz",
++      "integrity": "sha512-OSQAza492P2NyS4MgDcMyvvRJvjuoFNxgGBS8erBZ5H16Zk4cSwYq47bV/L4ybxQiviC50z8AyXeEL4frL++yA==",
++      "license": "MIT",
++      "dependencies": {
++        "tslib": "2.8.1"
++      },
++      "engines": {
++        "node": ">=20.0.0"
++      }
++    },
++    "node_modules/@supabase/realtime-js": {
++      "version": "2.96.0",
++      "resolved": "https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.96.0.tgz",
++      "integrity": "sha512-m4ETI6KxiGfD50h5rDkuR2zIQEc0RlfiPV8Bhs2p/NPAmctweA8yb33slsMRLaJafoytadJyo4nP9gvig93wfA==",
++      "license": "MIT",
++      "dependencies": {
++        "@types/phoenix": "^1.6.6",
++        "@types/ws": "^8.18.1",
++        "tslib": "2.8.1",
++        "ws": "^8.18.2"
++      },
++      "engines": {
++        "node": ">=20.0.0"
++      }
++    },
++    "node_modules/@supabase/storage-js": {
++      "version": "2.96.0",
++      "resolved": "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.96.0.tgz",
++      "integrity": "sha512-7dgEM77GWw9phzLHi+M2vPqOqP99MAbdk/vorpebo/t50JWWS4ckxacHHjmaeLctT4ipVcbfB8rpdbLr95fTcw==",
++      "license": "MIT",
++      "dependencies": {
++        "iceberg-js": "^0.8.1",
++        "tslib": "2.8.1"
++      },
++      "engines": {
++        "node": ">=20.0.0"
++      }
++    },
++    "node_modules/@supabase/supabase-js": {
++      "version": "2.96.0",
++      "resolved": "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.96.0.tgz",
++      "integrity": "sha512-KaIHsO6LU1cuqpYMsprQhfedRJFuTAf4dr8/k4/4Po6urRVXIWzmdY/lHPnf8Mzw2Fh0ueQVQYdaXzOvCBGnGQ==",
++      "license": "MIT",
++      "dependencies": {
++        "@supabase/auth-js": "2.96.0",
++        "@supabase/functions-js": "2.96.0",
++        "@supabase/postgrest-js": "2.96.0",
++        "@supabase/realtime-js": "2.96.0",
++        "@supabase/storage-js": "2.96.0"
++      },
++      "engines": {
++        "node": ">=20.0.0"
++      }
++    },
+     "node_modules/@tailwindcss/node": {
+       "version": "4.1.18",
+       "resolved": "https://registry.npmjs.org/@tailwindcss/node/-/node-4.1.18.tgz",
+@@ -1705,12 +1786,17 @@
+       "version": "24.10.12",
+       "resolved": "https://registry.npmjs.org/@types/node/-/node-24.10.12.tgz",
+       "integrity": "sha512-68e+T28EbdmLSTkPgs3+UacC6rzmqrcWFPQs1C8mwJhI/r5Uxr0yEuQotczNRROd1gq30NGxee+fo0rSIxpyAw==",
+-      "dev": true,
+       "license": "MIT",
+       "dependencies": {
+         "undici-types": "~7.16.0"
+       }
+     },
++    "node_modules/@types/phoenix": {
++      "version": "1.6.7",
++      "resolved": "https://registry.npmjs.org/@types/phoenix/-/phoenix-1.6.7.tgz",
++      "integrity": "sha512-oN9ive//QSBkf19rfDv45M7eZPi0eEXylht2OLEXicu5b4KoQ1OzXIw+xDSGWxSxe1JmepRR/ZH283vsu518/Q==",
++      "license": "MIT"
++    },
+     "node_modules/@types/react": {
+       "version": "19.2.13",
+       "resolved": "https://registry.npmjs.org/@types/react/-/react-19.2.13.tgz",
+@@ -1731,6 +1817,15 @@
+         "@types/react": "^19.2.0"
+       }
+     },
++    "node_modules/@types/ws": {
++      "version": "8.18.1",
++      "resolved": "https://registry.npmjs.org/@types/ws/-/ws-8.18.1.tgz",
++      "integrity": "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==",
++      "license": "MIT",
++      "dependencies": {
++        "@types/node": "*"
++      }
++    },
+     "node_modules/@typescript-eslint/eslint-plugin": {
+       "version": "8.54.0",
+       "resolved": "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.54.0.tgz",
+@@ -2743,6 +2838,15 @@
+         "hermes-estree": "0.25.1"
+       }
+     },
++    "node_modules/iceberg-js": {
++      "version": "0.8.1",
++      "resolved": "https://registry.npmjs.org/iceberg-js/-/iceberg-js-0.8.1.tgz",
++      "integrity": "sha512-1dhVQZXhcHje7798IVM+xoo/1ZdVfzOMIc8/rgVSijRK38EDqOJoGula9N/8ZI5RD8QTxNQtK/Gozpr+qUqRRA==",
++      "license": "MIT",
++      "engines": {
++        "node": ">=20.0.0"
++      }
++    },
+     "node_modules/ignore": {
+       "version": "5.3.2",
+       "resolved": "https://registry.npmjs.org/ignore/-/ignore-5.3.2.tgz",
+@@ -3685,6 +3789,12 @@
+         "typescript": ">=4.8.4"
+       }
+     },
++    "node_modules/tslib": {
++      "version": "2.8.1",
++      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz",
++      "integrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==",
++      "license": "0BSD"
++    },
+     "node_modules/type-check": {
+       "version": "0.4.0",
+       "resolved": "https://registry.npmjs.org/type-check/-/type-check-0.4.0.tgz",
+@@ -3740,7 +3850,6 @@
+       "version": "7.16.0",
+       "resolved": "https://registry.npmjs.org/undici-types/-/undici-types-7.16.0.tgz",
+       "integrity": "sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==",
+-      "dev": true,
+       "license": "MIT"
+     },
+     "node_modules/update-browserslist-db": {
+@@ -3885,6 +3994,27 @@
+         "node": ">=0.10.0"
+       }
+     },
++    "node_modules/ws": {
++      "version": "8.19.0",
++      "resolved": "https://registry.npmjs.org/ws/-/ws-8.19.0.tgz",
++      "integrity": "sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==",
++      "license": "MIT",
++      "engines": {
++        "node": ">=10.0.0"
++      },
++      "peerDependencies": {
++        "bufferutil": "^4.0.1",
++        "utf-8-validate": ">=5.0.2"
++      },
++      "peerDependenciesMeta": {
++        "bufferutil": {
++          "optional": true
++        },
++        "utf-8-validate": {
++          "optional": true
++        }
++      }
++    },
+     "node_modules/yallist": {
+       "version": "3.1.1",
+       "resolved": "https://registry.npmjs.org/yallist/-/yallist-3.1.1.tgz",
+diff --git a/package.json b/package.json
+index 10d1b8c..a898a3e 100644
+--- a/package.json
++++ b/package.json
+@@ -10,6 +10,7 @@
+     "preview": "vite preview"
+   },
+   "dependencies": {
++    "@supabase/supabase-js": "^2.96.0",
+     "lucide-react": "^0.563.0",
+     "react": "^19.2.0",
+     "react-dom": "^19.2.0",
+diff --git a/src/App.tsx b/src/App.tsx
+index fe08bd4..8b6ab1e 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -36,7 +36,7 @@ export default function App() {
+           <Route path="/login" element={<LoginPage />} />
+           <Route path="/register" element={<RegisterPage />} />
+           <Route path="/recover-password" element={<RecoverPasswordPage />} />
+-          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
++          <Route path="/reset-password" element={<ResetPasswordPage />} />
+ 
+           {/* Rutas protegidas del cliente */}
+           <Route
+diff --git a/src/contexts/AuthContext.tsx b/src/contexts/AuthContext.tsx
+index 8e5efd8..42e70bf 100644
+--- a/src/contexts/AuthContext.tsx
++++ b/src/contexts/AuthContext.tsx
+@@ -1,11 +1,11 @@
+ /* eslint-disable react-refresh/only-export-components */
+ import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react'
+ import { User } from '../types'
+-import { authApi } from '../services/api'
++import { supabase } from '../lib/supabase'
++import { clearStoreCache } from '../services/api'
+ 
+ interface AuthContextType {
+   user: User | null
+-  token: string | null
+   loading: boolean
+   login: (email: string, password: string) => Promise<void>
+   register: (data: { store_name: string; email: string; password: string; slug: string }) => Promise<void>
+@@ -16,64 +16,108 @@ interface AuthContextType {
+ 
+ const AuthContext = createContext<AuthContextType | null>(null)
+ 
+-const resolveAuthPayload = (response: unknown) => {
+-  const dataResponse = response as { data?: { token?: string; access_token?: string; user: User } }
+-  return dataResponse.data ?? (response as { token?: string; access_token?: string; user: User })
++async function loadProfile(userId: string): Promise<User | null> {
++  const { data: profile } = await supabase
++    .from('profiles')
++    .select('name, role, store_id, created_at')
++    .eq('id', userId)
++    .single()
++
++  if (!profile) return null
++
++  // Get email from auth
++  const { data: { user: authUser } } = await supabase.auth.getUser()
++
++  return {
++    id: userId,
++    email: authUser?.email ?? '',
++    name: profile.name,
++    role: profile.role as 'client' | 'superadmin',
++    store_id: profile.store_id,
++    created_at: profile.created_at,
++  }
+ }
+ 
+ export function AuthProvider({ children }: { children: ReactNode }) {
+   const [user, setUser] = useState<User | null>(null)
+-  const [token, setToken] = useState<string | null>(localStorage.getItem('vendexchat_token'))
+   const [loading, setLoading] = useState(true)
+ 
+-  // Al cargar la app, verificar si el token guardado es válido
++  // On mount, check for existing session
+   useEffect(() => {
+-    if (token) {
+-      authApi
+-        .me()
+-        .then((res) => {
+-          setUser(res.user)
+-        })
+-        .catch(() => {
+-          console.log('Token inválido, cerrando sesión')
+-          localStorage.removeItem('vendexchat_token')
+-          setToken(null)
+-          setUser(null)
+-        })
+-        .finally(() => setLoading(false))
+-    } else {
+-      // eslint-disable-next-line react-hooks/set-state-in-effect
+-      setLoading(false)
+-    }
+-  }, [token])
++    supabase.auth.getSession().then(({ data: { session } }) => {
++      if (session?.user) {
++        loadProfile(session.user.id)
++          .then(setUser)
++          .catch(() => setUser(null))
++          .finally(() => setLoading(false))
++      } else {
++        setLoading(false)
++      }
++    })
++
++    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
++      if (!session) {
++        setUser(null)
++        clearStoreCache()
++      }
++    })
++
++    return () => subscription.unsubscribe()
++  }, [])
+ 
+   const login = useCallback(async (email: string, password: string) => {
+-    const response = await authApi.login(email, password)
+-    const payload = resolveAuthPayload(response)
+-    const authToken = payload.token ?? payload.access_token
+-    if (!authToken) {
+-      throw new Error('Token no recibido')
+-    }
+-    localStorage.setItem('vendexchat_token', authToken)
+-    setToken(authToken)
+-    setUser(payload.user)
++    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
++    if (error) throw new Error(error.message)
++    if (!data.user) throw new Error('Error de autenticación')
++
++    const profile = await loadProfile(data.user.id)
++    if (!profile) throw new Error('Perfil no encontrado')
++    setUser(profile)
+   }, [])
+ 
+   const register = useCallback(async (data: { store_name: string; email: string; password: string; slug: string }) => {
+-    const response = await authApi.register(data)
+-    const payload = resolveAuthPayload(response)
+-    const authToken = payload.token ?? payload.access_token
+-    if (!authToken) {
+-      throw new Error('Token no recibido')
+-    }
+-    localStorage.setItem('vendexchat_token', authToken)
+-    setToken(authToken)
+-    setUser(payload.user)
++    // 1. Sign up with Supabase Auth
++    const { data: authData, error: authError } = await supabase.auth.signUp({
++      email: data.email,
++      password: data.password,
++      options: { data: { name: data.store_name } },
++    })
++    if (authError) throw new Error(authError.message)
++    if (!authData.user) throw new Error('Error al registrar usuario')
++
++    // 2. Create the store
++    const { data: store, error: storeError } = await supabase
++      .from('stores')
++      .insert({
++        name: data.store_name,
++        slug: data.slug,
++        owner_id: authData.user.id,
++        whatsapp: '',
++      })
++      .select('id')
++      .single()
++    if (storeError) throw new Error(storeError.message)
++
++    // 3. Link profile to store
++    await supabase
++      .from('profiles')
++      .update({ store_id: store.id })
++      .eq('id', authData.user.id)
++
++    // 4. Set user state
++    setUser({
++      id: authData.user.id,
++      email: authData.user.email ?? data.email,
++      name: data.store_name,
++      role: 'client',
++      store_id: store.id,
++      created_at: authData.user.created_at,
++    })
+   }, [])
+ 
+-  const logout = useCallback(() => {
+-    localStorage.removeItem('vendexchat_token')
+-    setToken(null)
++  const logout = useCallback(async () => {
++    await supabase.auth.signOut()
++    clearStoreCache()
+     setUser(null)
+   }, [])
+ 
+@@ -81,7 +125,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
+     <AuthContext.Provider
+       value={{
+         user,
+-        token,
+         loading,
+         login,
+         register,
+diff --git a/src/lib/supabase.ts b/src/lib/supabase.ts
+new file mode 100644
+index 0000000..fb259c3
+--- /dev/null
++++ b/src/lib/supabase.ts
+@@ -0,0 +1,12 @@
++import { createClient } from '@supabase/supabase-js'
++
++const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
++const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
++
++if (!supabaseUrl || !supabaseAnonKey) {
++  throw new Error(
++    'Missing Supabase environment variables. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.'
++  )
++}
++
++export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+diff --git a/src/pages/auth/ResetPasswordPage.tsx b/src/pages/auth/ResetPasswordPage.tsx
+index 60ab389..3eb69f3 100644
+--- a/src/pages/auth/ResetPasswordPage.tsx
++++ b/src/pages/auth/ResetPasswordPage.tsx
+@@ -1,12 +1,11 @@
+ import { useState, FormEvent } from 'react'
+-import { useParams, useNavigate, Link } from 'react-router-dom'
++import { useNavigate, Link } from 'react-router-dom'
+ import { Store } from 'lucide-react'
+ import { Button, Input } from '../../components/common'
+ import { showToast } from '../../components/common/Toast'
+-import { authApi } from '../../services/api'
++import { supabase } from '../../lib/supabase'
+ 
+ export default function ResetPasswordPage() {
+-  const { token } = useParams<{ token: string }>()
+   const navigate = useNavigate()
+   const [password, setPassword] = useState('')
+   const [confirmPassword, setConfirmPassword] = useState('')
+@@ -24,11 +23,12 @@ export default function ResetPasswordPage() {
+ 
+   const handleSubmit = async (e: FormEvent) => {
+     e.preventDefault()
+-    if (!validate() || !token) return
++    if (!validate()) return
+ 
+     setLoading(true)
+     try {
+-      await authApi.resetPassword(token, password)
++      const { error } = await supabase.auth.updateUser({ password })
++      if (error) throw error
+       showToast('success', 'Contraseña restablecida correctamente')
+       navigate('/login')
+     } catch (err) {
+diff --git a/src/pages/client/CategoriesPage.tsx b/src/pages/client/CategoriesPage.tsx
+index fec5bb8..3c65281 100644
+--- a/src/pages/client/CategoriesPage.tsx
++++ b/src/pages/client/CategoriesPage.tsx
+@@ -10,7 +10,7 @@ export default function CategoriesPage() {
+   const [loading, setLoading] = useState(true)
+   const [modalOpen, setModalOpen] = useState(false)
+   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+-  const [deleteId, setDeleteId] = useState<number | null>(null)
++  const [deleteId, setDeleteId] = useState<string | null>(null)
+   const [deleting, setDeleting] = useState(false)
+ 
+   // Form fields
+diff --git a/src/pages/client/OrderDetailPage.tsx b/src/pages/client/OrderDetailPage.tsx
+index 1cb18cb..720454a 100644
+--- a/src/pages/client/OrderDetailPage.tsx
++++ b/src/pages/client/OrderDetailPage.tsx
+@@ -18,7 +18,7 @@ export default function OrderDetailPage() {
+   useEffect(() => {
+     if (id) {
+       ordersApi
+-        .get(Number(id))
++        .get(id)
+         .then((data) => {
+           setOrder(data)
+           setNewStatus(data.status)
+@@ -63,7 +63,7 @@ export default function OrderDetailPage() {
+             <ArrowLeft className="w-5 h-5 text-gray-600" />
+           </button>
+           <div>
+-            <h1 className="text-2xl font-bold text-gray-900">Pedido #{order.order_number}</h1>
++            <h1 className="text-2xl font-bold text-gray-900">Pedido #{order.public_id}</h1>
+             <p className="text-sm text-gray-500">{formatDate(order.created_at)}</p>
+           </div>
+         </div>
+@@ -91,10 +91,10 @@ export default function OrderDetailPage() {
+               {order.customer_whatsapp}
+             </a>
+           </div>
+-          {order.customer_address && (
++          {order.delivery_address && (
+             <div className="sm:col-span-2">
+               <span className="text-gray-500">Dirección:</span>
+-              <span className="ml-2 text-gray-900">{order.customer_address}</span>
++              <span className="ml-2 text-gray-900">{order.delivery_address}</span>
+             </div>
+           )}
+           {order.customer_notes && (
+@@ -179,7 +179,7 @@ export default function OrderDetailPage() {
+       {/* Acciones */}
+       <div className="flex flex-wrap gap-3">
+         <a
+-          href={whatsappLink(order.customer_whatsapp, `Hola ${order.customer_name}, sobre tu pedido #${order.order_number}...`)}
++          href={whatsappLink(order.customer_whatsapp, `Hola ${order.customer_name}, sobre tu pedido #${order.public_id}...`)}
+           target="_blank"
+           rel="noopener noreferrer"
+           className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors"
+diff --git a/src/pages/client/OrdersPage.tsx b/src/pages/client/OrdersPage.tsx
+index b72c333..0abdd5a 100644
+--- a/src/pages/client/OrdersPage.tsx
++++ b/src/pages/client/OrdersPage.tsx
+@@ -108,7 +108,7 @@ export default function OrdersPage() {
+                   const statusConf = orderStatusConfig[order.status]
+                   return (
+                     <tr key={order.id} className="hover:bg-gray-50">
+-                      <td className="px-4 py-3 font-medium text-gray-900">{order.order_number}</td>
++                      <td className="px-4 py-3 font-medium text-gray-900">{order.public_id}</td>
+                       <td className="px-4 py-3 text-gray-900">{order.customer_name}</td>
+                       <td className="px-4 py-3 text-gray-600 hidden sm:table-cell">{order.customer_whatsapp}</td>
+                       <td className="px-4 py-3 font-medium text-gray-900">{formatPrice(order.total)}</td>
+diff --git a/src/pages/client/ProductFormPage.tsx b/src/pages/client/ProductFormPage.tsx
+index 1b1d1a1..a7df1b1 100644
+--- a/src/pages/client/ProductFormPage.tsx
++++ b/src/pages/client/ProductFormPage.tsx
+@@ -39,7 +39,7 @@ export default function ProductFormPage() {
+   useEffect(() => {
+     if (isEditing && id) {
+       productsApi
+-        .get(Number(id))
++        .get(id)
+         .then((product) => {
+           setForm({
+             name: product.name,
+@@ -110,11 +110,11 @@ export default function ProductFormPage() {
+         ...form,
+         price: Number(form.price),
+         stock: Number(form.stock),
+-        category_id: Number(form.category_id),
++        category_id: form.category_id,
+       }
+ 
+       if (isEditing) {
+-        await productsApi.update(Number(id), data)
++        await productsApi.update(id!, data)
+         showToast('success', 'Producto actualizado')
+       } else {
+         await productsApi.create(data)
+diff --git a/src/pages/client/ProductsPage.tsx b/src/pages/client/ProductsPage.tsx
+index 2a62f58..921aef3 100644
+--- a/src/pages/client/ProductsPage.tsx
++++ b/src/pages/client/ProductsPage.tsx
+@@ -16,7 +16,7 @@ export default function ProductsPage() {
+   const [statusFilter, setStatusFilter] = useState('')
+   const [page, setPage] = useState(1)
+   const [totalPages, setTotalPages] = useState(1)
+-  const [deleteId, setDeleteId] = useState<number | null>(null)
++  const [deleteId, setDeleteId] = useState<string | null>(null)
+   const [deleting, setDeleting] = useState(false)
+ 
+   const loadProducts = useCallback(async () => {
+diff --git a/src/pages/superadmin/TenantsPage.tsx b/src/pages/superadmin/TenantsPage.tsx
+index 05ad2bb..32fe095 100644
+--- a/src/pages/superadmin/TenantsPage.tsx
++++ b/src/pages/superadmin/TenantsPage.tsx
+@@ -13,7 +13,7 @@ export default function TenantsPage() {
+   const [loading, setLoading] = useState(true)
+   const [modalOpen, setModalOpen] = useState(false)
+   const [editing, setEditing] = useState<Tenant | null>(null)
+-  const [deleteId, setDeleteId] = useState<number | null>(null)
++  const [deleteId, setDeleteId] = useState<string | null>(null)
+   const [deleting, setDeleting] = useState(false)
+   const [saving, setSaving] = useState(false)
+ 
+diff --git a/src/pages/superadmin/UsersPage.tsx b/src/pages/superadmin/UsersPage.tsx
+index cbd35ef..faadcea 100644
+--- a/src/pages/superadmin/UsersPage.tsx
++++ b/src/pages/superadmin/UsersPage.tsx
+@@ -56,7 +56,7 @@ export default function UsersPage() {
+     setFormName(user.name)
+     setFormPassword('')
+     setFormRole(user.role)
+-    setFormTenantId(user.tenant_id ? String(user.tenant_id) : '')
++    setFormTenantId(user.store_id ? String(user.store_id) : '')
+     setModalOpen(true)
+   }
+ 
+@@ -74,7 +74,7 @@ export default function UsersPage() {
+           email: formEmail,
+           name: formName,
+           role: formRole,
+-          tenant_id: formTenantId ? Number(formTenantId) : null,
++          store_id: formTenantId || null,
+         }
+         if (formPassword) updateData.password = formPassword
+         await superadminApi.updateUser(editing.id, updateData as Parameters<typeof superadminApi.updateUser>[1])
+@@ -90,7 +90,7 @@ export default function UsersPage() {
+           name: formName,
+           password: formPassword,
+           role: formRole,
+-          tenant_id: formTenantId ? Number(formTenantId) : undefined,
++          store_id: formTenantId || undefined,
+         })
+         showToast('success', 'Usuario creado')
+       }
+@@ -141,7 +141,7 @@ export default function UsersPage() {
+                   <tr key={user.id} className="hover:bg-gray-50">
+                     <td className="px-4 py-3 text-gray-900">{user.email}</td>
+                     <td className="px-4 py-3 text-gray-600 hidden sm:table-cell">{user.name}</td>
+-                    <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{user.tenant_name || '-'}</td>
++                    <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{user.store_name || '-'}</td>
+                     <td className="px-4 py-3">
+                       <Badge
+                         color={user.role === 'superadmin' ? 'text-purple-800' : 'text-blue-800'}
+diff --git a/src/services/api.ts b/src/services/api.ts
+index 69ba3e4..46e6272 100644
+--- a/src/services/api.ts
++++ b/src/services/api.ts
+@@ -1,229 +1,531 @@
+ // ========================================
+-// VENDExChat Admin - Servicio API principal
++// VENDExChat Admin - Servicio API (Supabase)
+ // ========================================
+ 
+-const API_URL = import.meta.env.VITE_API_URL || 'https://api.vendexchat.app'
++import { supabase } from '../lib/supabase'
++import type {
++  Product, Category, Order, OrderStatus, Tenant,
++  DashboardStats, PaginatedResponse, ProductFormData,
++  SuperadminDashboard, SuperadminUser,
++} from '../types'
+ 
+-// Obtiene el token guardado en localStorage
+-function getToken(): string | null {
+-  return localStorage.getItem('vendexchat_token')
++// ========================================
++// Store ID cache
++// ========================================
++let cachedStoreId: string | null = null
++
++async function getMyStoreId(): Promise<string> {
++  if (cachedStoreId) return cachedStoreId
++  const { data: { user } } = await supabase.auth.getUser()
++  if (!user) throw new Error('No autenticado')
++  const { data } = await supabase
++    .from('profiles')
++    .select('store_id')
++    .eq('id', user.id)
++    .single()
++  if (!data?.store_id) throw new Error('No tienes una tienda asociada')
++  cachedStoreId = data.store_id
++  return cachedStoreId!
+ }
+ 
+-// Función principal para hacer peticiones al backend
+-async function request<T>(
+-  endpoint: string,
+-  options: RequestInit = {}
+-): Promise<T> {
+-  const token = getToken()
+-
+-  const headers: Record<string, string> = {
+-    'Content-Type': 'application/json',
+-    ...(options.headers as Record<string, string>),
+-  }
+-
+-  // Agregar token de autenticación si existe
+-  if (token) {
+-    headers['Authorization'] = `Bearer ${token}`
+-  }
+-
+-  const response = await fetch(`${API_URL}${endpoint}`, {
+-    ...options,
+-    headers,
+-  })
+-
+-  // Si el token es inválido, limpiar y redirigir a login
+-  if (response.status === 401) {
+-    localStorage.removeItem('vendexchat_token')
+-    window.location.href = '/login'
+-    throw new Error('Sesión expirada')
+-  }
++export function clearStoreCache() {
++  cachedStoreId = null
++}
+ 
+-  if (!response.ok) {
+-    const error = await response.json().catch(() => ({ message: 'Error de conexión' }))
+-    throw new Error(error.message || `Error ${response.status}`)
++// ========================================
++// Mappers
++// ========================================
++/* eslint-disable @typescript-eslint/no-explicit-any */
++function mapProduct(p: any): Product {
++  return {
++    id: p.id,
++    store_id: p.store_id ?? '',
++    name: p.name ?? '',
++    description: p.description ?? null,
++    price: Number(p.price),
++    stock: Number(p.stock ?? 0),
++    unlimited_stock: p.unlimited_stock ?? false,
++    image_url: p.image_url ?? null,
++    category_id: p.category_id ?? null,
++    category_name: p.categories?.name ?? undefined,
++    is_active: p.is_active ?? true,
++    is_featured: p.is_featured ?? false,
++    created_at: p.created_at,
+   }
++}
+ 
+-  // Si la respuesta es 204 (No Content), retornar vacío
+-  if (response.status === 204) {
+-    return {} as T
++function mapOrder(o: any): Order {
++  const items = o.order_items ?? []
++  const computedSubtotal = items.reduce(
++    (sum: number, item: any) => sum + Number(item.quantity) * Number(item.unit_price), 0
++  )
++
++  return {
++    id: o.id,
++    store_id: o.store_id ?? '',
++    public_id: o.public_id ?? '',
++    customer_name: o.customer_name ?? '',
++    customer_whatsapp: o.customer_whatsapp ?? '',
++    delivery_type: o.delivery_type ?? 'pickup',
++    delivery_address: o.delivery_address ?? null,
++    customer_notes: o.customer_notes ?? null,
++    status: o.status ?? 'pending',
++    subtotal: Number(o.subtotal) || computedSubtotal,
++    delivery_cost: Number(o.order_delivery_cost ?? 0),
++    total: Number(o.total),
++    items: items.map((item: any) => ({
++      id: item.id,
++      product_id: item.product_id,
++      product_name: item.products?.name ?? 'Producto eliminado',
++      quantity: Number(item.quantity),
++      unit_price: Number(item.unit_price),
++      subtotal: Number(item.quantity) * Number(item.unit_price),
++    })),
++    created_at: o.created_at,
++    updated_at: o.updated_at ?? o.created_at,
+   }
+-
+-  return response.json()
+ }
++/* eslint-enable @typescript-eslint/no-explicit-any */
+ 
+-// --- Auth ---
++// ========================================
++// Auth API
++// ========================================
+ export const authApi = {
+-  login: (email: string, password: string) =>
+-    request<{ token: string; user: import('../types').User }>('/auth/login', {
+-      method: 'POST',
+-      body: JSON.stringify({ email, password }),
+-    }),
+-
+-  register: (data: import('../types').RegisterRequest) =>
+-    request<{ token: string; user: import('../types').User }>('/auth/register', {
+-      method: 'POST',
+-      body: JSON.stringify(data),
+-    }),
+-
+-  me: () =>
+-    request<{ user: import('../types').User }>('/auth/me'),
+-
+-  requestPasswordReset: (email: string) =>
+-    request<{ message: string }>('/auth/request-password-reset', {
+-      method: 'POST',
+-      body: JSON.stringify({ email }),
+-    }),
+-
+-  resetPassword: (token: string, password: string) =>
+-    request<{ message: string }>('/auth/reset-password', {
+-      method: 'POST',
+-      body: JSON.stringify({ token, password }),
+-    }),
+-
+-  changePassword: (currentPassword: string, newPassword: string) =>
+-    request<{ message: string }>('/auth/change-password', {
+-      method: 'PUT',
+-      body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+-    }),
++  changePassword: async (_currentPassword: string, newPassword: string): Promise<{ message: string }> => {
++    const { error } = await supabase.auth.updateUser({ password: newPassword })
++    if (error) throw new Error(error.message)
++    return { message: 'Contraseña actualizada' }
++  },
++
++  requestPasswordReset: async (email: string): Promise<{ message: string }> => {
++    const { error } = await supabase.auth.resetPasswordForEmail(email, {
++      redirectTo: `${window.location.origin}/reset-password`,
++    })
++    if (error) throw new Error(error.message)
++    return { message: 'Email enviado' }
++  },
+ }
+ 
+-// --- Dashboard ---
++// ========================================
++// Dashboard API
++// ========================================
+ export const dashboardApi = {
+-  getStats: () =>
+-    request<import('../types').DashboardStats>('/dashboard/stats'),
++  getStats: async (): Promise<DashboardStats> => {
++    const storeId = await getMyStoreId()
++    const today = new Date().toISOString().split('T')[0]
++
++    const [ordersToday, activeProducts, recentOrders, lowStockProducts] = await Promise.all([
++      supabase
++        .from('orders')
++        .select('total')
++        .eq('store_id', storeId)
++        .gte('created_at', `${today}T00:00:00`)
++        .lte('created_at', `${today}T23:59:59`),
++
++      supabase
++        .from('products')
++        .select('id', { count: 'exact', head: true })
++        .eq('store_id', storeId)
++        .eq('is_active', true),
++
++      supabase
++        .from('orders')
++        .select('*, order_items(*, products(name))')
++        .eq('store_id', storeId)
++        .order('created_at', { ascending: false })
++        .limit(5),
++
++      supabase
++        .from('products')
++        .select('*')
++        .eq('store_id', storeId)
++        .eq('unlimited_stock', false)
++        .lte('stock', 5)
++        .eq('is_active', true)
++        .order('stock')
++        .limit(5),
++    ])
++
++    const todayData = ordersToday.data ?? []
++    const salesToday = todayData.reduce((sum, o) => sum + Number(o.total), 0)
++
++    return {
++      orders_today: todayData.length,
++      sales_today: salesToday,
++      active_products: activeProducts.count ?? 0,
++      recent_orders: (recentOrders.data ?? []).map(mapOrder),
++      low_stock_products: (lowStockProducts.data ?? []).map(mapProduct),
++    }
++  },
+ }
+ 
+-// --- Productos ---
++// ========================================
++// Products API
++// ========================================
+ export const productsApi = {
+-  list: (params?: { page?: number; limit?: number; search?: string; category_id?: number | string }) => {
+-    const searchParams = new URLSearchParams()
+-    if (params?.page) searchParams.set('page', String(params.page))
+-    if (params?.limit) searchParams.set('limit', String(params.limit))
+-    if (params?.search) searchParams.set('search', params.search)
+-    if (params?.category_id) searchParams.set('category_id', String(params.category_id))
+-    const query = searchParams.toString()
+-    return request<import('../types').PaginatedResponse<import('../types').Product>>(
+-      `/products${query ? `?${query}` : ''}`
+-    )
+-  },
+-
+-  get: (id: number) =>
+-    request<import('../types').Product>(`/products/${id}`),
+-
+-  create: (data: import('../types').ProductFormData) =>
+-    request<import('../types').Product>('/products', {
+-      method: 'POST',
+-      body: JSON.stringify(data),
+-    }),
+-
+-  update: (id: number, data: Partial<import('../types').ProductFormData>) =>
+-    request<import('../types').Product>(`/products/${id}`, {
+-      method: 'PUT',
+-      body: JSON.stringify(data),
+-    }),
+-
+-  delete: (id: number) =>
+-    request<void>(`/products/${id}`, { method: 'DELETE' }),
++  list: async (params?: {
++    page?: number; limit?: number; search?: string; category_id?: number | string
++  }): Promise<PaginatedResponse<Product>> => {
++    const storeId = await getMyStoreId()
++    const page = params?.page ?? 1
++    const limit = params?.limit ?? 20
++    const from = (page - 1) * limit
++
++    let query = supabase
++      .from('products')
++      .select('*, categories(name)', { count: 'exact' })
++      .eq('store_id', storeId)
++
++    if (params?.search) {
++      query = query.ilike('name', `%${params.search}%`)
++    }
++    if (params?.category_id) {
++      query = query.eq('category_id', String(params.category_id))
++    }
++
++    const { data, count, error } = await query
++      .order('sort_order')
++      .range(from, from + limit - 1)
++
++    if (error) throw new Error(error.message)
++
++    return {
++      data: (data ?? []).map(mapProduct),
++      total: count ?? 0,
++      page,
++      limit,
++      total_pages: Math.ceil((count ?? 0) / limit),
++    }
++  },
++
++  get: async (id: string | number): Promise<Product> => {
++    const { data, error } = await supabase
++      .from('products')
++      .select('*, categories(name)')
++      .eq('id', String(id))
++      .single()
++    if (error) throw new Error(error.message)
++    return mapProduct(data)
++  },
++
++  create: async (formData: ProductFormData): Promise<Product> => {
++    const storeId = await getMyStoreId()
++    const { data, error } = await supabase
++      .from('products')
++      .insert({
++        name: formData.name,
++        description: formData.description || null,
++        price: Number(formData.price),
++        stock: Number(formData.stock),
++        unlimited_stock: formData.unlimited_stock,
++        image_url: formData.image_url || null,
++        category_id: formData.category_id ? String(formData.category_id) : null,
++        is_active: formData.is_active,
++        is_featured: formData.is_featured,
++        store_id: storeId,
++      })
++      .select('*, categories(name)')
++      .single()
++    if (error) throw new Error(error.message)
++    return mapProduct(data)
++  },
++
++  update: async (id: string | number, formData: Partial<ProductFormData>): Promise<Product> => {
++    const updateData: Record<string, unknown> = {}
++    if (formData.name !== undefined) updateData.name = formData.name
++    if (formData.description !== undefined) updateData.description = formData.description || null
++    if (formData.price !== undefined) updateData.price = Number(formData.price)
++    if (formData.stock !== undefined) updateData.stock = Number(formData.stock)
++    if (formData.unlimited_stock !== undefined) updateData.unlimited_stock = formData.unlimited_stock
++    if (formData.image_url !== undefined) updateData.image_url = formData.image_url || null
++    if (formData.category_id !== undefined) updateData.category_id = formData.category_id ? String(formData.category_id) : null
++    if (formData.is_active !== undefined) updateData.is_active = formData.is_active
++    if (formData.is_featured !== undefined) updateData.is_featured = formData.is_featured
++
++    const { data, error } = await supabase
++      .from('products')
++      .update(updateData)
++      .eq('id', String(id))
++      .select('*, categories(name)')
++      .single()
++    if (error) throw new Error(error.message)
++    return mapProduct(data)
++  },
++
++  delete: async (id: string | number): Promise<void> => {
++    const { error } = await supabase
++      .from('products')
++      .delete()
++      .eq('id', String(id))
++    if (error) throw new Error(error.message)
++  },
+ }
+ 
+-// --- Categorías ---
++// ========================================
++// Categories API
++// ========================================
+ export const categoriesApi = {
+-  list: () =>
+-    request<import('../types').Category[]>('/categories'),
+-
+-  get: (id: number) =>
+-    request<import('../types').Category>(`/categories/${id}`),
+-
+-  create: (data: { name: string; sort_order?: number }) =>
+-    request<import('../types').Category>('/categories', {
+-      method: 'POST',
+-      body: JSON.stringify(data),
+-    }),
+-
+-  update: (id: number, data: { name?: string; sort_order?: number }) =>
+-    request<import('../types').Category>(`/categories/${id}`, {
+-      method: 'PUT',
+-      body: JSON.stringify(data),
+-    }),
+-
+-  delete: (id: number) =>
+-    request<void>(`/categories/${id}`, { method: 'DELETE' }),
++  list: async (): Promise<Category[]> => {
++    const storeId = await getMyStoreId()
++    const { data, error } = await supabase
++      .from('categories')
++      .select('*, products(count)')
++      .eq('store_id', storeId)
++      .order('sort_order')
++    if (error) throw new Error(error.message)
++    return (data ?? []).map((cat: any) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
++      ...cat,
++      product_count: cat.products?.[0]?.count ?? 0,
++    }))
++  },
++
++  get: async (id: string | number): Promise<Category> => {
++    const { data, error } = await supabase
++      .from('categories')
++      .select('*')
++      .eq('id', String(id))
++      .single()
++    if (error) throw new Error(error.message)
++    return data
++  },
++
++  create: async (input: { name: string; sort_order?: number }): Promise<Category> => {
++    const storeId = await getMyStoreId()
++    const { data, error } = await supabase
++      .from('categories')
++      .insert({
++        name: input.name,
++        sort_order: input.sort_order ?? 0,
++        store_id: storeId,
++      })
++      .select()
++      .single()
++    if (error) throw new Error(error.message)
++    return data
++  },
++
++  update: async (id: string | number, input: { name?: string; sort_order?: number }): Promise<Category> => {
++    const { data, error } = await supabase
++      .from('categories')
++      .update(input)
++      .eq('id', String(id))
++      .select()
++      .single()
++    if (error) throw new Error(error.message)
++    return data
++  },
++
++  delete: async (id: string | number): Promise<void> => {
++    const { error } = await supabase
++      .from('categories')
++      .delete()
++      .eq('id', String(id))
++    if (error) throw new Error(error.message)
++  },
+ }
+ 
+-// --- Pedidos ---
++// ========================================
++// Orders API
++// ========================================
+ export const ordersApi = {
+-  list: (params?: { status?: string; date_from?: string; date_to?: string; page?: number; limit?: number }) => {
+-    const searchParams = new URLSearchParams()
+-    if (params?.status && params.status !== 'all') searchParams.set('status', params.status)
+-    if (params?.date_from) searchParams.set('date_from', params.date_from)
+-    if (params?.date_to) searchParams.set('date_to', params.date_to)
+-    if (params?.page) searchParams.set('page', String(params.page))
+-    if (params?.limit) searchParams.set('limit', String(params.limit))
+-    const query = searchParams.toString()
+-    return request<import('../types').PaginatedResponse<import('../types').Order>>(
+-      `/orders${query ? `?${query}` : ''}`
+-    )
+-  },
+-
+-  get: (id: number) =>
+-    request<import('../types').Order>(`/orders/${id}`),
+-
+-  updateStatus: (id: number, status: import('../types').OrderStatus) =>
+-    request<import('../types').Order>(`/orders/${id}/status`, {
+-      method: 'PUT',
+-      body: JSON.stringify({ status }),
+-    }),
++  list: async (params?: {
++    status?: string; date_from?: string; date_to?: string; page?: number; limit?: number
++  }): Promise<PaginatedResponse<Order>> => {
++    const storeId = await getMyStoreId()
++    const page = params?.page ?? 1
++    const limit = params?.limit ?? 20
++    const from = (page - 1) * limit
++
++    let query = supabase
++      .from('orders')
++      .select('*, order_items(*, products(name))', { count: 'exact' })
++      .eq('store_id', storeId)
++
++    if (params?.status && params.status !== 'all') {
++      query = query.eq('status', params.status)
++    }
++    if (params?.date_from) {
++      query = query.gte('created_at', `${params.date_from}T00:00:00`)
++    }
++    if (params?.date_to) {
++      query = query.lte('created_at', `${params.date_to}T23:59:59`)
++    }
++
++    const { data, count, error } = await query
++      .order('created_at', { ascending: false })
++      .range(from, from + limit - 1)
++
++    if (error) throw new Error(error.message)
++
++    return {
++      data: (data ?? []).map(mapOrder),
++      total: count ?? 0,
++      page,
++      limit,
++      total_pages: Math.ceil((count ?? 0) / limit),
++    }
++  },
++
++  get: async (id: string | number): Promise<Order> => {
++    const { data, error } = await supabase
++      .from('orders')
++      .select('*, order_items(*, products(name))')
++      .eq('id', String(id))
++      .single()
++    if (error) throw new Error(error.message)
++    return mapOrder(data)
++  },
++
++  updateStatus: async (id: string | number, status: OrderStatus): Promise<Order> => {
++    const { data, error } = await supabase
++      .from('orders')
++      .update({ status, updated_at: new Date().toISOString() })
++      .eq('id', String(id))
++      .select('*, order_items(*, products(name))')
++      .single()
++    if (error) throw new Error(error.message)
++    return mapOrder(data)
++  },
+ }
+ 
+-// --- Tenant (Configuración de la tienda) ---
++// ========================================
++// Tenant API (current user's store)
++// ========================================
+ export const tenantApi = {
+-  getMe: () =>
+-    request<import('../types').Tenant>('/tenants/me'),
+-
+-  updateMe: (data: Partial<import('../types').Tenant>) =>
+-    request<import('../types').Tenant>('/tenants/me', {
+-      method: 'PUT',
+-      body: JSON.stringify(data),
+-    }),
++  getMe: async (): Promise<Tenant> => {
++    const storeId = await getMyStoreId()
++    const { data, error } = await supabase
++      .from('stores')
++      .select('*')
++      .eq('id', storeId)
++      .single()
++    if (error) throw new Error(error.message)
++    return data
++  },
++
++  updateMe: async (updates: Partial<Tenant>): Promise<Tenant> => {
++    const storeId = await getMyStoreId()
++    // Remove fields that shouldn't be updated
++    const { id: _id, slug: _slug, owner_id: _oid, created_at: _ca, ...safeUpdates } = updates
++    const { data, error } = await supabase
++      .from('stores')
++      .update(safeUpdates)
++      .eq('id', storeId)
++      .select()
++      .single()
++    if (error) throw new Error(error.message)
++    return data
++  },
+ }
+ 
+-// --- Superadmin ---
++// ========================================
++// Superadmin API
++// ========================================
+ export const superadminApi = {
+-  dashboard: () =>
+-    request<import('../types').SuperadminDashboard>('/superadmin/dashboard'),
+-
+-  // Tenants
+-  listTenants: () =>
+-    request<import('../types').Tenant[]>('/superadmin/tenants'),
+-
+-  createTenant: (data: Partial<import('../types').Tenant> & { email: string; password: string }) =>
+-    request<import('../types').Tenant>('/superadmin/tenants', {
+-      method: 'POST',
+-      body: JSON.stringify(data),
+-    }),
+-
+-  updateTenant: (id: number, data: Partial<import('../types').Tenant>) =>
+-    request<import('../types').Tenant>(`/superadmin/tenants/${id}`, {
+-      method: 'PUT',
+-      body: JSON.stringify(data),
+-    }),
+-
+-  deleteTenant: (id: number) =>
+-    request<void>(`/superadmin/tenants/${id}`, { method: 'DELETE' }),
+-
+-  // Users
+-  listUsers: () =>
+-    request<import('../types').SuperadminUser[]>('/superadmin/users'),
+-
+-  createUser: (data: { email: string; name: string; password: string; role: string; tenant_id?: number }) =>
+-    request<import('../types').SuperadminUser>('/superadmin/users', {
+-      method: 'POST',
+-      body: JSON.stringify(data),
+-    }),
+-
+-  updateUser: (id: number, data: Partial<import('../types').SuperadminUser> & { password?: string }) =>
+-    request<import('../types').SuperadminUser>(`/superadmin/users/${id}`, {
+-      method: 'PUT',
+-      body: JSON.stringify(data),
+-    }),
++  dashboard: async (): Promise<SuperadminDashboard> => {
++    const [tenantsRes, ordersRes] = await Promise.all([
++      supabase.from('stores').select('*').order('created_at', { ascending: false }),
++      supabase.from('orders').select('total, created_at'),
++    ])
++
++    const tenants = tenantsRes.data ?? []
++    const orders = ordersRes.data ?? []
++
++    const now = new Date()
++    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
++    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
++
++    const newRegistrations = tenants.filter(t => new Date(t.created_at) >= weekAgo).length
++    const monthRevenue = orders
++      .filter(o => new Date(o.created_at) >= monthStart)
++      .reduce((sum, o) => sum + Number(o.total), 0)
++
++    return {
++      total_tenants: tenants.length,
++      total_orders: orders.length,
++      total_revenue: monthRevenue,
++      new_registrations_week: newRegistrations,
++      tenants,
++    }
++  },
++
++  listTenants: async (): Promise<Tenant[]> => {
++    const { data, error } = await supabase
++      .from('stores')
++      .select('*')
++      .order('created_at', { ascending: false })
++    if (error) throw new Error(error.message)
++    return data ?? []
++  },
++
++  createTenant: async (_data: Partial<Tenant> & { email: string; password: string }): Promise<Tenant> => {
++    throw new Error('Crear tiendas desde superadmin requiere una Edge Function. Los usuarios pueden registrarse desde /register.')
++  },
++
++  updateTenant: async (id: string | number, updates: Partial<Tenant>): Promise<Tenant> => {
++    const { data, error } = await supabase
++      .from('stores')
++      .update(updates)
++      .eq('id', String(id))
++      .select()
++      .single()
++    if (error) throw new Error(error.message)
++    return data
++  },
++
++  deleteTenant: async (id: string | number): Promise<void> => {
++    const { error } = await supabase
++      .from('stores')
++      .delete()
++      .eq('id', String(id))
++    if (error) throw new Error(error.message)
++  },
++
++  listUsers: async (): Promise<SuperadminUser[]> => {
++    const { data, error } = await supabase
++      .from('profiles')
++      .select('*, stores(name)')
++      .order('created_at', { ascending: false })
++    if (error) throw new Error(error.message)
++    return (data ?? []).map((p: any) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
++      id: p.id,
++      email: '',
++      name: p.name,
++      role: p.role,
++      store_id: p.store_id,
++      store_name: p.stores?.name ?? null,
++      is_active: true,
++      created_at: p.created_at,
++    }))
++  },
++
++  createUser: async (_data: { email: string; name: string; password: string; role: string; store_id?: string | number }): Promise<SuperadminUser> => {
++    throw new Error('Crear usuarios desde superadmin requiere una Edge Function.')
++  },
++
++  updateUser: async (id: string | number, data: Partial<SuperadminUser> & { password?: string }): Promise<SuperadminUser> => {
++    const updates: Record<string, unknown> = {}
++    if (data.name !== undefined) updates.name = data.name
++    if (data.role !== undefined) updates.role = data.role
++    if (data.store_id !== undefined) updates.store_id = data.store_id ? String(data.store_id) : null
++
++    const { data: updated, error } = await supabase
++      .from('profiles')
++      .update(updates)
++      .eq('id', String(id))
++      .select('*, stores(name)')
++      .single()
++    if (error) throw new Error(error.message)
++
++    return {
++      id: updated.id,
++      email: '',
++      name: updated.name,
++      role: updated.role,
++      store_id: updated.store_id,
++      store_name: (updated as any).stores?.name ?? null, // eslint-disable-line @typescript-eslint/no-explicit-any
++      is_active: true,
++      created_at: updated.created_at,
++    }
++  },
+ }
+diff --git a/src/types/index.ts b/src/types/index.ts
+index 2be31c0..b1c51d2 100644
+--- a/src/types/index.ts
++++ b/src/types/index.ts
+@@ -1,22 +1,18 @@
+ // ========================================
+ // VENDExChat Admin - Tipos TypeScript
++// Migrado a Supabase (UUIDs como strings)
+ // ========================================
+ 
+ // --- Usuario y Autenticación ---
+ export interface User {
+-  id: number
++  id: string
+   email: string
+   name: string
+   role: 'client' | 'superadmin'
+-  tenant_id: number | null
++  store_id: string | null
+   created_at: string
+ }
+ 
+-export interface LoginRequest {
+-  email: string
+-  password: string
+-}
+-
+ export interface RegisterRequest {
+   store_name: string
+   email: string
+@@ -24,14 +20,9 @@ export interface RegisterRequest {
+   slug: string
+ }
+ 
+-export interface AuthResponse {
+-  token: string
+-  user: User
+-}
+-
+ // --- Tenant (Tienda) ---
+ export interface Tenant {
+-  id: number
++  id: string
+   name: string
+   slug: string
+   logo_url: string | null
+@@ -49,20 +40,21 @@ export interface Tenant {
+   delivery_cost: number
+   schedule: Record<string, unknown> | null
+   is_active: boolean
++  owner_id?: string | null
+   created_at: string
+ }
+ 
+ // --- Producto ---
+ export interface Product {
+-  id: number
+-  tenant_id: number
++  id: string
++  store_id: string
+   name: string
+   description: string | null
+   price: number
+   stock: number
+   unlimited_stock: boolean
+   image_url: string | null
+-  category_id: number | null
++  category_id: string | null
+   category_name?: string
+   is_active: boolean
+   is_featured: boolean
+@@ -83,8 +75,8 @@ export interface ProductFormData {
+ 
+ // --- Categoría ---
+ export interface Category {
+-  id: number
+-  tenant_id: number
++  id: string
++  store_id: string
+   name: string
+   sort_order: number
+   product_count?: number
+@@ -93,12 +85,13 @@ export interface Category {
+ 
+ // --- Pedido ---
+ export interface Order {
+-  id: number
+-  tenant_id: number
+-  order_number: string
++  id: string
++  store_id: string
++  public_id: string
+   customer_name: string
+   customer_whatsapp: string
+-  customer_address: string | null
++  delivery_type: string
++  delivery_address: string | null
+   customer_notes: string | null
+   status: OrderStatus
+   subtotal: number
+@@ -112,8 +105,8 @@ export interface Order {
+ export type OrderStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
+ 
+ export interface OrderItem {
+-  id: number
+-  product_id: number
++  id: string
++  product_id: string
+   product_name: string
+   quantity: number
+   unit_price: number
+@@ -139,23 +132,17 @@ export interface SuperadminDashboard {
+ }
+ 
+ export interface SuperadminUser {
+-  id: number
++  id: string
+   email: string
+   name: string
+   role: string
+-  tenant_id: number | null
+-  tenant_name?: string
+-  last_login: string | null
++  store_id: string | null
++  store_name?: string | null
+   is_active: boolean
+   created_at: string
+ }
+ 
+ // --- API Response genérico ---
+-export interface ApiResponse<T> {
+-  data: T
+-  message?: string
+-}
+-
+ export interface PaginatedResponse<T> {
+   data: T[]
+   total: number
+-- 
+2.43.0
+

@@ -1,36 +1,31 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import ShopPage from "./shop/pages/ShopPage";
 import { CartProvider } from "./context/CartContext";
-import { HomePage } from "./pages/HomePage";
-import { StorePage } from "./pages/StorePage";
+
+const HomePage = lazy(() => import("./pages/HomePage").then(m => ({ default: m.HomePage })));
+const DemoPage = lazy(() => import("./pages/DemoPage"));
 
 export default function App() {
-  const hostname = typeof window !== "undefined" ? window.location.hostname : "";
-  const isLocal = hostname === "localhost" || hostname === "127.0.0.1";
-
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            isLocal ? (
-              <HomePage />
-            ) : (
-              <CartProvider>
-                <StorePage />
-              </CartProvider>
-            )
-          }
-        />
-        <Route
-          path="/:slug"
-          element={
-            <CartProvider>
-              <StorePage />
-            </CartProvider>
-          }
-        />
-      </Routes>
+      <CartProvider>
+        <Routes>
+          {/* Landing Page en la raíz */}
+          <Route path="/" element={<Suspense fallback={null}><HomePage /></Suspense>} />
+
+          {/* Demo page */}
+          <Route path="/demo" element={<Suspense fallback={null}><DemoPage /></Suspense>} />
+
+          {/* Rutas reservadas que no deben ser capturadas por el shop */}
+          <Route path="/admin" element={<div className="p-10 font-bold">Admin Panel (Separated deployment)</div>} />
+          <Route path="/admin/*" element={<div className="p-10 font-bold">Admin Panel (Separated deployment)</div>} />
+          <Route path="/api/*" element={<div>API Endpoint</div>} />
+
+          {/* Tienda dinámica en cualquier slug */}
+          <Route path="/:slug" element={<ShopPage />} />
+        </Routes>
+      </CartProvider>
     </BrowserRouter>
   );
 }
