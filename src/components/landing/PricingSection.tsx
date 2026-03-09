@@ -121,6 +121,9 @@ const PricingSection = () => {
 
                 {/* Price */}
                 <div className="flex items-baseline gap-1 mb-6">
+                  {!plan.isCustom && plan.price !== "$0" && (
+                    <span className="text-slate-400 text-sm font-semibold mr-0.5">USD</span>
+                  )}
                   <span className={`font-black text-slate-900 ${plan.isCustom ? "text-4xl" : "text-4xl"}`}>
                     {plan.price}
                   </span>
