@@ -112,6 +112,7 @@ export function PexelsImageSuggestions({ productName, productId, onSelect, onClo
   const [saving, setSaving]   = useState(false);
   const [error, setError]     = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
+  const [usedFallback, setUsedFallback] = useState(false);
 
   const search = async (overrideSource?: Source) => {
     const src = overrideSource ?? source;
@@ -119,12 +120,25 @@ export function PexelsImageSuggestions({ productName, productId, onSelect, onClo
     setError(null);
     setPhotos([]);
     setSelected(null);
+    setUsedFallback(false);
     try {
-      const results = src === "google"
-        ? await searchGoogle(query)
-        : await searchPexels(query);
-      setPhotos(results);
-      if (results.length === 0) setError("No se encontraron imágenes.");
+      if (src === "google") {
+        try {
+          const results = await searchGoogle(query);
+          setPhotos(results);
+          if (results.length === 0) setError("No se encontraron imágenes.");
+        } catch (googleErr: any) {
+          // Fallback a Pexels si Google falla
+          const pexelsResults = await searchPexels(query);
+          setPhotos(pexelsResults);
+          setUsedFallback(true);
+          if (pexelsResults.length === 0) setError("No se encontraron imágenes.");
+        }
+      } else {
+        const results = await searchPexels(query);
+        setPhotos(results);
+        if (results.length === 0) setError("No se encontraron imágenes.");
+      }
     } catch (e: any) {
       setError(e.message ?? "Error al cargar imágenes. Reintentá más tarde.");
     } finally {
@@ -297,8 +311,10 @@ export function PexelsImageSuggestions({ productName, productId, onSelect, onClo
         {/* Footer */}
         <div className="px-8 py-5 border-t border-slate-100 flex items-center justify-between">
           <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
-            {source === "google" ? (
+            {source === "google" && !usedFallback ? (
               <>Imágenes via Google Custom Search</>
+            ) : usedFallback ? (
+              <span className="text-amber-400">Google no disponible · Mostrando resultados de Pexels</span>
             ) : (
               <>
                 Potenciado por{" "}
