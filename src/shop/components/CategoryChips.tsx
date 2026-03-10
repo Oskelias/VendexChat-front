@@ -18,7 +18,7 @@ export function CategoryChips({ categories, activeId, onSelect, onMenuClick }: C
 
     return (
         <div className="bg-white border-b border-slate-100 overflow-x-auto no-scrollbar flex items-center shadow-sm">
-            <div className="flex px-4 mx-auto divide-x divide-slate-100 max-w-[1440px] w-full">
+            <div className="flex px-4 mx-auto divide-x divide-slate-100 max-w-[1440px] w-full md:justify-center">
                 {showMenu && (
                     <button
                         onClick={onMenuClick}
