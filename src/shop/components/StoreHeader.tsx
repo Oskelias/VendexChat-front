@@ -25,7 +25,7 @@ export function StoreHeader({
             {/* Global Announcement Banner */}
             {announcement && (
                 <div className="bg-indigo-600 text-white px-4 py-2.5 text-center relative overflow-hidden group">
-                    <div className="max-w-4xl mx-auto flex items-center justify-center gap-3 relative z-10">
+                    <div className="max-w-[1440px] mx-auto flex items-center justify-center gap-3 relative z-10">
                         <div className="p-1 bg-white/20 rounded-lg">
                             <Bot className="w-3.5 h-3.5 text-white animate-pulse" />
                         </div>
@@ -39,7 +39,7 @@ export function StoreHeader({
             )}
             {/* Top Navigation Bar: Search & Icons */}
             <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-50 px-4 py-3 shadow-sm">
-                <div className="max-w-4xl mx-auto flex items-center gap-3">
+                <div className="max-w-[1440px] mx-auto flex items-center gap-3">
                     {/* Search Field */}
                     <div className="relative flex-1 group">
                         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary-dynamic transition-colors" />
@@ -124,7 +124,7 @@ export function StoreHeader({
             </div>
 
             {/* Desktop Description */}
-            <div className="max-w-4xl mx-auto px-4 pt-6 pb-2 hidden md:block">
+            <div className="max-w-[1440px] mx-auto px-4 pt-6 pb-2 hidden md:block">
                 {description && (
                     <p className="text-sm text-slate-500 font-medium max-w-2xl border-l-4 border-primary-dynamic pl-4 py-1 italic">
                         {description}

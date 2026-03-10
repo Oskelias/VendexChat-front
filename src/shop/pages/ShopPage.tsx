@@ -111,7 +111,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                         </p>
                     )}
                     {/* Product cards skeleton */}
-                    <div className="max-w-4xl mx-auto px-4 py-4 animate-pulse">
+                    <div className="max-w-[1440px] mx-auto px-4 py-4 animate-pulse">
                         <div className="h-4 w-32 bg-slate-100 rounded mb-4" />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {[1, 2, 3, 4, 5, 6].map(i => (
@@ -135,7 +135,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
             <div className="min-h-screen bg-white animate-pulse">
                 {/* Sticky nav bar skeleton */}
                 <div className="sticky top-0 z-50 bg-white border-b border-slate-50 px-4 py-3 shadow-sm">
-                    <div className="max-w-4xl mx-auto flex items-center gap-3">
+                    <div className="max-w-[1440px] mx-auto flex items-center gap-3">
                         <div className="flex-1 h-10 bg-slate-100 rounded-2xl" />
                         <div className="w-10 h-10 bg-slate-100 rounded-xl" />
                         <div className="w-20 h-10 bg-slate-100 rounded-xl" />
@@ -163,7 +163,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                     </p>
                 )}
                 {/* Product cards skeleton */}
-                <div className="max-w-4xl mx-auto px-4 py-4">
+                <div className="max-w-[1440px] mx-auto px-4 py-4">
                     <div className="h-4 w-32 bg-slate-100 rounded mb-4" />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {[1, 2, 3, 4, 5, 6].map(i => (
@@ -228,7 +228,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
             />
 
             {data.store.metadata?.enable_weekly_planning && (
-                <div className="max-w-4xl mx-auto px-4 mt-8 flex justify-center">
+                <div className="max-w-[1440px] mx-auto px-4 mt-8 flex justify-center">
                     <div className="bg-slate-50 p-1.5 rounded-2xl flex gap-1 border border-slate-100">
                         <button
                             onClick={() => setViewMode('standard')}
@@ -257,7 +257,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                 />
             )}
 
-            <main className="max-w-4xl mx-auto px-4 py-8">
+            <main className="max-w-[1440px] mx-auto px-4 py-8">
                 {viewMode === 'weekly' ? (
                     <WeeklyMenuGrid
                         categories={data.categories}
