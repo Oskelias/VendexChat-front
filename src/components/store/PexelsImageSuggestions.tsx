@@ -87,7 +87,14 @@ async function searchGoogle(query: string): Promise<ResultPhoto[]> {
   url.searchParams.set("imgSize", "large");
   url.searchParams.set("safe", "active");
   const res = await fetch(url.toString());
-  if (!res.ok) throw new Error(`Google error ${res.status}`);
+  if (!res.ok) {
+    let msg = `Google error ${res.status}`;
+    try {
+      const errData = await res.json();
+      if (errData?.error?.message) msg = errData.error.message;
+    } catch { /* ignore */ }
+    throw new Error(msg);
+  }
   const data = await res.json();
   return (data.items ?? []).map((item: any, i: number) => ({
     id: `g-${i}-${item.link}`,
