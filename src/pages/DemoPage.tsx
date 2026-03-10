@@ -22,6 +22,7 @@ import { CategoryChips } from "@/shop/components/CategoryChips";
 import { ProductCard } from "@/shop/components/ProductCard";
 import { ChatBotWidget } from "@/shop/components/ChatBotWidget";
 import type { Product, Category } from "@/types";
+import { PexelsImageSuggestions } from "@/components/store/PexelsImageSuggestions";
 
 /* ── MOCK DATA ── */
 
@@ -211,6 +212,7 @@ export default function DemoPage() {
   const [showOrderLegend, setShowOrderLegend] = useState(false);
   const [tutorialStep, setTutorialStep] = useState(0); // 0: Start, 1: Cart, 2: IA, 3: Dashboard, 4: Done
   const [adminPriceInput, setAdminPriceInput] = useState<number>(4500);
+  const [showPexelsPicker, setShowPexelsPicker] = useState(false);
 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -557,10 +559,18 @@ export default function DemoPage() {
                           <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm">
                             <img src={categories[0].products[0].image_url} className="w-full h-full object-cover" />
                           </div>
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <p className="font-black text-slate-800 text-sm">{categories[0].products[0].name}</p>
                             <p className="text-xs text-slate-400 font-bold">Categoría: {categories[0].name}</p>
                           </div>
+                          <button
+                            onClick={() => setShowPexelsPicker(true)}
+                            className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-black uppercase tracking-widest text-[10px] rounded-xl transition-all shrink-0"
+                            title="Buscar imagen con IA (Pexels)"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            IA
+                          </button>
                         </div>
                       </div>
 
@@ -662,6 +672,27 @@ export default function DemoPage() {
           </div>
         </div>
       </div>
+
+      {/* ── PEXELS IMAGE PICKER ── */}
+      {showPexelsPicker && (
+        <PexelsImageSuggestions
+          productName={categories[0].products[0].name}
+          onSelect={(url) => {
+            setCategories(prev => {
+              const next = [...prev];
+              next[0] = {
+                ...next[0],
+                products: next[0].products.map((p, i) =>
+                  i === 0 ? { ...p, image_url: url } : p
+                ),
+              };
+              return next;
+            });
+            setShowPexelsPicker(false);
+          }}
+          onClose={() => setShowPexelsPicker(false)}
+        />
+      )}
 
       {/* ── CUSTOM DEMO CART DRAWER ── */}
       {isCartOpen && (
