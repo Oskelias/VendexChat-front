@@ -241,6 +241,15 @@ export async function validateCoupon(code: string, storeId: string) {
   return coupon;
 }
 
+export async function updateProductImageUrl(productId: string, imageUrl: string): Promise<void> {
+  const { error } = await supabase
+    .from("products")
+    .update({ image_url: imageUrl })
+    .eq("id", productId);
+
+  if (error) throw new Error(`Error al actualizar imagen: ${error.message}`);
+}
+
 export async function getGlobalSettings(): Promise<Record<string, any>> {
   const { data, error } = await supabase.from('global_settings').select('*');
   if (error) {

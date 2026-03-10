@@ -10,6 +10,7 @@ import { ProductQuickViewModal } from "../components/ProductQuickViewModal";
 import { WeeklyMenuGrid } from "../components/WeeklyMenuGrid";
 import { GlobalAnnouncement } from "../components/GlobalAnnouncement";
 import FloatingAiAssistant from "../components/FloatingAiAssistant";
+import { PexelsImageSuggestions } from "@/components/store/PexelsImageSuggestions";
 import { Suspense, lazy } from "react";
 
 const CartDrawer = lazy(() => import("../components/CartDrawer").then(m => ({ default: m.CartDrawer })));
@@ -29,6 +30,7 @@ export default function ShopPage() {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [chatInitialMessage, setChatInitialMessage] = useState<string | null>(null);
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+    const [pexelsProduct, setPexelsProduct] = useState<Product | null>(null);
 
     const openChat = (initialMsg?: string) => {
         setChatInitialMessage(initialMsg || null);
@@ -356,7 +358,17 @@ export default function ShopPage() {
                 onAdd={addItem}
                 onUpdate={updateQuantity}
                 onAskAI={(p) => openChat(`Hola 👋, me gustaría saber más sobre el producto: **${p.name}**`)}
+                onEditImage={(p) => { setPexelsProduct(p); setQuickViewProduct(null); }}
             />
+
+            {pexelsProduct && (
+                <PexelsImageSuggestions
+                    productName={pexelsProduct.name}
+                    productId={String(pexelsProduct.id)}
+                    onSelect={() => setPexelsProduct(null)}
+                    onClose={() => setPexelsProduct(null)}
+                />
+            )}
 
             <Suspense fallback={null}>
                 <ChatBotWidget

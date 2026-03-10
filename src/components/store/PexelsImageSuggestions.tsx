@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { X, Image, AlertCircle, RefreshCw, CheckCircle2 } from "lucide-react";
+import { X, Image, AlertCircle, RefreshCw, CheckCircle2, Loader2 } from "lucide-react";
+import { updateProductImageUrl } from "@/api/catalog";
 
 interface PexelsPhoto {
   id: number;
@@ -14,16 +15,19 @@ interface PexelsPhoto {
 
 interface Props {
   productName: string;
+  /** Si se provee, guarda la imagen en Supabase al confirmar */
+  productId?: string;
   onSelect: (imageUrl: string) => void;
   onClose: () => void;
 }
 
 const PEXELS_API_KEY = import.meta.env.VITE_PEXELS_API_KEY as string | undefined;
 
-export function PexelsImageSuggestions({ productName, onSelect, onClose }: Props) {
+export function PexelsImageSuggestions({ productName, productId, onSelect, onClose }: Props) {
   const [query, setQuery] = useState(productName);
   const [photos, setPhotos] = useState<PexelsPhoto[]>([]);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
 
@@ -51,8 +55,21 @@ export function PexelsImageSuggestions({ productName, onSelect, onClose }: Props
     }
   };
 
-  const handleConfirm = () => {
-    if (selected) onSelect(selected);
+  const handleConfirm = async () => {
+    if (!selected) return;
+    if (productId) {
+      setSaving(true);
+      setError(null);
+      try {
+        await updateProductImageUrl(productId, selected);
+      } catch {
+        setError("No se pudo guardar la imagen. Reintentá.");
+        setSaving(false);
+        return;
+      }
+      setSaving(false);
+    }
+    onSelect(selected);
   };
 
   return (
@@ -185,10 +202,11 @@ export function PexelsImageSuggestions({ productName, onSelect, onClose }: Props
           </p>
           <button
             onClick={handleConfirm}
-            disabled={!selected}
-            className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-100 disabled:text-slate-300 text-white font-black uppercase tracking-widest text-xs rounded-xl transition-all shadow-lg shadow-slate-200 active:scale-95"
+            disabled={!selected || saving}
+            className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-100 disabled:text-slate-300 text-white font-black uppercase tracking-widest text-xs rounded-xl transition-all shadow-lg shadow-slate-200 active:scale-95"
           >
-            Usar esta imagen
+            {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            {saving ? "Guardando..." : "Usar esta imagen"}
           </button>
         </div>
       </div>
