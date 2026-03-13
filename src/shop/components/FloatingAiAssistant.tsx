@@ -4,9 +4,10 @@ import { Bot, X, MessageCircle } from 'lucide-react';
 interface FloatingAiAssistantProps {
     onClick: () => void;
     isOpen: boolean;
+    isCartOpen?: boolean;
 }
 
-export default function FloatingAiAssistant({ onClick, isOpen }: FloatingAiAssistantProps) {
+export default function FloatingAiAssistant({ onClick, isOpen, isCartOpen }: FloatingAiAssistantProps) {
     const [showBubble, setShowBubble] = useState(false);
     const [hasBounced, setHasBounced] = useState(false);
 
@@ -30,7 +31,7 @@ export default function FloatingAiAssistant({ onClick, isOpen }: FloatingAiAssis
         };
     }, [isOpen]);
 
-    if (isOpen) return null;
+    if (isOpen || isCartOpen) return null;
 
     return (
         <div className="fixed bottom-24 right-6 z-[55] flex flex-col items-end gap-3 pointer-events-none">

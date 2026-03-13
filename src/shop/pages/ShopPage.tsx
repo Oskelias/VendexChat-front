@@ -392,6 +392,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
             <FloatingAiAssistant
                 onClick={() => openChat()}
                 isOpen={isChatOpen}
+                isCartOpen={isCartOpen}
             />
 
             <Suspense fallback={null}>
