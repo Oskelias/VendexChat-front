@@ -105,6 +105,17 @@ export function CartDrawer({
     const currentShipping = deliveryType === 'envio' ? deliveryCost : 0;
     const finalTotal = totalPrice - discount + currentShipping;
 
+    const isItemEligible = (item: CartItem) => {
+        if (!appliedCoupon) return false;
+        const { type, applicable_products, applicable_categories } = appliedCoupon;
+        if (type === 3 || type === 4) return (applicable_products || []).includes(item.product.id);
+        if (type === 5 || type === 6) return (applicable_categories || []).includes(item.product.category_id);
+        return false;
+    };
+
+    const isProductSpecificCoupon = appliedCoupon && [3, 4, 5, 6].includes(appliedCoupon.type);
+    const noEligibleProducts = isProductSpecificCoupon && discount === 0;
+
     const handleSendWhatsApp = async () => {
         if (!customerName.trim() || !customerWhatsapp.trim()) {
             alert("Por favor, completa tu nombre y WhatsApp.");
@@ -288,12 +299,17 @@ export function CartDrawer({
                                         </div>
                                     )}
                                     {dayItems.map((item) => (
-                                        <div key={`${item.product.id}-${item.delivery_day}`} className="flex gap-4 items-center p-3 bg-white border border-slate-100 rounded-2xl shadow-sm">
+                                        <div key={`${item.product.id}-${item.delivery_day}`} className={`flex gap-4 items-center p-3 bg-white border rounded-2xl shadow-sm ${isItemEligible(item) ? 'border-emerald-400 ring-1 ring-emerald-200' : 'border-slate-100'}`}>
                                             <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 shrink-0">
                                                 {item.product.image_url && <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover" />}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <h4 className="font-bold text-slate-900 text-xs truncate uppercase">{item.product.name}</h4>
+                                                <div className="flex items-center gap-1.5">
+                                                    <h4 className="font-bold text-slate-900 text-xs truncate uppercase">{item.product.name}</h4>
+                                                    {isItemEligible(item) && (
+                                                        <span className="shrink-0 text-[9px] font-black uppercase bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">Promo</span>
+                                                    )}
+                                                </div>
                                                 <p className="text-slate-400 font-bold text-[10px]">${item.product.price.toLocaleString()}</p>
                                             </div>
                                             <div className="flex items-center gap-2 bg-slate-50 rounded-xl p-1">
@@ -379,15 +395,36 @@ export function CartDrawer({
                                     <button onClick={handleApplyCoupon} disabled={isValidating || !couponCode.trim()} className="bg-slate-900 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest disabled:opacity-50 transition-all hover:bg-slate-800">{isValidating ? '...' : 'Aplicar'}</button>
                                 </div>
                             ) : (
-                                <div className="flex items-center justify-between bg-slate-900 text-white p-2.5 rounded-xl">
-                                    <span className="text-[10px] font-black uppercase tracking-widest">{appliedCoupon.code} APLICADO</span>
+                                <div className={`flex items-center justify-between p-2.5 rounded-xl ${noEligibleProducts ? 'bg-amber-500' : 'bg-slate-900'} text-white`}>
+                                    <div>
+                                        <span className="text-[10px] font-black uppercase tracking-widest">{appliedCoupon.code} APLICADO</span>
+                                        {discount > 0 && (
+                                            <span className="ml-2 text-[10px] font-bold text-emerald-300">-${discount.toLocaleString()}</span>
+                                        )}
+                                    </div>
                                     <button onClick={() => setAppliedCoupon(null)} className="text-[10px] font-black uppercase">X</button>
                                 </div>
+                            )}
+                            {noEligibleProducts && (
+                                <p className="text-[10px] text-amber-600 font-bold bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                                    ⚠ Ningún producto en tu carrito aplica para este cupón
+                                </p>
                             )}
                             {couponError && <p className="text-[10px] text-rose-500 font-bold">{couponError}</p>}
                         </div>
                     )}
                     <div className="space-y-1">
+                        {(discount > 0 || currentShipping > 0) && (
+                            <>
+                                <div className="flex justify-between font-bold text-xs text-slate-400"><span>SUBTOTAL</span><span>${totalPrice.toLocaleString()}</span></div>
+                                {discount > 0 && (
+                                    <div className="flex justify-between font-bold text-xs text-emerald-600"><span>DESCUENTO ({appliedCoupon.code})</span><span>-${discount.toLocaleString()}</span></div>
+                                )}
+                                {currentShipping > 0 && (
+                                    <div className="flex justify-between font-bold text-xs text-slate-400"><span>ENVÍO</span><span>+${currentShipping.toLocaleString()}</span></div>
+                                )}
+                            </>
+                        )}
                         <div className="flex justify-between font-bold text-xs text-slate-500"><span>TOTAL</span><span className="text-lg text-slate-900">${finalTotal.toLocaleString()}</span></div>
                     </div>
                     <button disabled={items.length === 0 || isSubmitting} onClick={handleSendWhatsApp} className="w-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white font-black uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl shadow-slate-200">{isSubmitting ? 'Procesando...' : 'Pedir por WhatsApp'}</button>
