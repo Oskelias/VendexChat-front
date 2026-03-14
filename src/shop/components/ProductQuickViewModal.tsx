@@ -35,7 +35,7 @@ export function ProductQuickViewModal({
                 </button>
 
                 <div className="flex flex-col md:flex-row h-full max-h-[92vh] overflow-y-auto">
-                    <div className="md:w-3/5 lg:w-2/3 min-h-[280px] md:min-h-[520px] bg-slate-100 overflow-hidden relative">
+                    <div className="md:w-1/2 min-h-[280px] md:min-h-[460px] bg-slate-100 overflow-hidden relative">
                         {product.image_url && (
                             <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
                         )}
@@ -44,7 +44,7 @@ export function ProductQuickViewModal({
 
                     <div className="md:w-2/5 lg:w-1/3 p-6 flex flex-col">
                         <div className="flex-1">
-                            <h2 className="text-2xl font-bold text-slate-900 mb-2">{product.name}</h2>
+                            <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-2 leading-tight break-words">{product.name}</h2>
                             <div className="text-2xl font-bold text-primary-dynamic mb-4">${product.price.toLocaleString()}</div>
 
                             <p className="text-slate-600 text-sm leading-relaxed mb-4">
