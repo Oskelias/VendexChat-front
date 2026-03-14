@@ -42,7 +42,7 @@ export function ProductQuickViewModal({
                         
                     </div>
 
-                    <div className="md:w-1/2 p-6 flex flex-col">
+                    <div className="md:w-2/5 lg:w-1/3 p-6 flex flex-col">
                         <div className="flex-1">
                             <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-2 leading-tight break-words">{product.name}</h2>
                             <div className="text-2xl font-bold text-primary-dynamic mb-4">${product.price.toLocaleString()}</div>
