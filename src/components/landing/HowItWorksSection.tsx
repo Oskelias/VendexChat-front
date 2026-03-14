@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  ClipboardList, FileUp, Users, Truck, BarChart2,
+  ClipboardList, Users, Truck, BarChart2,
   LayoutDashboard, Bell, Settings, Search, ChevronRight,
   Package, CheckCircle2, AlertCircle,
   ArrowUpRight, ArrowDownRight, Star,
@@ -12,7 +12,7 @@ type SectionId = "dashboard" | "pedidos" | "catalogo" | "crm" | "logistica" | "e
 
 const NAV_ITEMS: { id: SectionId; label: string; icon: React.ElementType }[] = [
   { id: "pedidos",      label: "Pedidos",      icon: ClipboardList },
-  { id: "catalogo",     label: "Catálogo IA",  icon: FileUp        },
+  { id: "catalogo",     label: "Catálogo",     icon: Tag           },
   { id: "crm",          label: "CRM",          icon: Users         },
   { id: "logistica",    label: "Logística",    icon: Truck         },
   { id: "estadisticas", label: "Estadísticas", icon: BarChart2     },

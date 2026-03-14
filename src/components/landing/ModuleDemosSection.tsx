@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import {
-  Bot, FileUp, Users, Truck, Brain, BarChart2,
+  Bot, Users, Truck, Brain, BarChart2,
   Send, Sparkles, ChevronRight, ShoppingCart, Store, Cpu
 } from "lucide-react";
 
-type ModuleId = "bot" | "importador" | "crm" | "logistica" | "inteligencia" | "estadisticas";
+type ModuleId = "bot" | "crm" | "logistica" | "inteligencia" | "estadisticas";
 type TabId = "cliente" | "gestion" | "ia";
 
 interface Command {
@@ -69,31 +69,6 @@ const MODULES: Module[] = [
       {
         prompt: "Quiero ver los combos disponibles",
         response: "Tenemos 3 combos activos 🔥\n\n• Combo Básico — $12.000\n• Combo Premium — $22.000\n• Combo Familiar — $35.000\n\n¿Cuál te interesa? Te mando el detalle.",
-      },
-    ],
-  },
-  {
-    id: "importador",
-    tab: "gestion",
-    label: "Importador IA",
-    icon: FileUp,
-    accentBg: "bg-blue-500",
-    accentText: "text-blue-400",
-    accentRing: "ring-blue-500/40",
-    accentDot: "bg-blue-400",
-    description: "Cargá fotos de catálogos o listas de precios y la IA digitaliza todo en segundos.",
-    commands: [
-      {
-        prompt: "Importá este catálogo de 80 productos",
-        response: "✅ Catálogo procesado en 4.2 segundos\n\n📦 80 productos detectados\n🏷️ 12 categorías creadas automáticamente\n💰 Precios extraídos y asignados\n📸 Imágenes vinculadas\n\nTodo listo para publicar. ¿Revisás antes o lo publicamos directo?",
-      },
-      {
-        prompt: "Detectá precios de esta foto de lista",
-        response: "🔍 Imagen analizada\n\nEncontré 24 ítems con precio:\n• Remera básica — $8.500\n• Jean skinny — $24.000\n• Buzo hoodie — $18.500\n(...y 21 más)\n\n¿Importo todos o filtrás primero?",
-      },
-      {
-        prompt: "Actualizá precios con +15% de inflación",
-        response: "💹 Actualización masiva aplicada\n\n• 80 productos actualizados\n• Incremento: +15%\n• Precios redondeados automáticamente\n• Cambios guardados\n\n¿Notificamos a los clientes frecuentes?",
       },
     ],
   },

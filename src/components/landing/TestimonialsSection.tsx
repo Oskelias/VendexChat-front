@@ -23,7 +23,7 @@ const testimonials = [
     location: "Online",
     logoSrc: "/logos/mundo-electronico.svg",
     stars: 5,
-    text: "Tenemos muchos SKU y actualizar precios era eterno. El importador IA nos ahorró horas y el asistente responde preguntas técnicas básicas antes de que intervenga el equipo.",
+    text: "Tenemos muchos SKU y actualizar precios era eterno. Ahora operamos más rápido con automatizaciones y el asistente responde preguntas técnicas básicas antes de que intervenga el equipo.",
   },
   {
     name: "Distribuidora de Bebidas Humahuaca",

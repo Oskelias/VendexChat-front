@@ -3,7 +3,6 @@ import {
   ShoppingCart,
   Bot,
   BarChart2,
-  FileUp,
   Users,
   Truck,
   Brain,
@@ -19,12 +18,6 @@ const dashboardModules = [
     label: "VENDEx Bot",
     stat: "24/7 activo",
     color: "bg-violet-500",
-  },
-  {
-    icon: FileUp,
-    label: "Importador IA",
-    stat: "80 productos en 4s",
-    color: "bg-blue-500",
   },
   {
     icon: Users,
