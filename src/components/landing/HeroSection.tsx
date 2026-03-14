@@ -19,15 +19,16 @@ const HeroSection = () => {
               Tu negocio organizado con herramientas de IA, tu tiempo es lo más valioso
             </div>
 
-            <h1 className="mb-6 text-4xl font-black leading-[1.08] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-              Armá tu web de productos con IA{" "}
+            <h1 className="mb-6 text-4xl font-black leading-[1.1] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+              Crea tu catálogo,{" "}
+              automatizá tu tienda{" "}
               <span className="bg-gradient-to-r from-emerald-500 to-violet-600 bg-clip-text text-transparent">
-                en pocos minutos
+                y vendé 24/7 con IA
               </span>
             </h1>
 
             <p className="mx-auto mb-8 max-w-2xl text-lg font-medium leading-relaxed text-slate-600 lg:mx-0">
-              Chico o grande, no importa. Lo hacemos posible. Subite a la revolución IA.
+              Catálogo web con IA, panel automatizado y un Asistente en tu página que vende por vos. Todo en un solo lugar.
             </p>
 
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
