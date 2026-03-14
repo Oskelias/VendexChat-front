@@ -1,5 +1,5 @@
 import { supabase } from "../lib/supabase";
-import type { CatalogResponse, OrderPayload, OrderResponse } from "../types";
+import type { CatalogResponse, OrderPayload, OrderResponse, Popup } from "../types";
 
 // localStorage persiste entre pestañas y recargas (a diferencia de sessionStorage)
 const CATALOG_CACHE_TTL = 5 * 1000; // 5 segundos para desarrollo fluido
@@ -30,6 +30,51 @@ function setCachedCatalog(identifier: string, data: CatalogResponse) {
   }
 }
 
+
+function normalizePopup(popup: any): Popup {
+  return {
+    id: String(popup?.id ?? `popup-${Math.random().toString(36).slice(2)}`),
+    title: popup?.title ?? popup?.name ?? "",
+    message: popup?.message ?? popup?.content ?? popup?.body ?? "",
+    active:
+      popup?.active === true ||
+      popup?.active === "true" ||
+      popup?.is_active === true ||
+      popup?.is_active === "true",
+  };
+}
+
+function getMetadataPopups(metadata: any): Popup[] {
+  const candidates = [
+    metadata?.popups,
+    metadata?.popup_messages,
+    metadata?.popupMessages,
+    metadata?.alerts,
+  ];
+
+  const raw = candidates.find(Array.isArray);
+  if (!Array.isArray(raw)) return [];
+
+  return raw.map(normalizePopup).filter(popup => popup.title || popup.message);
+}
+
+async function fetchStorePopups(storeId: string): Promise<Popup[]> {
+  try {
+    const { data, error } = await supabase
+      .from("popups")
+      .select("*")
+      .eq("store_id", storeId)
+      .order("created_at", { ascending: true });
+
+    if (error || !Array.isArray(data)) return [];
+
+    return data.map(normalizePopup).filter(popup => popup.title || popup.message);
+  } catch {
+    // Tabla popups no desplegada o sin permisos
+    return [];
+  }
+}
+
 function processRpcResult(data: any): CatalogResponse {
   const { store, categories: rawCategories, global_settings: globalSettings } = data as {
     store: any;
@@ -53,6 +98,10 @@ function processRpcResult(data: any): CatalogResponse {
     announcement = globalSettings?.global_announcement_text ?? null;
   }
 
+  const normalizedPopups = Array.isArray(store.popups)
+    ? store.popups.map(normalizePopup).filter(popup => popup.title || popup.message)
+    : getMetadataPopups(store.metadata);
+
   const sortedCategories = (rawCategories ?? []).map(cat => ({
     ...cat,
     products: (cat.products || []).sort((a: any, b: any) => {
@@ -66,7 +115,14 @@ function processRpcResult(data: any): CatalogResponse {
     })
   }));
 
-  return { store, categories: sortedCategories, announcement };
+  return {
+    store: {
+      ...store,
+      popups: normalizedPopups,
+    },
+    categories: sortedCategories,
+    announcement,
+  };
 }
 
 // Fetch liviano: solo info de la tienda (sin productos/categorías).
@@ -99,7 +155,21 @@ export async function fetchFreshCatalog(identifier: string, maxAttempts = 3): Pr
 
     if (!error && data) {
       try {
-        const result = processRpcResult(data);
+        let result = processRpcResult(data);
+
+        if ((result.store.popups?.length ?? 0) === 0 && result.store.id) {
+          const tablePopups = await fetchStorePopups(result.store.id);
+          if (tablePopups.length > 0) {
+            result = {
+              ...result,
+              store: {
+                ...result.store,
+                popups: tablePopups,
+              },
+            };
+          }
+        }
+
         setCachedCatalog(identifier, result);
         return result;
       } catch (e) {

@@ -11,7 +11,6 @@ import { WeeklyMenuGrid } from "../components/WeeklyMenuGrid";
 import { GlobalAnnouncement } from "../components/GlobalAnnouncement";
 import FloatingAiAssistant from "../components/FloatingAiAssistant";
 import PopupModal from "../components/PopupModal";
-import { PexelsImageSuggestions } from "@/components/store/PexelsImageSuggestions";
 import { Suspense, lazy } from "react";
 import type { Popup } from "../../types";
 
@@ -34,7 +33,6 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [chatInitialMessage, setChatInitialMessage] = useState<string | null>(null);
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-    const [pexelsProduct, setPexelsProduct] = useState<Product | null>(null);
     const [activePopups, setActivePopups] = useState<Popup[]>([]);
 
     useEffect(() => {
@@ -371,17 +369,8 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                 onAdd={addItem}
                 onUpdate={updateQuantity}
                 onAskAI={(p) => openChat(`Hola 👋, me gustaría saber más sobre el producto: **${p.name}**`)}
-                onEditImage={(p) => { setPexelsProduct(p); setQuickViewProduct(null); }}
             />
 
-            {pexelsProduct && (
-                <PexelsImageSuggestions
-                    productName={pexelsProduct.name}
-                    productId={String(pexelsProduct.id)}
-                    onSelect={() => setPexelsProduct(null)}
-                    onClose={() => setPexelsProduct(null)}
-                />
-            )}
 
             <Suspense fallback={null}>
                 <ChatBotWidget
