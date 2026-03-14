@@ -53,6 +53,18 @@ function processRpcResult(data: any): CatalogResponse {
     announcement = globalSettings?.global_announcement_text ?? null;
   }
 
+  const normalizedPopups = Array.isArray(store.popups)
+    ? store.popups.map((popup: any) => ({
+      ...popup,
+      message: popup?.message ?? popup?.content ?? popup?.body ?? "",
+      active:
+        popup?.active === true ||
+        popup?.active === "true" ||
+        popup?.is_active === true ||
+        popup?.is_active === "true",
+    }))
+    : [];
+
   const sortedCategories = (rawCategories ?? []).map(cat => ({
     ...cat,
     products: (cat.products || []).sort((a: any, b: any) => {
@@ -66,7 +78,14 @@ function processRpcResult(data: any): CatalogResponse {
     })
   }));
 
-  return { store, categories: sortedCategories, announcement };
+  return {
+    store: {
+      ...store,
+      popups: normalizedPopups,
+    },
+    categories: sortedCategories,
+    announcement,
+  };
 }
 
 // Fetch liviano: solo info de la tienda (sin productos/categorías).
