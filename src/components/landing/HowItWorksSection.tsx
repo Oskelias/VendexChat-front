@@ -326,7 +326,7 @@ const HowItWorksSection = () => {
             </div>
 
             {/* App layout */}
-            <div className="flex" style={{ minHeight: "480px" }}>
+            <div className="flex" style={{ minHeight: "580px" }}>
 
               {/* Sidebar */}
               <div className="hidden sm:flex w-44 flex-shrink-0 bg-slate-900 flex-col py-4">
@@ -388,7 +388,7 @@ const HowItWorksSection = () => {
                 </div>
 
                 {/* Panel content */}
-                <div className="flex-1 overflow-hidden">
+                <div className="flex-1">
                   <div key={active} className="h-full animate-in fade-in duration-200">
                     {PANELS[active]}
                   </div>
