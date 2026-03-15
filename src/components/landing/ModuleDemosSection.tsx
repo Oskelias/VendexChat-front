@@ -267,7 +267,7 @@ const ModuleDemosSection = () => {
             {TABS.map((tab, i) => {
               const active = tab.id === activeTab;
               const colors = [
-                { active: "bg-violet-600 border-violet-600 text-white", inactive: "bg-violet-600/40 border-violet-400/50 text-white", num: "bg-violet-500/30 text-violet-200" },
+                { active: "bg-emerald-500 border-emerald-500 text-white", inactive: "bg-emerald-500/40 border-emerald-400/50 text-white", num: "bg-emerald-400/30 text-emerald-100" },
                 { active: "bg-blue-600 border-blue-600 text-white", inactive: "bg-blue-600/40 border-blue-400/50 text-white", num: "bg-blue-500/30 text-blue-200" },
                 { active: "bg-pink-600 border-pink-600 text-white", inactive: "bg-pink-600/40 border-pink-400/50 text-white", num: "bg-pink-500/30 text-pink-200" },
               ][i];
@@ -381,7 +381,7 @@ const ModuleDemosSection = () => {
             {/* Messages */}
             <div
               ref={scrollRef}
-              className="flex-1 min-h-[180px] max-h-[230px] overflow-y-auto p-5 space-y-3"
+              className="flex-1 min-h-[260px] max-h-[380px] overflow-y-auto p-5 space-y-3"
             >
               {messages.length === 0 && (
                 <div className="flex items-center justify-center h-full">
