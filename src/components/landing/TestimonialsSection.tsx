@@ -75,13 +75,13 @@ const TestimonialCard = ({ t }: { t: typeof testimonials[number] }) => (
 
 const TestimonialsSection = () => {
   return (
-    <section id="testimonios" className="relative py-12 md:py-16 overflow-hidden scroll-mt-28">
+    <section id="testimonios" className="relative py-6 md:py-10 overflow-hidden scroll-mt-28">
       <div className="absolute inset-0 bg-white -z-20" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-50/60 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/4" />
 
       <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Header */}
-        <div className="max-w-2xl mx-auto text-center mb-12">
+        <div className="max-w-2xl mx-auto text-center mb-7">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-100 text-[10px] font-black text-amber-600 uppercase tracking-widest mb-5">
             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
             Lo que dicen nuestros clientes
