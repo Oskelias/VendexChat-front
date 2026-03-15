@@ -30,15 +30,14 @@ const FloatingStat = ({
 
 const CTASection = () => {
   return (
-    <section id="cta" className="relative pt-8 pb-0 md:pt-12 overflow-hidden">
-      {/* Rich gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-violet-950 to-indigo-950 -z-20" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,rgba(16,185,129,0.12),transparent_60%)] -z-10" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(139,92,246,0.15),transparent_50%)] -z-10" />
+    <section id="cta" className="relative pt-8 pb-0 md:pt-12 overflow-hidden bg-gradient-to-br from-slate-950 via-violet-950 to-indigo-950">
+      {/* Radial accent overlays */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,rgba(16,185,129,0.12),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(139,92,246,0.15),transparent_50%)]" />
 
       {/* Grid pattern overlay */}
       <div
-        className="absolute inset-0 -z-10 opacity-[0.04]"
+        className="absolute inset-0 opacity-[0.04]"
         style={{
           backgroundImage:
             "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
@@ -47,10 +46,10 @@ const CTASection = () => {
       />
 
       {/* Animated glow orbs */}
-      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary-dynamic/20 rounded-full blur-[120px] -z-10 animate-pulse" />
-      <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-violet-500/15 rounded-full blur-[150px] -z-10" />
+      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary-dynamic/20 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-violet-500/15 rounded-full blur-[150px]" />
 
-      <div className="container mx-auto px-4 sm:px-6 relative">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-center min-h-[480px] md:min-h-[520px]">
             {/* Left: Copy */}
