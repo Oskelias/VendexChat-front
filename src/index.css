@@ -152,6 +152,18 @@
 }
 
 /* Conservar estilos originales del Shop para no romper el catálogo dinámico */
+/* Prevent iOS Safari auto-zoom on input focus (requires font-size >= 16px) */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+input[type="url"],
+textarea,
+select {
+  font-size: 16px;
+}
+
 .glass-panel {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(8px);
