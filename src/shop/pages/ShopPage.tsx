@@ -64,13 +64,18 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
     const filteredCategories = useMemo(() => {
         if (!data) return [];
 
-        const allWithFilteredProducts = data.categories.map(cat => ({
-            ...cat,
-            products: (cat.products || []).filter(p => {
-                return p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    p.description?.toLowerCase().includes(searchTerm.toLowerCase());
-            })
-        })).filter(cat => cat.products.length > 0);
+        const term = searchTerm.toLowerCase();
+        const allWithFilteredProducts = data.categories.map(cat => {
+            const categoryMatches = cat.name.toLowerCase().includes(term);
+            return {
+                ...cat,
+                products: (cat.products || []).filter(p =>
+                    categoryMatches ||
+                    p.name.toLowerCase().includes(term) ||
+                    p.description?.toLowerCase().includes(term)
+                )
+            };
+        }).filter(cat => cat.products.length > 0);
 
         // When no search term, filter to active category (default to first)
         if (!searchTerm && effectiveActiveCategory !== null) {

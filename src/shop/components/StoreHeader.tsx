@@ -41,13 +41,13 @@ export function StoreHeader({
             <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-50 px-4 py-3 shadow-sm">
                 <div className="max-w-[1440px] mx-auto flex items-center gap-3">
                     {/* Search Field */}
-                    <div className="relative flex-1 max-w-xs group">
+                    <div className="relative flex-1 max-w-sm group">
                         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary-dynamic transition-colors" />
                         <input
                             type="text"
-                            placeholder="Buscar productos..."
+                            placeholder="Buscar productos o categorías..."
                             onChange={(e) => onSearch(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-2.5 pl-10 pr-4 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-primary-dynamic/20 focus:border-primary-dynamic focus:bg-white transition-all placeholder:text-slate-300"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-2.5 pl-10 pr-4 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-primary-dynamic/20 focus:border-primary-dynamic focus:bg-white transition-all placeholder:text-slate-400"
                         />
                     </div>
 
