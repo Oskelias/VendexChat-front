@@ -75,7 +75,7 @@ const TestimonialCard = ({ t }: { t: typeof testimonials[number] }) => (
 
 const TestimonialsSection = () => {
   return (
-    <section id="testimonios" className="relative pt-6 pb-16 md:pt-10 md:pb-24 overflow-hidden scroll-mt-28">
+    <section id="testimonios" className="relative pt-6 pb-24 md:pt-10 md:pb-36 overflow-hidden scroll-mt-28">
       <div className="absolute inset-0 bg-white -z-20" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-50/60 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/4" />
 
