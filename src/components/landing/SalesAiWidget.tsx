@@ -125,9 +125,14 @@ const SalesAiWidget = () => {
         role: "user",
         content: text,
       };
-      setMessages((prev) => [...prev, farewellMsg]);
+      const farewellReply: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "Fue un placer! Recordá que podés probar el plan PRO gratis por 15 días sin tarjeta de crédito, y el plan Free es libre de uso para siempre. Cuando quieras empezar, el botón de arriba te lleva directo. Éxitos con tu negocio! 🚀",
+      };
+      setMessages((prev) => [...prev, farewellMsg, farewellReply]);
       if (!overrideInput) setInput("");
-      setTimeout(resetConversation, 2000);
+      setTimeout(resetConversation, 5000);
       return;
     }
 
