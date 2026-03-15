@@ -9,7 +9,7 @@ import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import FAQSection from "@/components/landing/FAQSection";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
-import WhatsAppFloatingButton from "@/components/landing/WhatsAppFloatingButton";
+import SalesAiWidget from "@/components/landing/SalesAiWidget";
 
 export function HomePage() {
   return (
@@ -28,7 +28,7 @@ export function HomePage() {
       <FAQSection />
       <CTASection />
       <Footer />
-      <WhatsAppFloatingButton />
+      <SalesAiWidget />
     </div>
   );
 }
