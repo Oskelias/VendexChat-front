@@ -33,7 +33,7 @@ const QUICK_ACCESS = [
 ];
 
 const DashboardPanel = () => (
-  <div className="flex flex-col gap-4 p-5 h-full overflow-auto bg-slate-50">
+  <div className="flex flex-col gap-3 p-4 bg-slate-50">
     {/* Page header */}
     <div className="flex items-center justify-between">
       <div>
@@ -326,7 +326,7 @@ const HowItWorksSection = () => {
             </div>
 
             {/* App layout */}
-            <div className="flex" style={{ minHeight: "580px" }}>
+            <div className="flex" style={{ minHeight: "420px" }}>
 
               {/* Sidebar */}
               <div className="hidden sm:flex w-44 flex-shrink-0 bg-slate-900 flex-col py-4">
