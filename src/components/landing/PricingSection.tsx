@@ -106,7 +106,7 @@ const PricingSection = () => {
       highlightedFeatures: [],
       cta: "CONTACTAR",
       ctaStyle: "bg-purple-600 hover:bg-purple-700 text-white",
-      href: "https://admin.vendexchat.app/register",
+      href: "https://wa.me/5491165689145?text=" + encodeURIComponent("Hola! Me interesa el plan ULTRA de VENDExChat. Quisiera información sobre el desarrollo a medida."),
       event: "pricing_ultra_click",
     },
   ];
