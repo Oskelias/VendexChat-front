@@ -62,14 +62,14 @@ const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative py-12 md:py-16 overflow-hidden scroll-mt-28">
+    <section id="faq" className="relative py-6 md:py-10 overflow-hidden scroll-mt-28">
       <div className="absolute inset-0 bg-slate-50/60 -z-20" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-50/70 rounded-full blur-[100px] -z-10 -translate-x-1/3 translate-y-1/3" />
 
       <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Header */}
-        <div className="max-w-2xl mx-auto text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-black text-slate-500 uppercase tracking-widest mb-5">
+        <div className="max-w-2xl mx-auto text-center mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-primary-dynamic" />
             Preguntas frecuentes
           </div>
