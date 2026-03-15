@@ -60,7 +60,7 @@ const WELCOME_MESSAGE = "Hola! Soy el asistente de VENDExChat. Te puedo ayudar c
 const QUICK_QUESTIONS = [
   "Cómo funciona?",
   "Cuánto sale?",
-  "Qué incluye el plan Free?",
+  "Es difícil de usar?",
   "Tengo una hamburguesería",
   "Vendo ropa online",
   "Mi negocio es de electrónica",
