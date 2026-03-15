@@ -10,7 +10,7 @@ const STORES: { id: StoreType; label: string; icon: React.ElementType; name: str
         label: "Hamburguesería",
         icon: UtensilsCrossed,
         name: "Don Bruno Burgers",
-        greeting: `¡Hola! 👋 Soy el asistente de Don Bruno Burgers. Puedo ayudarte con precios, horarios, promociones y el proceso de compra. El menú completo lo encontrás en nuestra tienda web 🍔`,
+        greeting: `Hola! 👋 Bienvenido a Don Bruno Burgers. Preguntame lo que necesites sobre precios, horarios o promos. Si querés ver todo el menú, lo tenés en la tienda web.`,
         color: "bg-amber-500",
     },
     {
@@ -18,7 +18,7 @@ const STORES: { id: StoreType; label: string; icon: React.ElementType; name: str
         label: "Vinoteca",
         icon: Wine,
         name: "La Vinoteca de Marta",
-        greeting: `¡Bienvenido/a! 🍷 Soy el asistente de La Vinoteca de Marta. Consultame sobre precios, disponibilidad, promociones o cómo hacer tu pedido. El catálogo completo está en nuestra tienda web.`,
+        greeting: `Hola! 🍷 Bienvenido a La Vinoteca de Marta. Consultame sobre precios, disponibilidad o promos. El catálogo completo está en la tienda web.`,
         color: "bg-purple-500",
     },
     {
@@ -26,7 +26,7 @@ const STORES: { id: StoreType; label: string; icon: React.ElementType; name: str
         label: "Librería",
         icon: BookOpen,
         name: "El Rincón del Saber",
-        greeting: `¡Hola! 📚 Soy el asistente de El Rincón del Saber. Puedo ayudarte con precios, horarios, promociones y cómo hacer tu pedido. Para ver todo el catálogo, visitá nuestra tienda web.`,
+        greeting: `Hola! 📚 Bienvenido a El Rincón del Saber. Preguntame sobre precios, horarios o promos. Todo el catálogo lo encontrás en la tienda web.`,
         color: "bg-emerald-500",
     },
 ];
@@ -85,7 +85,7 @@ const InteractiveAISection = () => {
             if (error) throw error;
             setMessages(prev => [...prev, { role: "bot", text: data.reply }]);
         } catch {
-            setMessages(prev => [...prev, { role: "bot", text: "¡Ups! Algo salió mal. Probá de nuevo en un momento." }]);
+            setMessages(prev => [...prev, { role: "bot", text: "Perdón, algo falló. Probá de nuevo en un momento." }]);
         } finally {
             setIsTyping(false);
         }

@@ -45,8 +45,8 @@ export default function FloatingAiAssistant({ onClick, isOpen, isCartOpen }: Flo
                         <X className="w-3 h-3" />
                     </button>
                     <p className="text-xs font-bold text-slate-700 leading-tight">
-                        ¡Hola! 👋 <br />
-                        <span className="text-primary-dynamic">¿Te ayudo con tu pedido?</span>
+                        Hola! 👋 <br />
+                        <span className="text-primary-dynamic">Necesitás una mano?</span>
                     </p>
                     <div className="absolute bottom-0 right-4 translate-y-1/2 w-3 h-3 bg-white border-r border-b border-primary-dynamic/20 rotate-45" />
                 </div>
