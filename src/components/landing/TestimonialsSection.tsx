@@ -81,8 +81,8 @@ const TestimonialsSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative">
         {/* Header */}
-        <div className="max-w-2xl mx-auto text-center mb-7">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-100 text-[10px] font-black text-amber-600 uppercase tracking-widest mb-5">
+        <div className="max-w-2xl mx-auto text-center mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-100 text-[10px] font-black text-amber-600 uppercase tracking-widest mb-3">
             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
             Lo que dicen nuestros clientes
           </div>
