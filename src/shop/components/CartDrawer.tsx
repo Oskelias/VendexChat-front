@@ -427,7 +427,7 @@ export function CartDrawer({
                         )}
                         <div className="flex justify-between font-bold text-xs text-slate-500"><span>TOTAL</span><span className="text-lg text-slate-900">${finalTotal.toLocaleString()}</span></div>
                     </div>
-                    <button disabled={items.length === 0 || isSubmitting} onClick={handleSendWhatsApp} className="w-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white font-black uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl shadow-slate-200">{isSubmitting ? 'Procesando...' : 'Pedir por WhatsApp'}</button>
+                    <button disabled={items.length === 0 || isSubmitting} onClick={handleSendWhatsApp} className="w-full bg-[#25D366] hover:bg-[#1ebe5d] disabled:bg-slate-300 text-white font-black uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl shadow-green-200">{isSubmitting ? 'Procesando...' : 'Pedir por WhatsApp'}</button>
                 </div>
             </div>
         </div>
