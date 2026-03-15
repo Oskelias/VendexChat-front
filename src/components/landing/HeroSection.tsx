@@ -1,10 +1,10 @@
-import { ArrowRight, Play, Zap } from "lucide-react";
+import { ArrowRight, BadgeCheck, MessageCircle, Play, ShieldCheck, Zap } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import HeroMockup from "@/components/landing/HeroMockup";
 
 const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden bg-[#f8fafc] pt-24 pb-14 md:pt-32 md:pb-20">
+    <section className="relative overflow-hidden bg-[#f8fafc] pt-24 pb-0 md:pt-32">
       <div className="absolute inset-0 -z-20">
         <div className="absolute -top-32 -left-24 h-80 w-80 rounded-full bg-emerald-200/50 blur-3xl" />
         <div className="absolute top-20 right-8 h-[28rem] w-[28rem] rounded-full bg-violet-300/30 blur-3xl" />
@@ -53,6 +53,53 @@ const HeroSection = () => {
 
           <div className="flex justify-center lg:justify-end">
             <HeroMockup />
+          </div>
+        </div>
+      </div>
+
+      {/* Trust bar */}
+      <div className="mt-14 md:mt-20 border-t border-slate-200/70 bg-white/60 backdrop-blur-sm">
+        <div className="container mx-auto px-4 sm:px-6 py-5">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 md:gap-x-12">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-xs font-black text-slate-900 leading-none">Sin comisiones</p>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Cada venta es 100% tuya</p>
+              </div>
+            </div>
+            <div className="hidden sm:block w-px h-8 bg-slate-200" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
+                <MessageCircle className="w-4 h-4 text-green-600" />
+              </div>
+              <div>
+                <p className="text-xs font-black text-slate-900 leading-none">Pedidos por WhatsApp</p>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Directo a tu celular, sin intermediarios</p>
+              </div>
+            </div>
+            <div className="hidden sm:block w-px h-8 bg-slate-200" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                <Zap className="w-4 h-4 text-indigo-600" />
+              </div>
+              <div>
+                <p className="text-xs font-black text-slate-900 leading-none">Listo en minutos</p>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Sin saber programar, sin técnicos</p>
+              </div>
+            </div>
+            <div className="hidden sm:block w-px h-8 bg-slate-200" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
+                <BadgeCheck className="w-4 h-4 text-violet-600" />
+              </div>
+              <div>
+                <p className="text-xs font-black text-slate-900 leading-none">Plan gratis para siempre</p>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">Empezá sin tarjeta de crédito</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
