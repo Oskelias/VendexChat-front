@@ -31,6 +31,7 @@ INFORMACIÓN DE VENDEXCHAT:
   * VIP (RECOMENDADO): USD $19.99/mes (o USD $16.66/mes si pagás anual, total USD $199.9/año — ahorrás USD $39.98). Todo lo del plan Pro más: VENDEx Bot con IA, Logística Integrada, CRM con IA & Analítica, Soporte Prioritario. Diferencial: seguimiento postventa y reactivación de clientes desde CRM IA, bot + logística + soporte prioritario en un solo plan.
   * ULTRA: Precio a medida. Desarrollo a medida, web & hosting propio, bots & automatizaciones, consultoría estratégica, soporte 24/7 VIP.
 - AHORRO PLAN ANUAL: Con el plan anual ahorrás un 15% (equivale a 2 meses gratis por año). Recomendado para quienes ya saben que lo van a usar.
+- MONEDA DE PAGO: Los precios están expresados en USD, pero el cobro se puede realizar en dólares o en la moneda local del país del cliente.
 - Rubros: Funciona para cualquier comercio: comida, bebidas, ropa, electrónica, perfumería, ferretería, etc.
 
 MODO DEMO (solo si el visitante cuenta qué vende o pide una demo):
