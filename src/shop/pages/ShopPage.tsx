@@ -64,16 +64,19 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
     const filteredCategories = useMemo(() => {
         if (!data) return [];
 
-        const term = searchTerm.toLowerCase();
+        const words = searchTerm.toLowerCase().trim().split(/\s+/).filter(Boolean);
         const allWithFilteredProducts = data.categories.map(cat => {
-            const categoryMatches = cat.name.toLowerCase().includes(term);
+            const catName = cat.name.toLowerCase();
             return {
                 ...cat,
-                products: (cat.products || []).filter(p =>
-                    categoryMatches ||
-                    p.name.toLowerCase().includes(term) ||
-                    p.description?.toLowerCase().includes(term)
-                )
+                products: (cat.products || []).filter(p => {
+                    const prodName = p.name.toLowerCase();
+                    const prodDesc = (p.description || "").toLowerCase();
+                    // Every word must match either the category name, product name or description
+                    return words.every(w =>
+                        catName.includes(w) || prodName.includes(w) || prodDesc.includes(w)
+                    );
+                })
             };
         }).filter(cat => cat.products.length > 0);
 
