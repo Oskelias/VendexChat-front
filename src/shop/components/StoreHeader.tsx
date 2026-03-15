@@ -41,7 +41,7 @@ export function StoreHeader({
             <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-50 px-4 py-3 shadow-sm">
                 <div className="max-w-[1440px] mx-auto flex items-center gap-3">
                     {/* Search Field */}
-                    <div className="relative flex-1 group">
+                    <div className="relative flex-1 max-w-xs group">
                         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary-dynamic transition-colors" />
                         <input
                             type="text"
@@ -56,9 +56,10 @@ export function StoreHeader({
                         {whatsapp && (
                             <button
                                 onClick={onChatClick}
-                                className="w-10 h-10 flex items-center justify-center bg-primary-dynamic text-white rounded-xl transition-all shadow-lg shadow-primary-dynamic/20 hover:scale-110 active:scale-95"
+                                className="h-10 px-3 md:px-4 flex items-center gap-2 bg-primary-dynamic text-white rounded-xl transition-all shadow-lg shadow-primary-dynamic/20 hover:scale-105 active:scale-95"
                             >
                                 <Bot className="w-5 h-5" />
+                                <span className="text-[10px] font-black uppercase tracking-widest">Asistente IA</span>
                             </button>
                         )}
                         {instagram && (
