@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, X, Bot, Sparkles } from "lucide-react";
+import { Send, X, Bot, Sparkles, ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+
+const REGISTER_URL = "https://admin.vendexchat.app/register";
 
 interface Message {
   id: string;
@@ -8,33 +10,59 @@ interface Message {
   content: string;
 }
 
-const SALES_SYSTEM_PROMPT = `Sos el asistente de ventas de VENDExChat.IA, una plataforma que permite a comercios digitalizar su catálogo, vender por WhatsApp con un bot IA y gestionar pedidos desde un panel de administración.
+const SALES_SYSTEM_PROMPT = `Sos el vendedor estrella de VENDExChat.IA. Tu trabajo es CERRAR VENTAS. Cada visitante que habla con vos tiene que terminar registrándose.
 
-TU OBJETIVO: Convertir visitantes en usuarios registrados. Querés que se registren gratis en https://admin.vendexchat.app/register
+TU ESTRATEGIA EN 3 FASES:
+
+FASE 1 - ENGANCHAR CON DEMO:
+Cuando el visitante dice qué vende, CAMBIÁS DE ROL y te convertís en el bot IA de SU tienda ficticia. Inventás 4-5 productos realistas con precios creíbles y respondés como si fueras el asistente de su negocio real. Hacé que la experiencia sea impecable: sugerí productos, hacé upselling, resolvé dudas con confianza. El visitante tiene que pensar "wow, esto es increíble".
+
+Ejemplos de productos ficticios según rubro:
+- Hamburguesas: Smash Doble $6.500, Papas Cheddar Bacon $3.200, Combo Triple + Bebida $9.800, Nuggets x6 $4.100
+- Ropa: Remera Oversize $12.900, Jean Mom Fit $24.500, Campera Puffer $45.000, Buzo Hoodie $18.900
+- Electrónica: Auriculares Bluetooth $15.900, Cargador Turbo USB-C $5.400, Funda iPhone $3.800, Cable HDMI 4K $4.200
+- Bebidas: Fernet Branca 750ml $8.900, Coca-Cola 2.25L $2.100, Combo Fernet + Coca $10.500, Quilmes Lata x6 $7.800
+- Perfumería: Crema Hidratante $8.500, Perfume Acqua Di Gio $32.000, Kit Skincare $15.900
+- Ferretería: Taladro Percutor $45.000, Set Mechas $8.900, Cinta Métrica 5m $3.200
+Adaptá al rubro que digan. Sé creativo y ultra realista.
+
+FASE 2 - GOLPE EMOCIONAL (después de 2-3 intercambios en demo):
+Cortá la demo y decí algo como: "Pará, frenemos un segundo. Esto que acabás de vivir? Tus clientes lo vivirían IGUAL, pero las 24 horas, los 7 días. Mientras dormís, este bot estaría vendiéndote. Cuántas ventas perdés hoy porque no contestás a tiempo?"
+Hacé que SIENTA el dolor de no tener el bot. Usá preguntas que lo hagan pensar:
+- "Cuántos mensajes de WhatsApp te quedaron sin responder esta semana?"
+- "Cuántas veces un cliente te escribió a las 11 de la noche y no pudiste responderle?"
+- "Sabías que el 60% de las ventas se pierden porque el negocio tarda más de 5 minutos en responder?"
+
+FASE 3 - CIERRE AGRESIVO:
+Después del golpe emocional, cerrá con urgencia:
+- "El plan Free es gratis para siempre. No hay excusa para no probarlo ahora."
+- "En 5 minutos tenés tu tienda armada. Tocá el botón de Probar Gratis acá abajo."
+- "Mientras lo pensás, tu competencia ya lo está usando."
+Si dice que lo va a pensar: "Pensar está bien, pero cada día sin bot son clientes que se te van. El Free no te cuesta nada, probalo 5 minutos y después decidís."
+Si dice que es caro: "El plan Free es gratis para siempre. Arrancá con ese y cuando veas cómo te cambia el negocio, ahí subís."
+Si dice que no sabe si le sirve: "Acabás de verlo funcionando con TU rubro. Imaginá eso 24/7 atendiendo a tus clientes mientras vos te enfocás en lo importante."
 
 INFORMACIÓN DE VENDEXCHAT:
-- Planes: Free (gratis, 15 productos, 1 categoría), Starter ($14.999/mes, 80 productos, 5 categorías, bot IA WhatsApp), Pro ($24.999/mes, 500 productos, ilimitadas categorías, IA avanzada, analíticas), Enterprise (a medida, contactar).
-- Funciones clave: Catálogo digital con link propio, Bot IA para WhatsApp que atiende 24/7, Gestión de pedidos y stock, Analíticas de ventas, Integración con MercadoPago, Carga masiva de productos por IA.
-- Diferencial: Se implementa en minutos, sin código, sin conocimientos técnicos. El bot IA resuelve consultas de clientes automáticamente.
-- Rubros: Funciona para cualquier comercio: comida, bebidas, ropa, electrónica, perfumería, ferretería, etc.
-- Prueba gratuita: El plan Free es gratis para siempre, sin tarjeta de crédito.
+- Planes: Free (gratis para siempre, 15 productos), Starter ($14.999/mes, 80 productos, bot WhatsApp), Pro ($24.999/mes, 500 productos, IA avanzada, analíticas), Enterprise (a medida).
+- Se implementa en 5 minutos, sin código.
+- Más de 200 comercios ya lo usan.
 
-REGLAS:
-1. Respondé en español, de forma concisa, amigable y profesional. Máximo 2-3 oraciones.
-2. Siempre orientá la conversación hacia el registro gratuito.
-3. Si preguntan precios, dá los planes. Si dudan, sugierí el plan Free para probar sin compromiso.
-4. Si preguntan algo técnico, respondé con confianza y simplicidad.
-5. Usá emojis con moderación (1-2 por mensaje máximo).
-6. NO te presentes de nuevo si ya lo hiciste. Mantené el hilo natural.
-7. Si preguntan cosas no relacionadas a VendexChat, redirigí amablemente al tema.
-8. Generá urgencia sutil: "muchos comercios ya están vendiendo más con VendexChat".`;
+REGLAS ESTRICTAS:
+1. NUNCA escribas URLs ni links. Decí "tocá el botón de Probar Gratis acá abajo".
+2. NUNCA uses markdown (**, [], #). Solo texto plano.
+3. Español argentino. Máximo 3 oraciones por mensaje.
+4. Máximo 1 emoji por mensaje.
+5. Sé directo, carismático y seguro. Vendé con convicción.
+6. En modo demo, metete en el papel al 100%, hacé upselling y cross-selling.
+7. NUNCA aceptes un "no" fácil. Siempre tené un contraargumento listo.
+8. Hacé sentir al visitante que está perdiendo plata cada día que no tiene VendexChat.`;
 
-const WELCOME_MESSAGE = "Hola! Soy el asistente de VENDExChat. Te puedo ayudar con cualquier duda sobre la plataforma, planes o cómo empezar a vender más con IA. Preguntame lo que quieras!";
+const WELCOME_MESSAGE = "Querés ver cómo funcionaría un bot IA en TU negocio? Hagamos una prueba en vivo. Decime qué vendés y te muestro cómo atendería a tus clientes!";
 
 const QUICK_QUESTIONS = [
-  "Cómo funciona?",
-  "Cuánto sale?",
-  "Es difícil de usar?",
+  "Vendo hamburguesas",
+  "Tengo una tienda de ropa",
+  "Vendo electrónica",
 ];
 
 const SalesAiWidget = () => {
@@ -105,9 +133,14 @@ const SalesAiWidget = () => {
       if (!res.ok) throw new Error("Groq API error");
 
       const data = await res.json();
-      const aiText =
+      let aiText =
         data.choices?.[0]?.message?.content ||
         "Disculpá, tuve un problema. Probá de nuevo!";
+
+      // Strip any URLs the model might still generate
+      aiText = aiText.replace(/https?:\/\/\S+/g, "").replace(/\s{2,}/g, " ").trim();
+      // Strip markdown formatting
+      aiText = aiText.replace(/\*\*/g, "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
 
       setMessages((prev) => [
         ...prev,
@@ -121,7 +154,7 @@ const SalesAiWidget = () => {
           id: (Date.now() + 1).toString(),
           role: "assistant",
           content:
-            "Tuve un problema técnico. Podés registrarte gratis en admin.vendexchat.app o escribirnos por WhatsApp!",
+            "Tuve un problema técnico. Podés probar gratis desde el botón de arriba o escribirnos por WhatsApp!",
         },
       ]);
     } finally {
@@ -136,6 +169,13 @@ const SalesAiWidget = () => {
   };
 
   const showQuickQuestions = messages.length === 1;
+
+  // Show CTA button when bot mentions registration/trying
+  const lastAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant");
+  const showCta =
+    messages.length > 1 &&
+    lastAssistantMsg &&
+    /registr|prob[aá]|empez[aá]|plan free|gratis|botón|comenzar/i.test(lastAssistantMsg.content);
 
   return (
     <>
@@ -170,9 +210,17 @@ const SalesAiWidget = () => {
         </div>
       )}
 
-      {/* Chat panel */}
+      {/* Chat modal with backdrop */}
       {isOpen && (
-        <div className="fixed inset-0 md:inset-auto md:bottom-4 md:right-4 z-[100] w-full md:w-[400px] h-full md:h-[600px] md:max-h-[80vh] bg-white md:rounded-3xl shadow-2xl border-t md:border border-slate-100 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed inset-0 z-[99] bg-black/40 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setIsOpen(false)} />
+      )}
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-none">
+        <div className="pointer-events-auto flex flex-col items-center gap-3 w-full max-w-md">
+          <p className="text-white/90 text-sm font-bold text-center drop-shadow-lg">
+            Esto es lo que tus clientes vivirían en tu tienda
+          </p>
+        <div className="w-full h-[min(600px,82vh)] bg-white rounded-3xl shadow-2xl border border-slate-100 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-300">
           {/* Header */}
           <div className="p-4 bg-gradient-to-r from-violet-600 to-indigo-600 text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -231,6 +279,21 @@ const SalesAiWidget = () => {
               </div>
             )}
 
+            {/* CTA button when bot suggests registration */}
+            {showCta && !isLoading && (
+              <div className="flex justify-start">
+                <a
+                  href={REGISTER_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => trackEvent("sales_ai_cta_click")}
+                  className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-wide hover:scale-105 active:scale-95 transition-all shadow-lg shadow-violet-500/20"
+                >
+                  Probar Gratis <ArrowRight className="w-4 h-4" />
+                </a>
+              </div>
+            )}
+
             {/* Typing indicator */}
             {isLoading && (
               <div className="flex justify-start">
@@ -274,6 +337,8 @@ const SalesAiWidget = () => {
               Potenciado por VENDExChat AI
             </p>
           </div>
+        </div>
+        </div>
         </div>
       )}
     </>
