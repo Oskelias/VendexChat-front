@@ -285,7 +285,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                     </div>
                 ) : (
                     filteredCategories.map((cat) => {
-                        const PAGE_SIZE = 12;
+                        const PAGE_SIZE = isDemo ? 8 : 12;
                         const isExpanded = expandedCategories.has(cat.id);
                         const visibleProducts = isExpanded ? cat.products : cat.products.slice(0, PAGE_SIZE);
                         const remaining = cat.products.length - PAGE_SIZE;
