@@ -9,53 +9,51 @@ export default function AssistantIcon({ className, ...props }: SVGProps<SVGSVGEl
       className={className}
       {...props}
     >
-      {/* Background rounded square */}
-      <rect width="100" height="100" rx="22" fill="url(#bg-gradient)" />
+      {/* Green rounded square background */}
+      <rect width="100" height="100" rx="20" fill="#34D462" />
 
-      {/* Antenna base */}
-      <rect x="45" y="14" width="10" height="8" rx="3" fill="#2dd4a0" />
+      {/* Dark navy speech bubble circle */}
+      <circle cx="53" cy="45" r="37" fill="#2D2B72" />
+      {/* Speech bubble tail */}
+      <path d="M30 75 L16 90 L40 80 Z" fill="#2D2B72" />
+
+      {/* Antenna stem */}
+      <rect x="49" y="10" width="8" height="10" rx="3" fill="#34D462" />
       {/* Antenna tip */}
-      <circle cx="50" cy="12" r="4" fill="#5eead4" />
+      <circle cx="53" cy="9" r="5.5" fill="#7DDFD4" />
 
-      {/* Head */}
-      <rect x="22" y="22" width="56" height="42" rx="12" fill="#1cd4a0" />
-
+      {/* Robot head */}
+      <rect x="28" y="20" width="50" height="34" rx="11" fill="#34D462" />
       {/* Left ear */}
-      <rect x="14" y="34" width="8" height="16" rx="4" fill="#1cd4a0" />
+      <rect x="19" y="30" width="9" height="16" rx="4.5" fill="#34D462" />
       {/* Right ear */}
-      <rect x="78" y="34" width="8" height="16" rx="4" fill="#1cd4a0" />
+      <rect x="72" y="30" width="9" height="16" rx="4.5" fill="#34D462" />
 
-      {/* Face plate */}
-      <rect x="28" y="28" width="44" height="30" rx="8" fill="#15b88a" />
+      {/* Face plate (darker green) */}
+      <rect x="33" y="25" width="40" height="24" rx="8" fill="#26B94E" />
 
-      {/* Left eye */}
-      <ellipse cx="39" cy="42" rx="5" ry="6" fill="white" />
-      <circle cx="40" cy="41" r="2.5" fill="#1a1a2e" />
+      {/* Left eye white */}
+      <ellipse cx="43" cy="36" rx="5" ry="6" fill="white" />
+      {/* Left pupil */}
+      <circle cx="44" cy="35" r="2.5" fill="#111827" />
 
-      {/* Right eye */}
-      <ellipse cx="61" cy="42" rx="5" ry="6" fill="white" />
-      <circle cx="62" cy="41" r="2.5" fill="#1a1a2e" />
+      {/* Right eye white */}
+      <ellipse cx="63" cy="36" rx="5" ry="6" fill="white" />
+      {/* Right pupil */}
+      <circle cx="64" cy="35" r="2.5" fill="#111827" />
 
-      {/* Mouth - friendly smile */}
-      <path d="M42 52 Q50 58 58 52" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      {/* Smile */}
+      <path d="M44 45 Q53 52 62 45" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none" />
 
       {/* Body */}
-      <rect x="30" y="66" width="40" height="22" rx="8" fill="#1cd4a0" />
-
-      {/* Body detail - center line */}
-      <rect x="48" y="70" width="4" height="14" rx="2" fill="#15b88a" />
+      <rect x="33" y="57" width="40" height="20" rx="8" fill="#34D462" />
+      {/* Body center detail */}
+      <rect x="49" y="61" width="8" height="12" rx="3" fill="#26B94E" />
 
       {/* Left arm */}
-      <rect x="20" y="68" width="10" height="6" rx="3" fill="#1cd4a0" />
+      <rect x="21" y="59" width="12" height="7" rx="3.5" fill="#34D462" />
       {/* Right arm */}
-      <rect x="70" y="68" width="10" height="6" rx="3" fill="#1cd4a0" />
-
-      <defs>
-        <linearGradient id="bg-gradient" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#3b2f80" />
-          <stop offset="1" stopColor="#2a1f6e" />
-        </linearGradient>
-      </defs>
+      <rect x="67" y="59" width="12" height="7" rx="3.5" fill="#34D462" />
     </svg>
   );
 }
