@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, X, Sparkles, ArrowRight } from "lucide-react";
+import { Send, X, ArrowRight } from "lucide-react";
 import AssistantIcon from "../icons/AssistantIcon";
 import { trackEvent } from "@/lib/analytics";
 
@@ -242,10 +242,10 @@ const SalesAiWidget = () => {
           {/* Button */}
           <button
             onClick={handleOpen}
-            className="relative h-14 w-14 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-elevated hover:shadow-card hover:scale-105 active:scale-95 transition-all flex items-center justify-center"
+            className="relative h-14 w-14 rounded-full shadow-elevated hover:shadow-card hover:scale-105 active:scale-95 transition-all flex items-center justify-center overflow-hidden"
             aria-label="Abrir asistente de ventas"
           >
-            <Sparkles className="w-6 h-6" />
+            <AssistantIcon className="w-14 h-14" />
             {/* Ping */}
             <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-white animate-pulse" />
           </button>
