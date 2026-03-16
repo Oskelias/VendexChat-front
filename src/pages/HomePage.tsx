@@ -4,6 +4,7 @@ import InteractiveAISection from "@/components/landing/InteractiveAISection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
 
 import ModuleDemosSection from "@/components/landing/ModuleDemosSection";
+import FeaturesSection from "@/components/landing/FeaturesSection";
 import PricingSection from "@/components/landing/PricingSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 import FAQSection from "@/components/landing/FAQSection";
@@ -23,6 +24,8 @@ export function HomePage() {
 
       {/* BLOQUE 3: Inteligencia IA (tabs: Cliente / Gestión / IA) */}
       <ModuleDemosSection />
+      {/* BLOQUE 4: Listado completo de funcionalidades del panel IA */}
+      <FeaturesSection />
       <PricingSection />
       <TestimonialsSection />
       <FAQSection />
