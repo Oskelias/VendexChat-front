@@ -63,7 +63,7 @@ export default function FloatingAiAssistant({ onClick, isOpen, isCartOpen }: Flo
             >
                 <div className="absolute inset-0 rounded-2xl bg-primary-dynamic animate-ping opacity-20 group-hover:hidden" />
                 <img
-                    src="/iconoVendexchat.png"
+                    src="/logosinfondo.png"
                     alt="VendexChat"
                     className="w-full h-full object-contain z-10"
                 />

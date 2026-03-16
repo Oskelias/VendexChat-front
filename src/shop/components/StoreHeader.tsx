@@ -59,7 +59,7 @@ export function StoreHeader({
                                 onClick={onChatClick}
                                 className="h-10 px-3 md:px-4 flex items-center gap-2 bg-primary-dynamic text-white rounded-xl transition-all shadow-lg shadow-primary-dynamic/20 hover:scale-105 active:scale-95"
                             >
-                                <img src="/iconoVendexchat.png" alt="" className="w-6 h-6 object-contain" />
+                                <img src="/logosinfondo.png" alt="" className="w-6 h-6 object-contain" />
                                 <span className="text-[10px] font-black uppercase tracking-widest">Asistente IA</span>
                             </button>
                         )}
