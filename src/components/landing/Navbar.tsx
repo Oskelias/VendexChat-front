@@ -75,6 +75,8 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-3">
           <a
             href="/demo"
+            target="_blank"
+            rel="noreferrer"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Ver ejemplo <ExternalLink className="w-3.5 h-3.5" />
@@ -127,6 +129,8 @@ const Navbar = () => {
           ))}
           <a
             href="/demo"
+            target="_blank"
+            rel="noreferrer"
             onClick={() => setMenuOpen(false)}
             className="flex items-center gap-1.5 px-3 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
