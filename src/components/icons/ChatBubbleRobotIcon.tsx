@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 export default function ChatBubbleRobotIcon({ className, ...props }: SVGProps<SVGSVGElement> & { className?: string }) {
   return (
     <svg
-      viewBox="-4 0 108 115"
+      viewBox="-6 0 112 118"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
