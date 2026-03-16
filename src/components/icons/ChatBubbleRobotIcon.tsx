@@ -14,10 +14,10 @@ export default function ChatBubbleRobotIcon({ className, ...props }: SVGProps<SV
 
       {/* Robot (scaled and centered) */}
       <g transform="translate(15, 10) scale(0.70)">
-        {/* Background rounded square */}
-        <rect width="100" height="100" rx="22" fill="url(#cbrobot-bg)" />
+        {/* Background circle */}
+        <circle cx="50" cy="50" r="50" fill="url(#cbrobot-bg)" />
         {/* WhatsApp-style tail on purple background */}
-        <path d="M0 68 L0 90 C0 94 -6 106 -3 106 C1 106 14 96 20 92 L22 100 Q0 100 0 68 Z" fill="url(#cbrobot-bg)" />
+        <path d="M8 70 L4 88 C2 94 -4 104 -1 104 C3 104 16 96 22 92 L28 88 Q10 86 8 70 Z" fill="url(#cbrobot-bg)" />
         {/* Antenna base */}
         <rect x="45" y="14" width="10" height="8" rx="3" fill="#2dd4a0" />
         {/* Antenna tip */}
