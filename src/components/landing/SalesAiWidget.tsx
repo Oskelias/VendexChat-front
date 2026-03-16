@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Send, X, ArrowRight } from "lucide-react";
 import AssistantIcon from "../icons/AssistantIcon";
 import { trackEvent } from "@/lib/analytics";
-
-const REGISTER_URL = "https://admin.vendexchat.app/register";
+import { REGISTER_URL } from "@/lib/constants";
 
 interface Message {
   id: string;
