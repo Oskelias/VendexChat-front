@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ExternalLink, Menu, X } from "lucide-react";
-import AssistantIcon from "../icons/AssistantIcon";
 
 const NAV_LINKS = [
   {
@@ -49,7 +48,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <AssistantIcon className="w-9 h-9" />
+          <img src="/iconoVendexchat.png" alt="VendexChat logo" className="w-9 h-9" />
           <span className="font-display text-xl font-bold text-foreground">
             VENDEx<span className="text-slate-400">Chat</span><span className="text-violet-600">.IA</span>
           </span>
