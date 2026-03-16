@@ -62,7 +62,11 @@ export default function FloatingAiAssistant({ onClick, isOpen, isCartOpen }: Flo
                 `}
             >
                 <div className="absolute inset-0 rounded-full bg-primary-dynamic animate-ping opacity-20 group-hover:hidden" />
-                <AssistantIcon className="w-full h-full relative z-10 scale-[1.5] object-cover" />
+                <img
+                    src="/iconoVendexchat.png"
+                    alt="VendexChat"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[160%] object-cover z-10"
+                />
 
                 {/* Indicador online */}
                 <div className="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-white z-20" />

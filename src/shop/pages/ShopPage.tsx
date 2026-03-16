@@ -347,6 +347,18 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                 />
             </Suspense>
 
+            {/* Powered by */}
+            <div className="py-4 text-center">
+                <a
+                    href="https://vendexchat.app"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[11px] font-semibold text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                    Powered by VendeXChat
+                </a>
+            </div>
+
             <CartBar
                 totalItems={totalItems}
                 totalPrice={totalPrice}
