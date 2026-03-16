@@ -1,10 +1,10 @@
 export default function AssistantIcon({ className }: { className?: string }) {
   return (
-    <span className={`inline-flex overflow-hidden rounded-sm ${className}`}>
+    <span className={`inline-flex overflow-hidden ${className}`}>
       <img
         src="/iconoVendexchat.png"
         alt="VendexChat"
-        className="w-full h-full object-cover scale-[1.18]"
+        style={{ width: '122%', height: '122%', marginLeft: '-11%', marginTop: '-11%', flexShrink: 0, objectFit: 'cover' }}
       />
     </span>
   );
