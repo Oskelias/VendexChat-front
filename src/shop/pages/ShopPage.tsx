@@ -38,12 +38,12 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
     useEffect(() => {
         if (data?.store?.popups) {
             const storeId = data.store.id;
-            const sessionKey = `vdx_popups_shown_${storeId}`;
-            if (sessionStorage.getItem(sessionKey)) return;
+            const sessionKey = `vdx_popups_seen_${storeId}`;
+            const seenIds: string[] = JSON.parse(sessionStorage.getItem(sessionKey) || '[]');
 
-            const active = data.store.popups.filter(p => p.active);
-            if (active.length > 0) {
-                setActivePopups(active);
+            const unseen = data.store.popups.filter(p => p.active && !seenIds.includes(String(p.id)));
+            if (unseen.length > 0) {
+                setActivePopups(unseen);
             }
         }
     }, [data]);
@@ -435,12 +435,14 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                     key={activePopups[0].id}
                     popup={activePopups[0]}
                     onClose={() => setActivePopups(prev => {
-                        const next = prev.slice(1);
-                        // Marcar como vistos solo cuando se cerraron todos
-                        if (next.length === 0 && data?.store?.id) {
-                            sessionStorage.setItem(`vdx_popups_shown_${data.store.id}`, '1');
+                        const closed = prev[0];
+                        if (closed && data?.store?.id) {
+                            const sessionKey = `vdx_popups_seen_${data.store.id}`;
+                            const seenIds: string[] = JSON.parse(sessionStorage.getItem(sessionKey) || '[]');
+                            seenIds.push(String(closed.id));
+                            sessionStorage.setItem(sessionKey, JSON.stringify(seenIds));
                         }
-                        return next;
+                        return prev.slice(1);
                     })}
                 />
             )}
