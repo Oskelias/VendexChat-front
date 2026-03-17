@@ -39,13 +39,11 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
         if (data?.store?.popups) {
             const storeId = data.store.id;
             const sessionKey = `vdx_popups_shown_${storeId}`;
-            // Solo mostrar popups una vez por sesión
             if (sessionStorage.getItem(sessionKey)) return;
 
             const active = data.store.popups.filter(p => p.active);
             if (active.length > 0) {
                 setActivePopups(active);
-                sessionStorage.setItem(sessionKey, '1');
             }
         }
     }, [data]);
@@ -434,8 +432,16 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
 
             {activePopups.length > 0 && (
                 <PopupModal
+                    key={activePopups[0].id}
                     popup={activePopups[0]}
-                    onClose={() => setActivePopups(prev => prev.slice(1))}
+                    onClose={() => setActivePopups(prev => {
+                        const next = prev.slice(1);
+                        // Marcar como vistos solo cuando se cerraron todos
+                        if (next.length === 0 && data?.store?.id) {
+                            sessionStorage.setItem(`vdx_popups_shown_${data.store.id}`, '1');
+                        }
+                        return next;
+                    })}
                 />
             )}
         </div >
