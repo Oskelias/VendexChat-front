@@ -37,7 +37,16 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
 
     useEffect(() => {
         if (data?.store?.popups) {
-            setActivePopups(data.store.popups.filter(p => p.active));
+            const storeId = data.store.id;
+            const sessionKey = `vdx_popups_shown_${storeId}`;
+            // Solo mostrar popups una vez por sesión
+            if (sessionStorage.getItem(sessionKey)) return;
+
+            const active = data.store.popups.filter(p => p.active);
+            if (active.length > 0) {
+                setActivePopups(active);
+                sessionStorage.setItem(sessionKey, '1');
+            }
         }
     }, [data]);
 

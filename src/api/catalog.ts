@@ -60,17 +60,17 @@ function getMetadataPopups(metadata: any): Popup[] {
 
 async function fetchStorePopups(storeId: string): Promise<Popup[]> {
   try {
+    // Los popups están en la columna JSONB de la tabla stores
     const { data, error } = await supabase
-      .from("popups")
-      .select("*")
-      .eq("store_id", storeId)
-      .order("created_at", { ascending: true });
+      .from("stores")
+      .select("popups")
+      .eq("id", storeId)
+      .single();
 
-    if (error || !Array.isArray(data)) return [];
+    if (error || !data?.popups || !Array.isArray(data.popups)) return [];
 
-    return data.map(normalizePopup).filter(popup => popup.title || popup.message);
+    return data.popups.map(normalizePopup).filter(popup => popup.title || popup.message);
   } catch {
-    // Tabla popups no desplegada o sin permisos
     return [];
   }
 }
@@ -131,7 +131,7 @@ export async function fetchStorePreview(identifier: string): Promise<import("../
   try {
     const { data, error } = await supabase
       .from("stores")
-      .select("id,name,slug,logo_url,banner_url,description,whatsapp,phone,address,instagram,primary_color,metadata,custom_domain,delivery_cost,coupons_enabled,delivery_info,schedule,physical_schedule,online_schedule,facebook,ai_prompt,welcome_message,footer_message")
+      .select("id,name,slug,logo_url,banner_url,description,whatsapp,phone,address,instagram,primary_color,metadata,custom_domain,delivery_cost,coupons_enabled,delivery_info,schedule,physical_schedule,online_schedule,facebook,ai_prompt,welcome_message,footer_message,popups")
       .or(`slug.eq.${identifier},custom_domain.eq.${identifier}`)
       .limit(1)
       .single();
