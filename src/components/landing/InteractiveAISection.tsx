@@ -212,10 +212,6 @@ const InteractiveAISection = () => {
                                     >
                                         <Send className="w-4 h-4" />
                                     </button>
-                                    <div className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-emerald-500 shadow-md animate-float delay-700 flex-shrink-0">
-                                        <Zap className="w-3 h-3 text-white" />
-                                        <span className="text-[8px] font-black text-white uppercase tracking-wide whitespace-nowrap">Venta<br/>cerrada</span>
-                                    </div>
                                 </form>
                             </div>
 
