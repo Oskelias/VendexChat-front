@@ -36,7 +36,7 @@ const InteractiveAISection = () => {
     const [messages, setMessages] = useState<any[]>([]);
     const [userInput, setUserInput] = useState("");
     const [isTyping, setIsTyping] = useState(false);
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const currentStore = STORES.find(s => s.id === selectedStore)!;
@@ -159,7 +159,7 @@ const InteractiveAISection = () => {
                     <div className="relative">
                         {/* Mobile: fullscreen overlay */}
                         {isOpen && (
-                            <div className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
+                            <div className="fixed inset-x-0 top-0 z-50 flex flex-col bg-white lg:hidden h-screen" style={{ height: '100dvh' }}>
                                 {/* Chat Header */}
                                 <div className="p-5 border-b border-slate-100 flex items-center gap-3 bg-white flex-shrink-0">
                                     <div className={`w-10 h-10 rounded-full ${currentStore.color} flex items-center justify-center text-white transition-colors duration-300`}>
@@ -221,16 +221,14 @@ const InteractiveAISection = () => {
                         )}
 
                         {/* Mobile: button to open chat */}
-                        {!isOpen && (
-                            <div className="flex justify-center py-8 lg:hidden">
-                                <button
-                                    onClick={() => setIsOpen(true)}
-                                    className="px-6 py-3 rounded-xl bg-primary-dynamic text-white text-sm font-black uppercase tracking-wide hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary-dynamic/20"
-                                >
-                                    Probar el asistente
-                                </button>
-                            </div>
-                        )}
+                        <div className="flex justify-center py-8 lg:hidden">
+                            <button
+                                onClick={() => setIsOpen(true)}
+                                className="px-6 py-3 rounded-xl bg-primary-dynamic text-white text-sm font-black uppercase tracking-wide hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary-dynamic/20"
+                            >
+                                Probar el asistente
+                            </button>
+                        </div>
 
                         {/* Desktop: Device Mockup */}
                         <div className="hidden lg:block relative mx-auto w-full max-w-[400px] h-[600px] rounded-[3rem] bg-violet-900 p-3 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] ring-1 ring-violet-700">
