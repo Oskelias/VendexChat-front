@@ -13,15 +13,29 @@ const Footer = () => {
               VENDEx<span className="text-slate-400">Chat</span><span className="text-violet-600">.IA</span>
             </span>
           </div>
-          <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => trackEvent("footer_contact_click")}
-            className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
-          >
-            Contacto
-          </a>
+          <nav className="flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="/terms"
+              className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              Términos y Condiciones
+            </a>
+            <a
+              href="/privacy"
+              className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              Política de Privacidad
+            </a>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => trackEvent("footer_contact_click")}
+              className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              Contacto
+            </a>
+          </nav>
           <div className="text-center md:text-right">
             <p className="text-sm text-muted-foreground">© 2026 VendeXChat</p>
             <p className="text-xs text-muted-foreground/70">Producto desarrollado por Inteliar Stack</p>
