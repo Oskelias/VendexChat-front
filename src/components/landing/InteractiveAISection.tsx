@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { Send, Sparkles, ShoppingBag, Zap, UtensilsCrossed, Wine, BookOpen } from "lucide-react";
-import AssistantIcon from "../icons/AssistantIcon";
 import { supabase } from "@/supabaseClient";
 
 type StoreType = "hamburgueseria" | "bebidas" | "libreria";
@@ -157,71 +156,61 @@ const InteractiveAISection = () => {
                     </div>
 
                     <div className="relative">
-                        {/* Device Mockup */}
-                        <div className="relative mx-auto w-full max-w-[400px] h-[600px] rounded-[3rem] bg-violet-900 p-3 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] ring-1 ring-violet-700">
-                            <div className="relative h-full w-full overflow-hidden rounded-[2.5rem] bg-white flex flex-col">
-                                {/* Chat Header */}
-                                <div className="p-5 border-b border-slate-100 flex items-center gap-3 bg-white">
-                                    <div className={`w-10 h-10 rounded-full ${currentStore.color} flex items-center justify-center text-white transition-colors duration-300`}>
-                                        <currentStore.icon className="w-5 h-5" />
-                                    </div>
-                                    <div>
-                                        <div className="text-sm font-black text-slate-900">{currentStore.name}</div>
-                                        <div className="flex items-center gap-1.5">
-                                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Asistente IA · En línea</span>
-                                        </div>
+                        {/* Chat Widget */}
+                        <div className="relative mx-auto w-full max-w-[400px] h-[600px] rounded-2xl bg-white shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col">
+                            {/* Chat Header */}
+                            <div className={`p-5 flex items-center gap-3 ${currentStore.color} transition-colors duration-300`}>
+                                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white">
+                                    <currentStore.icon className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <div className="text-sm font-black text-white">{currentStore.name}</div>
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 bg-white/80 rounded-full animate-pulse" />
+                                        <span className="text-[10px] font-black text-white/80 uppercase tracking-widest">Asistente IA · En línea</span>
                                     </div>
                                 </div>
-
-                                {/* Chat Body */}
-                                <div ref={scrollRef} className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50/50">
-                                    {messages.map((msg, i) => (
-                                        <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-                                            <div className={`max-w-[85%] p-4 rounded-2xl text-xs font-medium leading-relaxed shadow-sm ${msg.role === 'user'
-                                                ? 'bg-violet-700 text-white rounded-tr-none'
-                                                : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'
-                                                }`}>
-                                                {msg.text}
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {isTyping && (
-                                        <div className="flex justify-start animate-pulse">
-                                            <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-tl-none flex gap-1">
-                                                <span className="w-1 h-1 bg-slate-300 rounded-full animate-bounce" />
-                                                <span className="w-1 h-1 bg-slate-300 rounded-full animate-bounce delay-100" />
-                                                <span className="w-1 h-1 bg-slate-300 rounded-full animate-bounce delay-200" />
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Chat Input */}
-                                <form onSubmit={handleSend} className="p-4 bg-white border-t border-slate-100 flex gap-2 items-center">
-                                    <input
-                                        type="text"
-                                        value={userInput}
-                                        onChange={(e) => setUserInput(e.target.value)}
-                                        placeholder="Escribí algo..."
-                                        className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-primary-dynamic transition-all"
-                                    />
-                                    <button
-                                        type="submit"
-                                        className="w-10 h-10 rounded-xl bg-primary-dynamic text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary-dynamic/20"
-                                    >
-                                        <Send className="w-4 h-4" />
-                                    </button>
-                                </form>
                             </div>
 
-                            {/* Decorative labels */}
-                            <div className="absolute -right-8 top-1/4 p-4 rounded-2xl bg-white shadow-xl rotate-6 border border-slate-100 animate-float hidden md:block">
-                                <div className="flex items-center gap-2 text-[10px] font-black text-slate-900">
-                                    <AssistantIcon className="w-4 h-4" />
-                                    RESPUESTA IA
-                                </div>
+                            {/* Chat Body */}
+                            <div ref={scrollRef} className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50/50">
+                                {messages.map((msg, i) => (
+                                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
+                                        <div className={`max-w-[85%] p-4 rounded-2xl text-xs font-medium leading-relaxed shadow-sm ${msg.role === 'user'
+                                            ? 'bg-violet-700 text-white rounded-tr-none'
+                                            : 'bg-white border border-slate-100 text-slate-700 rounded-tl-none'
+                                            }`}>
+                                            {msg.text}
+                                        </div>
+                                    </div>
+                                ))}
+                                {isTyping && (
+                                    <div className="flex justify-start animate-pulse">
+                                        <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-tl-none flex gap-1">
+                                            <span className="w-1 h-1 bg-slate-300 rounded-full animate-bounce" />
+                                            <span className="w-1 h-1 bg-slate-300 rounded-full animate-bounce delay-100" />
+                                            <span className="w-1 h-1 bg-slate-300 rounded-full animate-bounce delay-200" />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
+
+                            {/* Chat Input */}
+                            <form onSubmit={handleSend} className="p-4 bg-white border-t border-slate-100 flex gap-2 items-center">
+                                <input
+                                    type="text"
+                                    value={userInput}
+                                    onChange={(e) => setUserInput(e.target.value)}
+                                    placeholder="Escribí algo..."
+                                    className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-primary-dynamic transition-all"
+                                />
+                                <button
+                                    type="submit"
+                                    className="w-10 h-10 rounded-xl bg-primary-dynamic text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary-dynamic/20"
+                                >
+                                    <Send className="w-4 h-4" />
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
