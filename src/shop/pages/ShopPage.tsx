@@ -1,7 +1,8 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useShopData } from "../hooks/useShopData";
 import { useCartState } from "../state/useCartStore";
+import { supabase } from "../../lib/supabase";
 import { StoreHeader } from "../components/StoreHeader";
 import { CategoryChips } from "../components/CategoryChips";
 import { ProductCard } from "../components/ProductCard";
@@ -34,6 +35,8 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
     const [chatInitialMessage, setChatInitialMessage] = useState<string | null>(null);
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
     const [activePopups, setActivePopups] = useState<Popup[]>([]);
+    const [planType, setPlanType] = useState<string | null>(null);
+    const planFetchedFor = useRef<string | null>(null);
 
     useEffect(() => {
         if (data?.store?.popups) {
@@ -47,6 +50,21 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
             }
         }
     }, [data]);
+
+    useEffect(() => {
+        const storeId = data?.store?.id;
+        if (!storeId || planFetchedFor.current === storeId) return;
+        planFetchedFor.current = storeId;
+        supabase
+            .from("subscriptions")
+            .select("plan_type")
+            .eq("store_id", storeId)
+            .eq("status", "active")
+            .maybeSingle()
+            .then(({ data: sub }) => setPlanType(sub?.plan_type ?? null));
+    }, [data?.store?.id]);
+
+    const hasBotAccess = planType !== null && planType !== "free";
 
     const openChat = (initialMsg?: string) => {
         setChatInitialMessage(initialMsg || null);
@@ -245,7 +263,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                 totalItems={totalItems}
                 announcement={data.announcement}
                 onSearch={setSearchTerm}
-                onChatClick={() => openChat()}
+                onChatClick={hasBotAccess ? () => openChat() : () => {}}
                 onCartClick={() => setIsCartOpen(true)}
             />
 
@@ -400,26 +418,31 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
             />
 
 
-            <Suspense fallback={null}>
-                <ChatBotWidget
-                    isOpen={isChatOpen}
-                    onClose={() => setIsChatOpen(false)}
-                    storeName={data.store.name}
-                    storeDescription={data.store.description || undefined}
-                    storeAddress={data.store.address || undefined}
-                    whatsappNumber={data.store.whatsapp || data.store.phone || ""}
-                    products={data.categories.flatMap(c => c.products || [])}
-                    aiPrompt={data.store.metadata?.ai_prompt || data.store.ai_prompt}
-                    welcomeMessage={data.store.welcome_message}
-                    initialMessage={chatInitialMessage}
-                />
-            </Suspense>
+            {hasBotAccess && (
+                <Suspense fallback={null}>
+                    <ChatBotWidget
+                        isOpen={isChatOpen}
+                        onClose={() => setIsChatOpen(false)}
+                        storeName={data.store.name}
+                        storeDescription={data.store.description || undefined}
+                        storeAddress={data.store.address || undefined}
+                        whatsappNumber={data.store.whatsapp || data.store.phone || ""}
+                        products={data.categories.flatMap(c => c.products || [])}
+                        aiPrompt={data.store.metadata?.ai_prompt || data.store.ai_prompt}
+                        welcomeMessage={data.store.welcome_message}
+                        initialMessage={chatInitialMessage}
+                        storeId={data.store.id}
+                    />
+                </Suspense>
+            )}
 
-            <FloatingAiAssistant
-                onClick={() => openChat()}
-                isOpen={isChatOpen}
-                isCartOpen={isCartOpen}
-            />
+            {hasBotAccess && (
+                <FloatingAiAssistant
+                    onClick={() => openChat()}
+                    isOpen={isChatOpen}
+                    isCartOpen={isCartOpen}
+                />
+            )}
 
             <Suspense fallback={null}>
                 <CategoryDrawer
