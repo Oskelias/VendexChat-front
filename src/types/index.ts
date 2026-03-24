@@ -92,3 +92,20 @@ export interface OrderResponse {
   status: string;
   total: number;
 }
+
+export interface Customer {
+  id: string;
+  store_id: string | null;
+  name: string;
+  whatsapp: string;
+  email: string | null;
+  address: string | null;
+  company_name?: string | null;
+  total_orders: number | null;
+  total_spent: number | null;
+  last_order_at: string | null;
+  notes: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+  is_archived: boolean | null;
+}

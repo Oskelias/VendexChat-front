@@ -4,6 +4,10 @@ import { type CartItem } from "../../types";
 import { validateCoupon, createOrder } from "../../api/catalog";
 import { sanitizePhoneNumber } from "../../utils/format";
 
+// Tiendas que requieren selección explícita de tipo de cliente (Particular / Empresa).
+// Agregar nuevos slugs aquí para habilitarlo en más tiendas.
+const CUSTOMER_TYPE_STORES: readonly string[] = ["morfiviandas", "morfilaplata"];
+
 interface CartDrawerProps {
     isOpen: boolean;
     onClose: () => void;
@@ -13,6 +17,7 @@ interface CartDrawerProps {
     onClear: () => void;
     whatsappNumber: string;
     storeId: string;
+    storeSlug?: string;
     couponsEnabled?: boolean;
     deliveryCost?: number;
     metadata?: any;
@@ -27,6 +32,7 @@ export function CartDrawer({
     onClear,
     whatsappNumber,
     storeId,
+    storeSlug = "",
     couponsEnabled = true,
     deliveryCost = 0,
     metadata = {}
@@ -44,7 +50,11 @@ export function CartDrawer({
     const [customerName, setCustomerName] = useState("");
     const [customerWhatsapp, setCustomerWhatsapp] = useState("");
     const [customerCompany, setCustomerCompany] = useState("");
+    // "particular" | "empresa" | "" — only used for stores in CUSTOMER_TYPE_STORES
+    const [customerType, setCustomerType] = useState<"particular" | "empresa" | "">("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const requiresCustomerType = CUSTOMER_TYPE_STORES.includes(storeSlug);
 
     const [couponCode, setCouponCode] = useState("");
     const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
@@ -120,6 +130,17 @@ export function CartDrawer({
         if (!customerName.trim() || !customerWhatsapp.trim()) {
             alert("Por favor, completa tu nombre y WhatsApp.");
             return;
+        }
+
+        if (requiresCustomerType) {
+            if (!customerType) {
+                alert("Por favor, indicá si sos particular o empresa.");
+                return;
+            }
+            if (customerType === "empresa" && !customerCompany.trim()) {
+                alert("Por favor, ingresá el nombre de tu empresa.");
+                return;
+            }
         }
 
         if (deliveryType === "envio") {
@@ -333,7 +354,33 @@ export function CartDrawer({
                             <div className="space-y-2">
                                 <input type="text" placeholder="Tu Nombre (Obligatorio) *" value={customerName} onChange={(e) => setCustomerName(e.target.value)} className={`w-full px-4 py-3 bg-slate-50 border ${!customerName.trim() && isSubmitting ? 'border-red-500' : 'border-0'} rounded-xl text-sm font-bold text-slate-700 outline-none`} />
                                 <input type="tel" placeholder="Tu WhatsApp (Obligatorio) *" value={customerWhatsapp} onChange={(e) => setCustomerWhatsapp(e.target.value)} className={`w-full px-4 py-3 bg-slate-50 border ${!customerWhatsapp.trim() && isSubmitting ? 'border-red-500' : 'border-0'} rounded-xl text-sm font-bold text-slate-700 outline-none`} />
-                                <input type="text" placeholder="Empresa (Opcional)" value={customerCompany} onChange={(e) => setCustomerCompany(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl text-sm font-bold text-slate-700 outline-none" />
+                                {requiresCustomerType ? (
+                                    <>
+                                        <select
+                                            value={customerType}
+                                            onChange={(e) => {
+                                                setCustomerType(e.target.value as "particular" | "empresa" | "");
+                                                if (e.target.value !== "empresa") setCustomerCompany("");
+                                            }}
+                                            className={`w-full px-4 py-3 bg-slate-50 border ${!customerType && isSubmitting ? 'border-red-500' : 'border-0'} rounded-xl text-sm font-bold text-slate-700 outline-none`}
+                                        >
+                                            <option value="">¿Sos particular o empresa? *</option>
+                                            <option value="particular">Particular</option>
+                                            <option value="empresa">Empresa</option>
+                                        </select>
+                                        {customerType === "empresa" && (
+                                            <input
+                                                type="text"
+                                                placeholder="Nombre de empresa *"
+                                                value={customerCompany}
+                                                onChange={(e) => setCustomerCompany(e.target.value)}
+                                                className={`w-full px-4 py-3 bg-slate-50 border ${!customerCompany.trim() && isSubmitting ? 'border-red-500' : 'border-0'} rounded-xl text-sm font-bold text-slate-700 outline-none`}
+                                            />
+                                        )}
+                                    </>
+                                ) : (
+                                    <input type="text" placeholder="Empresa (Opcional)" value={customerCompany} onChange={(e) => setCustomerCompany(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-0 rounded-xl text-sm font-bold text-slate-700 outline-none" />
+                                )}
                             </div>
                             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Entrega y Pago</h3>
                             <div className="space-y-2">
@@ -427,7 +474,17 @@ export function CartDrawer({
                         )}
                         <div className="flex justify-between font-bold text-xs text-slate-500"><span>TOTAL</span><span className="text-lg text-slate-900">${finalTotal.toLocaleString()}</span></div>
                     </div>
-                    <button disabled={items.length === 0 || isSubmitting} onClick={handleSendWhatsApp} className="w-full bg-[#25D366] hover:bg-[#1ebe5d] disabled:bg-slate-300 text-white font-black uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl shadow-green-200">{isSubmitting ? 'Procesando...' : 'Pedir por WhatsApp'}</button>
+                    <button
+                        disabled={
+                            items.length === 0 ||
+                            isSubmitting ||
+                            (requiresCustomerType && customerType === "empresa" && !customerCompany.trim())
+                        }
+                        onClick={handleSendWhatsApp}
+                        className="w-full bg-[#25D366] hover:bg-[#1ebe5d] disabled:bg-slate-300 text-white font-black uppercase tracking-widest py-4 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-xl shadow-green-200"
+                    >
+                        {isSubmitting ? 'Procesando...' : 'Pedir por WhatsApp'}
+                    </button>
                 </div>
             </div>
         </div>

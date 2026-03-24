@@ -382,6 +382,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                     onClear={clearCart}
                     whatsappNumber={data.store.whatsapp || data.store.phone || ""}
                     storeId={data.store.id}
+                    storeSlug={data.store.slug}
                     couponsEnabled={data.store.coupons_enabled}
                     deliveryCost={data.store.delivery_cost || 0}
                     metadata={data.store.metadata}
