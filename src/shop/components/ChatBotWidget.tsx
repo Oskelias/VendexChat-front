@@ -20,6 +20,7 @@ interface ChatBotWidgetProps {
     aiPrompt?: string | null;
     welcomeMessage?: string | null;
     initialMessage?: string | null;
+    storeId?: string;
 }
 
 export function ChatBotWidget({
@@ -32,7 +33,8 @@ export function ChatBotWidget({
     products,
     aiPrompt,
     welcomeMessage,
-    initialMessage
+    initialMessage,
+    storeId
 }: ChatBotWidgetProps) {
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -118,7 +120,7 @@ export function ChatBotWidget({
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: chatHistory, systemPrompt })
+                    body: JSON.stringify({ messages: chatHistory, systemPrompt, storeId })
                 }
             );
 
