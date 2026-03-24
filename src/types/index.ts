@@ -109,3 +109,12 @@ export interface Customer {
   updated_at: string | null;
   is_archived: boolean | null;
 }
+
+export interface QuickResponse {
+  id: string;
+  store_id: string;
+  question: string;
+  answer: string;
+  created_at: string;
+  updated_at: string;
+}
