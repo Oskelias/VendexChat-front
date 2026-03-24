@@ -1,7 +1,9 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Send, X, MessageCircle } from "lucide-react";
 import AssistantIcon from "../../components/icons/AssistantIcon";
 import { sanitizePhoneNumber } from "../../utils/format";
+
+const EDGE_FN = "https://pjrhfbhqdbyoljactdkj.supabase.co/functions/v1/store-ai-chat";
 
 interface Message {
     id: string;
@@ -12,72 +14,40 @@ interface Message {
 interface ChatBotWidgetProps {
     isOpen: boolean;
     onClose: () => void;
-    storeName: string;
-    storeDescription?: string;
-    storeAddress?: string;
     whatsappNumber?: string;
-    products: any[];
-    aiPrompt?: string | null;
-    welcomeMessage?: string | null;
     initialMessage?: string | null;
-    storeId?: string;
+    storeId: string;
 }
 
 export function ChatBotWidget({
     isOpen,
     onClose,
-    storeName,
-    storeDescription,
-    storeAddress,
     whatsappNumber,
-    products,
-    aiPrompt,
-    welcomeMessage,
     initialMessage,
     storeId
 }: ChatBotWidgetProps) {
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: '1',
-            role: "assistant",
-            content: welcomeMessage || `¡Hola! 👋 Bienvenido a ${storeName}. Estoy acá para lo que necesites, preguntame lo que quieras.`
-        }
-    ]);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [botName, setBotName] = useState("Chat de ayuda");
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const hasTriggeredInitial = useRef(false);
+    const hasFetchedConfig = useRef(false);
 
-    const systemPrompt = useMemo(() => {
-        const productList = products.map(p => {
-            const stockStatus = p.unlimited_stock
-                ? 'disponible'
-                : p.stock > 0
-                    ? `disponible (stock: ${p.stock})`
-                    : 'SIN STOCK / agotado';
-            return `- ${p.name}: $${p.price} | ${stockStatus}`;
-        }).join('\n');
-        return aiPrompt || `Sos un asistente copado y cercano de "${storeName}". Hablás como una persona real, no como un robot.
-            Datos de la tienda — Descripción: ${storeDescription || 'Tienda online'}. Ubicación: ${storeAddress || 'Consultar por WhatsApp'}.
-
-            Tu personalidad: sos amable, relajado y servicial. Hablás como un empleado joven que conoce bien el negocio. Usás lenguaje natural y coloquial (español rioplatense). Podés usar expresiones como "dale", "genial", "buenísimo", "mirá", "fijate que...".
-
-            Qué podés hacer: informar sobre precios, horarios, disponibilidad, promos y descuentos. Si preguntan por un producto, dale el precio y si hay stock. Si quieren ver todo el menú o detalles de ingredientes, deciles que lo encuentran en la tienda web.
-
-            REGLAS CLAVE:
-            1. NO gestionés la venta: nunca digas "te lo agrego al carrito" ni cierres pedidos. El cliente elige y agrega productos desde la tienda.
-            2. Si quieren comprar, explicales el proceso de forma simple: "Buscalo en la tienda, lo agregás al carrito y listo".
-            3. Podés sugerir 2-3 productos si preguntan qué hay, pero no listes todo el catálogo.
-            4. Para detalles de ingredientes, mandalo a la ficha del producto en la web.
-            5. Respondé en español, de forma concisa y natural. Máximo 2-3 oraciones por mensaje.
-            6. NO te volvás a presentar si ya estás hablando con el cliente. Seguí el hilo de la conversación.
-            7. Usá máximo 1 emoji por mensaje, y solo cuando sea natural (no forzado).
-            8. Variá tus respuestas, no uses siempre las mismas frases. Soná genuino.
-            9. Si no sabés algo, decilo con honestidad: "Eso no lo tengo acá, pero podés consultarlo por WhatsApp".
-
-            Catálogo actual (para consultas de precio y stock):
-            ${productList}`;
-    }, [products, aiPrompt, storeName, storeDescription, storeAddress]);
+    useEffect(() => {
+        if (!storeId || hasFetchedConfig.current) return;
+        hasFetchedConfig.current = true;
+        fetch(`${EDGE_FN}?storeId=${storeId}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (data?.botName) setBotName(data.botName);
+                const greeting = data?.greeting || "¡Hola! 👋 ¿En qué te puedo ayudar?";
+                setMessages([{ id: '1', role: "assistant", content: greeting }]);
+            })
+            .catch(() => {
+                setMessages([{ id: '1', role: "assistant", content: "¡Hola! 👋 ¿En qué te puedo ayudar?" }]);
+            });
+    }, [storeId]);
 
     useEffect(() => {
         if (isOpen && initialMessage && !hasTriggeredInitial.current) {
@@ -115,14 +85,11 @@ export function ChatBotWidget({
             const chatHistory = messages.filter(m => m.id !== '1').map(m => ({ role: m.role, content: m.content }));
             chatHistory.push({ role: "user", content: textToSend.trim() });
 
-            const response = await fetch(
-                `https://pjrhfbhqdbyoljactdkj.supabase.co/functions/v1/store-ai-chat`,
-                {
+            const response = await fetch(EDGE_FN, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: chatHistory, systemPrompt, storeId })
-                }
-            );
+                    body: JSON.stringify({ messages: chatHistory, storeId })
+                });
 
             if (!response.ok) throw new Error("Error en la respuesta de la IA");
 
@@ -159,7 +126,7 @@ export function ChatBotWidget({
                         <AssistantIcon className="w-6 h-6" />
                     </div>
                     <div>
-                        <h3 className="font-black text-sm uppercase tracking-tight">Chat de ayuda</h3>
+                        <h3 className="font-black text-sm uppercase tracking-tight">{botName}</h3>
                         <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest">Conectado</p>
                     </div>
                 </div>

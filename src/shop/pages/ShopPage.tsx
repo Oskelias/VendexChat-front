@@ -423,13 +423,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                     <ChatBotWidget
                         isOpen={isChatOpen}
                         onClose={() => setIsChatOpen(false)}
-                        storeName={data.store.name}
-                        storeDescription={data.store.description || undefined}
-                        storeAddress={data.store.address || undefined}
                         whatsappNumber={data.store.whatsapp || data.store.phone || ""}
-                        products={data.categories.flatMap(c => c.products || [])}
-                        aiPrompt={data.store.metadata?.ai_prompt || data.store.ai_prompt}
-                        welcomeMessage={data.store.welcome_message}
                         initialMessage={chatInitialMessage}
                         storeId={data.store.id}
                     />
