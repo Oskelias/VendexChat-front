@@ -1,15 +1,17 @@
 import { memo } from "react";
 import { Plus, Minus } from "lucide-react";
 import type { Product } from "../../types";
+import { formatPrice } from "../../utils/format";
 
 interface ProductCardProps {
     product: Product;
     quantity: number;
     onAdd: (p: Product) => void;
     onUpdate: (id: string, q: number) => void;
+    currency?: string;
 }
 
-export const ProductCard = memo(function ProductCard({ product, quantity, onAdd, onUpdate }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product, quantity, onAdd, onUpdate, currency = 'ARS' }: ProductCardProps) {
     const hasOffer = product.offer_price !== null;
     const isOutOfStock = !product.unlimited_stock && product.stock <= 0;
 
@@ -52,7 +54,7 @@ export const ProductCard = memo(function ProductCard({ product, quantity, onAdd,
                 <div className="space-y-2 mt-auto">
                     <div className="flex flex-col">
                         <span className="text-xs md:text-base font-black text-primary-dynamic tracking-tighter">
-                            ${hasOffer ? product.offer_price : product.price}
+                            {formatPrice(hasOffer ? product.offer_price! : product.price, currency)}
                         </span>
                     </div>
 

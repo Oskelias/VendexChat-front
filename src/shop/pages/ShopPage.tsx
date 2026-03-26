@@ -248,6 +248,8 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
         );
     }
 
+    const currency: string = data.store.metadata?.currency ?? 'ARS';
+
     return (
         <div className="min-h-screen bg-white pb-24">
             <GlobalAnnouncement announcement={data.announcement} />
@@ -303,6 +305,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                         categories={data.categories}
                         primaryColor={data.store.primary_color}
                         onItemClick={setQuickViewProduct}
+                        currency={currency}
                     />
                 ) : filteredCategories.length === 0 ? (
                     <div className="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-100">
@@ -334,6 +337,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                                                 quantity={getItemQuantity(p.id)}
                                                 onAdd={(prod) => addItem(prod)}
                                                 onUpdate={updateQuantity}
+                                                currency={currency}
                                             />
                                         </div>
                                     ))}
@@ -388,6 +392,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                 totalItems={totalItems}
                 totalPrice={totalPrice}
                 onClick={() => setIsCartOpen(true)}
+                currency={currency}
             />
 
             <Suspense fallback={null}>
@@ -415,6 +420,7 @@ export default function ShopPage({ isDemo }: { isDemo?: boolean }) {
                 onAdd={addItem}
                 onUpdate={updateQuantity}
                 onAskAI={(p) => openChat(`Hola 👋, me gustaría saber más sobre el producto: **${p.name}**`)}
+                currency={currency}
             />
 
 

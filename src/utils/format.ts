@@ -1,8 +1,24 @@
-export function formatPrice(price: number): string {
-  return new Intl.NumberFormat("es-MX", {
-    style: "currency",
-    currency: "MXN",
-  }).format(price);
+const CURRENCY_LOCALE_MAP: Record<string, string> = {
+  ARS: 'es-AR',
+  UYU: 'es-UY',
+  CLP: 'es-CL',
+  MXN: 'es-MX',
+  EUR: 'es-ES',
+  COP: 'es-CO',
+  PEN: 'es-PE',
+  PYG: 'es-PY',
+  BOB: 'es-BO',
+  USD: 'en-US',
+}
+
+export function formatPrice(price: number, currency = 'ARS'): string {
+  const locale = CURRENCY_LOCALE_MAP[currency] ?? 'es-AR'
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(price)
 }
 
 export function getSocialLink(handle: string, platform: 'instagram' | 'facebook'): string {

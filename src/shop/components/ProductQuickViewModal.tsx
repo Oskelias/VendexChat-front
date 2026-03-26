@@ -1,6 +1,7 @@
 import { X, Plus, Minus } from "lucide-react";
 import AssistantIcon from "../../components/icons/AssistantIcon";
 import type { Product } from "../../types";
+import { formatPrice } from "../../utils/format";
 
 interface QuickViewModalProps {
     product: Product | null;
@@ -10,6 +11,7 @@ interface QuickViewModalProps {
     onAdd: (p: Product) => void;
     onUpdate: (id: string | number, delta: number) => void;
     onAskAI?: (p: Product) => void;
+    currency?: string;
 }
 
 export function ProductQuickViewModal({
@@ -20,6 +22,7 @@ export function ProductQuickViewModal({
     onAdd,
     onUpdate,
     onAskAI,
+    currency = 'ARS',
 }: QuickViewModalProps) {
     if (!isOpen || !product) return null;
 
@@ -46,7 +49,7 @@ export function ProductQuickViewModal({
                     <div className="md:w-2/5 lg:w-1/3 p-6 flex flex-col">
                         <div className="flex-1">
                             <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-2 leading-tight break-words">{product.name}</h2>
-                            <div className="text-2xl font-bold text-primary-dynamic mb-4">${product.price.toLocaleString()}</div>
+                            <div className="text-2xl font-bold text-primary-dynamic mb-4">{formatPrice(product.price, currency)}</div>
 
                             <p className="text-slate-600 text-sm leading-relaxed mb-4">
                                 {product.description || "Sin descripción disponible."}

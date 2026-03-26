@@ -2,11 +2,13 @@ import { useState, useMemo } from 'react'
 import { Plus, Minus, Calendar, Info, CheckCircle2 } from 'lucide-react'
 import type { Product, Category } from '../../types'
 import { useCartState } from '../state/useCartStore'
+import { formatPrice } from '../../utils/format'
 
 interface WeeklyMenuGridProps {
     categories: Category[]
     primaryColor: string
     onItemClick?: (product: Product) => void
+    currency?: string
 }
 
 const DAYS = [
@@ -17,7 +19,7 @@ const DAYS = [
     { id: 'Viernes', label: 'Viernes' },
 ]
 
-export function WeeklyMenuGrid({ categories, primaryColor }: WeeklyMenuGridProps) {
+export function WeeklyMenuGrid({ categories, primaryColor, currency = 'ARS' }: WeeklyMenuGridProps) {
     const { addItem, updateQuantity, getItemQuantity } = useCartState()
     const [activeDay, setActiveDay] = useState(DAYS[0].id)
 
@@ -93,7 +95,7 @@ export function WeeklyMenuGrid({ categories, primaryColor }: WeeklyMenuGridProps
 
                                         <div className="flex-1 min-w-0">
                                             <h3 className="text-xs font-black text-slate-900 truncate uppercase mt-1">{p.name}</h3>
-                                            <p className="text-xs font-black text-slate-400 mt-0.5">${p.price.toLocaleString()}</p>
+                                            <p className="text-xs font-black text-slate-400 mt-0.5">{formatPrice(p.price, currency)}</p>
                                         </div>
 
                                         <div className="flex items-center gap-3 bg-slate-50 p-1.5 rounded-2xl">

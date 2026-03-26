@@ -1,14 +1,16 @@
 import { Plus, Minus } from "lucide-react";
 import type { Product } from "../../types";
+import { formatPrice } from "../../utils/format";
 
 interface ProductRowProps {
     product: Product;
     quantity: number;
     onAdd: (p: Product) => void;
     onUpdate: (id: string | number, quantity: number) => void;
+    currency?: string;
 }
 
-export function ProductRow({ product, quantity, onAdd, onUpdate }: ProductRowProps) {
+export function ProductRow({ product, quantity, onAdd, onUpdate, currency = 'ARS' }: ProductRowProps) {
     return (
         <div className="bg-white p-3 rounded-2xl border border-slate-100 flex items-center gap-4 hover:border-primary-dynamic transition-colors">
             <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-50 shrink-0">
@@ -22,7 +24,7 @@ export function ProductRow({ product, quantity, onAdd, onUpdate }: ProductRowPro
             <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-slate-900 leading-tight truncate">{product.name}</h3>
                 <p className="text-xs text-slate-500 line-clamp-2 mb-1">{product.description}</p>
-                <div className="font-bold text-primary-dynamic">${product.price.toLocaleString()}</div>
+                <div className="font-bold text-primary-dynamic">{formatPrice(product.price, currency)}</div>
             </div>
 
             <div className="shrink-0">
