@@ -160,6 +160,9 @@ export function CartDrawer({
             return;
         }
         setIsSubmitting(true);
+        // Open the window synchronously (inside the user gesture) to avoid popup blockers.
+        // We'll navigate it to the real URL once the message is ready.
+        const waWindow = window.open('', '_blank');
         try {
             // Try to save order to database, but don't block WhatsApp if it fails
             let dbSaveOk = true;
@@ -244,8 +247,10 @@ export function CartDrawer({
             setShowSuccess(true);
             onClear();
 
-            window.open(url, '_blank');
+            if (waWindow) waWindow.location.href = url;
+            else window.open(url, '_blank');
         } catch (err: any) {
+            if (waWindow) waWindow.close();
             console.error("Error al crear pedido:", err);
             alert("Error al procesar pedido: " + (err.message || "Error desconocido"));
         } finally {
