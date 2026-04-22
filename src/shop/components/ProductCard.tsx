@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Plus, Minus } from "lucide-react";
 import type { Product } from "../../types";
+import { getProductImageUrl } from "../../utils/imageUrl";
 
 interface ProductCardProps {
     product: Product;
@@ -19,11 +20,13 @@ export const ProductCard = memo(function ProductCard({ product, quantity, onAdd,
             <div className="relative w-24 md:w-32 h-full flex-shrink-0 bg-slate-50 overflow-hidden">
                 {product.image_url ? (
                     <img
-                        src={product.image_url}
+                        src={getProductImageUrl(product.image_url, 256)}
                         alt={product.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                         decoding="async"
+                        width={256}
+                        height={256}
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-200 font-black text-xl md:text-2xl uppercase">

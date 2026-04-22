@@ -1,6 +1,7 @@
 import type { Product } from "../../types";
 import { useCart } from "../../context/CartContext";
 import { formatPrice } from "../../utils/format";
+import { getProductImageUrl } from "../../utils/imageUrl";
 import "./ProductCard.css";
 
 interface Props {
@@ -20,9 +21,12 @@ export function ProductCard({ product }: Props) {
         {product.image_url ? (
           <img
             className="product-card__image"
-            src={product.image_url}
+            src={getProductImageUrl(product.image_url, 256)}
             alt={product.name}
             loading="lazy"
+            decoding="async"
+            width={256}
+            height={256}
           />
         ) : (
           <div className="product-card__placeholder">
