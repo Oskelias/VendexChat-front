@@ -3,6 +3,7 @@ import { X, Plus, Minus, Trash2, CheckCircle2 } from "lucide-react";
 import { type CartItem } from "../../types";
 import { validateCoupon, createOrder } from "../../api/catalog";
 import { sanitizePhoneNumber } from "../../utils/format";
+import { getProductImageUrl } from "../../utils/imageUrl";
 
 // Tiendas que requieren selección explícita de tipo de cliente (Particular / Empresa).
 // Agregar nuevos slugs aquí para habilitarlo en más tiendas.
@@ -322,7 +323,7 @@ export function CartDrawer({
                                     {dayItems.map((item) => (
                                         <div key={`${item.product.id}-${item.delivery_day}`} className={`flex gap-4 items-center p-3 bg-white border rounded-2xl shadow-sm ${isItemEligible(item) ? 'border-emerald-400 ring-1 ring-emerald-200' : 'border-slate-100'}`}>
                                             <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 shrink-0">
-                                                {item.product.image_url && <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover" />}
+                                                {item.product.image_url && <img src={getProductImageUrl(item.product.image_url, 128)} alt={item.product.name} className="w-full h-full object-cover" loading="lazy" decoding="async" width={128} height={128} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-1.5">

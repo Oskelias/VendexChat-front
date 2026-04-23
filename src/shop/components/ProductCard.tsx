@@ -1,6 +1,7 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import type { Product } from "../../types";
+import { getProductImageUrl } from "../../utils/imageUrl";
 
 interface ProductCardProps {
     product: Product;
@@ -12,18 +13,22 @@ interface ProductCardProps {
 export const ProductCard = memo(function ProductCard({ product, quantity, onAdd, onUpdate }: ProductCardProps) {
     const hasOffer = product.offer_price !== null;
     const isOutOfStock = !product.unlimited_stock && product.stock <= 0;
+    const [imgError, setImgError] = useState(false);
 
     return (
         <div className={`group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex h-28 md:h-32 ${isOutOfStock ? 'opacity-75 grayscale-[0.5]' : ''}`}>
             {/* Image Thumbnail */}
             <div className="relative w-24 md:w-32 h-full flex-shrink-0 bg-slate-50 overflow-hidden">
-                {product.image_url ? (
+                {product.image_url && !imgError ? (
                     <img
-                        src={product.image_url}
+                        src={getProductImageUrl(product.image_url, 256)}
                         alt={product.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                         decoding="async"
+                        width={256}
+                        height={256}
+                        onError={() => setImgError(true)}
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-200 font-black text-xl md:text-2xl uppercase">
