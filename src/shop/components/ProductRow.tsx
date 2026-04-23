@@ -12,12 +12,13 @@ interface ProductRowProps {
 
 export function ProductRow({ product, quantity, onAdd, onUpdate }: ProductRowProps) {
     const [imgError, setImgError] = useState(false);
+    const [imgLoaded, setImgLoaded] = useState(false);
 
     return (
         <div className="bg-white p-3 rounded-2xl border border-slate-100 flex items-center gap-4 hover:border-primary-dynamic transition-colors">
             <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-50 shrink-0">
                 {product.image_url && !imgError ? (
-                    <img src={getProductImageUrl(product.image_url, 160)} alt={product.name} className="w-full h-full object-cover" loading="lazy" decoding="async" width={160} height={160} onError={() => setImgError(true)} />
+                    <img src={getProductImageUrl(product.image_url, 160)} alt={product.name} className={`w-full h-full object-cover transition-opacity duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`} loading="lazy" decoding="async" width={160} height={160} onLoad={() => setImgLoaded(true)} onError={() => setImgError(true)} />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-300 font-black text-xl uppercase">{product.name.charAt(0)}</div>
                 )}

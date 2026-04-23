@@ -14,6 +14,7 @@ export function ProductCard({ product }: Props) {
   const cartItem = items.find((i) => i.product.id === product.id);
   const quantity = cartItem?.quantity ?? 0;
   const [imgError, setImgError] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const hasOffer = product.offer_price != null && product.offer_price < product.price;
 
@@ -29,6 +30,8 @@ export function ProductCard({ product }: Props) {
             decoding="async"
             width={256}
             height={256}
+            style={{ opacity: imgLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }}
+            onLoad={() => setImgLoaded(true)}
             onError={() => setImgError(true)}
           />
         ) : (

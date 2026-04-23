@@ -14,6 +14,7 @@ export const ProductCard = memo(function ProductCard({ product, quantity, onAdd,
     const hasOffer = product.offer_price !== null;
     const isOutOfStock = !product.unlimited_stock && product.stock <= 0;
     const [imgError, setImgError] = useState(false);
+    const [imgLoaded, setImgLoaded] = useState(false);
 
     return (
         <div className={`group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 flex h-28 md:h-32 ${isOutOfStock ? 'opacity-75 grayscale-[0.5]' : ''}`}>
@@ -23,11 +24,12 @@ export const ProductCard = memo(function ProductCard({ product, quantity, onAdd,
                     <img
                         src={getProductImageUrl(product.image_url, 256)}
                         alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
                         loading="lazy"
                         decoding="async"
                         width={256}
                         height={256}
+                        onLoad={() => setImgLoaded(true)}
                         onError={() => setImgError(true)}
                     />
                 ) : (
