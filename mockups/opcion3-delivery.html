@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opción 3 — App de Delivery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Top bar -->
+  <header class="bg-white sticky top-0 z-50 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+      <!-- Location -->
+      <button class="flex items-center gap-1.5 text-left min-w-0">
+        <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        <div class="min-w-0">
+          <p class="text-[10px] text-gray-400 font-medium leading-none">Enviando a</p>
+          <p class="text-sm font-black text-gray-900 truncate leading-tight">Av. Corrientes 1234</p>
+        </div>
+        <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+
+      <div class="flex-1">
+        <div class="flex items-center bg-gray-100 rounded-2xl px-4 py-2.5 gap-2">
+          <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <span class="text-sm text-gray-400">Buscar en Don Felipe…</span>
+        </div>
+      </div>
+
+      <button class="relative flex-shrink-0">
+        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        <span class="absolute -top-1.5 -right-1.5 bg-emerald-500 text-white text-[10px] font-black w-4.5 h-4.5 min-w-[18px] min-h-[18px] rounded-full flex items-center justify-center px-1">3</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <div class="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-500 to-cyan-400">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-4 right-4 w-32 h-32 rounded-full bg-white"></div>
+      <div class="absolute bottom-0 left-20 w-48 h-48 rounded-full bg-white"></div>
+    </div>
+    <div class="relative max-w-5xl mx-auto px-4 py-8 flex items-center justify-between">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center text-xl">🛒</div>
+          <div>
+            <h1 class="text-white font-black text-xl leading-none">Don Felipe</h1>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-300 animate-pulse"></span>
+              <span class="text-emerald-100 text-[11px] font-medium">Abierto ahora · 20–40 min</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-white/80 text-sm max-w-xs leading-relaxed">
+          Envío gratis en pedidos mayores a $5.000
+        </p>
+        <div class="flex items-center gap-2 mt-3">
+          <span class="bg-white/20 backdrop-blur text-white text-xs font-semibold px-3 py-1 rounded-full">⭐ 4.8</span>
+          <span class="bg-white/20 backdrop-blur text-white text-xs font-semibold px-3 py-1 rounded-full">🚚 Envío gratis</span>
+          <span class="bg-white/20 backdrop-blur text-white text-xs font-semibold px-3 py-1 rounded-full">🕐 20–40 min</span>
+        </div>
+      </div>
+      <div class="hidden md:block">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=160&h=160&fit=crop" class="w-32 h-32 rounded-2xl object-cover shadow-2xl border-4 border-white/30" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Icons strip -->
+  <div class="bg-white border-b border-gray-100">
+    <div class="max-w-5xl mx-auto px-4 py-4">
+      <div class="flex gap-3 overflow-x-auto no-scrollbar">
+        <button class="flex-shrink-0 flex flex-col items-center gap-1.5">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-50 border-2 border-emerald-400 flex items-center justify-center text-2xl">🛍️</div>
+          <span class="text-[10px] font-bold text-emerald-600">Todo</span>
+        </button>
+        <button class="flex-shrink-0 flex flex-col items-center gap-1.5">
+          <div class="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-2xl">🥛</div>
+          <span class="text-[10px] font-medium text-gray-500">Lácteos</span>
+        </button>
+        <button class="flex-shrink-0 flex flex-col items-center gap-1.5">
+          <div class="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-2xl">🥤</div>
+          <span class="text-[10px] font-medium text-gray-500">Bebidas</span>
+        </button>
+        <button class="flex-shrink-0 flex flex-col items-center gap-1.5">
+          <div class="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-2xl">🍞</div>
+          <span class="text-[10px] font-medium text-gray-500">Panificados</span>
+        </button>
+        <button class="flex-shrink-0 flex flex-col items-center gap-1.5">
+          <div class="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-2xl">🥩</div>
+          <span class="text-[10px] font-medium text-gray-500">Carnes</span>
+        </button>
+        <button class="flex-shrink-0 flex flex-col items-center gap-1.5">
+          <div class="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-2xl">🥦</div>
+          <span class="text-[10px] font-medium text-gray-500">Verduras</span>
+        </button>
+        <button class="flex-shrink-0 flex flex-col items-center gap-1.5">
+          <div class="w-14 h-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-2xl">🧴</div>
+          <span class="text-[10px] font-medium text-gray-500">Limpieza</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <main class="max-w-5xl mx-auto px-4 py-6 space-y-8 pb-24">
+
+    <!-- Promo banner -->
+    <div class="bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl p-4 flex items-center justify-between overflow-hidden relative">
+      <div class="absolute right-0 top-0 bottom-0 w-32 opacity-20">
+        <div class="w-32 h-32 rounded-full bg-white -translate-y-8 translate-x-8"></div>
+      </div>
+      <div>
+        <p class="text-white font-black text-lg leading-tight">2x1 en Lácteos</p>
+        <p class="text-white/80 text-xs font-medium mt-0.5">Solo hoy · Válido hasta las 22hs</p>
+      </div>
+      <button class="bg-white text-orange-500 text-xs font-black px-4 py-2 rounded-xl flex-shrink-0">Ver oferta</button>
+    </div>
+
+    <!-- Section: Lácteos -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-base font-black text-gray-900">🥛 Lácteos</h2>
+        <button class="text-xs font-bold text-emerald-600 hover:text-emerald-700">Ver todos →</button>
+      </div>
+      <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+
+        <div class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
+          <div class="relative h-36 bg-gray-50 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1613919113640-25732ec5e61f?w=200&h=200&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            <span class="absolute top-2 left-2 bg-amber-400 text-white text-[9px] font-black px-2 py-0.5 rounded-full">−15%</span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs font-bold text-gray-900 leading-tight">Leche Entera La Serenísima 1L</h3>
+            <div class="flex items-center gap-1 mt-1.5">
+              <span class="text-[10px] text-gray-400 line-through">$1.200</span>
+              <span class="text-sm font-black text-emerald-600">$1.020</span>
+            </div>
+            <button class="mt-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 rounded-xl transition-colors">+ Agregar</button>
+          </div>
+        </div>
+
+        <div class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
+          <div class="relative h-36 bg-gray-50 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=200&h=200&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs font-bold text-gray-900 leading-tight">Queso Cremoso Milkaut x400g</h3>
+            <div class="mt-1.5">
+              <span class="text-sm font-black text-emerald-600">$3.200</span>
+            </div>
+            <div class="mt-2 flex items-center justify-between bg-gray-100 rounded-xl px-2 py-1">
+              <button class="text-gray-500 font-black text-base">−</button>
+              <span class="text-xs font-black">2</span>
+              <button class="text-emerald-600 font-black text-base">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-md transition-shadow opacity-60">
+          <div class="relative h-36 bg-gray-100 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1625938144755-652e08e359b7?w=200&h=200&fit=crop" class="w-full h-full object-cover grayscale" />
+            <div class="absolute inset-0 flex items-center justify-center bg-black/40">
+              <span class="bg-white/90 text-gray-800 text-[10px] font-bold px-2 py-1 rounded-lg">Sin stock</span>
+            </div>
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs font-bold text-gray-500 leading-tight">Yogur Entero Danone x190g</h3>
+            <div class="mt-1.5">
+              <span class="text-sm font-black text-gray-400">$620</span>
+            </div>
+            <button disabled class="mt-2 w-full bg-gray-100 text-gray-400 text-xs font-bold py-1.5 rounded-xl cursor-not-allowed">Sin stock</button>
+          </div>
+        </div>
+
+        <div class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
+          <div class="relative h-36 bg-gray-50 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=200&h=200&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs font-bold text-gray-900 leading-tight">Crema de Leche Sancor 200ml</h3>
+            <div class="mt-1.5">
+              <span class="text-sm font-black text-emerald-600">$980</span>
+            </div>
+            <button class="mt-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 rounded-xl transition-colors">+ Agregar</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: Bebidas -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-base font-black text-gray-900">🥤 Bebidas</h2>
+        <button class="text-xs font-bold text-emerald-600 hover:text-emerald-700">Ver todas →</button>
+      </div>
+      <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+
+        <div class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
+          <div class="relative h-36 bg-gray-50 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            <span class="absolute top-2 left-2 bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full">OFERTA</span>
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs font-bold text-gray-900 leading-tight">Coca Cola Original 2.25L</h3>
+            <div class="flex items-center gap-1 mt-1.5">
+              <span class="text-[10px] text-gray-400 line-through">$2.100</span>
+              <span class="text-sm font-black text-emerald-600">$1.890</span>
+            </div>
+            <button class="mt-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 rounded-xl transition-colors">+ Agregar</button>
+          </div>
+        </div>
+
+        <div class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
+          <div class="relative h-36 bg-gray-50 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1571950006418-18f338c6de40?w=200&h=200&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs font-bold text-gray-900 leading-tight">Agua Villavicencio sin gas 1.5L</h3>
+            <div class="mt-1.5">
+              <span class="text-sm font-black text-emerald-600">$650</span>
+            </div>
+            <button class="mt-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 rounded-xl transition-colors">+ Agregar</button>
+          </div>
+        </div>
+
+        <div class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
+          <div class="relative h-36 bg-gray-50 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=200&h=200&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs font-bold text-gray-900 leading-tight">Fernet Branca 750ml</h3>
+            <div class="mt-1.5">
+              <span class="text-sm font-black text-emerald-600">$8.500</span>
+            </div>
+            <button class="mt-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 rounded-xl transition-colors">+ Agregar</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: Panificados -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-base font-black text-gray-900">🍞 Panificados</h2>
+        <button class="text-xs font-bold text-emerald-600 hover:text-emerald-700">Ver todos →</button>
+      </div>
+      <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+
+        <div class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
+          <div class="relative h-36 bg-gray-50 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200&h=200&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs font-bold text-gray-900 leading-tight">Pan de Mesa Bimbo x680g</h3>
+            <div class="mt-1.5">
+              <span class="text-sm font-black text-emerald-600">$890</span>
+            </div>
+            <div class="mt-2 flex items-center justify-between bg-gray-100 rounded-xl px-2 py-1">
+              <button class="text-gray-500 font-black text-base">−</button>
+              <span class="text-xs font-black">1</span>
+              <button class="text-emerald-600 font-black text-base">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-shrink-0 w-44 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-md transition-shadow">
+          <div class="relative h-36 bg-gray-50 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&h=200&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="p-3">
+            <h3 class="text-xs font-bold text-gray-900 leading-tight">Medialunas Cosco x6 unidades</h3>
+            <div class="mt-1.5">
+              <span class="text-sm font-black text-emerald-600">$1.200</span>
+            </div>
+            <button class="mt-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 rounded-xl transition-colors">+ Agregar</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Cart bar floating -->
+  <div class="fixed bottom-0 left-0 right-0 px-4 pb-4 pointer-events-none">
+    <div class="pointer-events-auto">
+      <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl shadow-xl flex items-center justify-between px-5 font-bold transition-colors">
+        <div class="bg-white/20 rounded-xl px-2 py-1 text-sm font-black">3</div>
+        <span class="font-black">Ver carrito</span>
+        <span class="font-black">$3.800</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Label -->
+  <div class="fixed top-3 right-3 bg-gray-900 text-white text-xs font-bold px-3 py-1.5 rounded-full opacity-80">
+    Opción 3 — App Delivery
+  </div>
+
+</body>
+</html>
