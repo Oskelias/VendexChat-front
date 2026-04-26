@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import type { Product } from "../../types";
 import { getProductImageUrl } from "../../utils/imageUrl";
+import { formatPrice } from "../../utils/format";
 
 interface ProductRowProps {
     product: Product;
@@ -27,7 +28,7 @@ export function ProductRow({ product, quantity, onAdd, onUpdate }: ProductRowPro
             <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-slate-900 leading-tight truncate">{product.name}</h3>
                 <p className="text-xs text-slate-500 line-clamp-2 mb-1">{product.description}</p>
-                <div className="font-bold text-primary-dynamic">${product.price.toLocaleString()}</div>
+                <div className="font-bold text-primary-dynamic">{formatPrice(product.price)}</div>
             </div>
 
             <div className="shrink-0">

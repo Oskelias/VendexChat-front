@@ -2,6 +2,7 @@ import { memo, useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import type { Product } from "../../types";
 import { getProductImageUrl } from "../../utils/imageUrl";
+import { formatPrice } from "../../utils/format";
 
 interface ProductCardProps {
     product: Product;
@@ -59,7 +60,7 @@ export const ProductCard = memo(function ProductCard({ product, quantity, onAdd,
                 <div className="space-y-2 mt-auto">
                     <div className="flex flex-col">
                         <span className="text-xs md:text-base font-black text-primary-dynamic tracking-tighter">
-                            ${hasOffer ? product.offer_price : product.price}
+                            {formatPrice(hasOffer ? product.offer_price! : product.price)}
                         </span>
                     </div>
 

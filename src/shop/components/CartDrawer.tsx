@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X, Plus, Minus, Trash2, CheckCircle2 } from "lucide-react";
 import { type CartItem } from "../../types";
 import { validateCoupon, createOrder } from "../../api/catalog";
-import { sanitizePhoneNumber } from "../../utils/format";
+import { sanitizePhoneNumber, formatPrice } from "../../utils/format";
 import { getProductImageUrl } from "../../utils/imageUrl";
 
 // Tiendas que requieren selección explícita de tipo de cliente (Particular / Empresa).
@@ -73,7 +73,7 @@ export function CartDrawer({
         try {
             const coupon = await validateCoupon(couponCode, storeId);
             if (totalPrice < coupon.min_purchase_amount) {
-                throw new Error(`Este cupón requiere una compra mínima de $${coupon.min_purchase_amount.toLocaleString()}`);
+                throw new Error(`Este cupón requiere una compra mínima de ${formatPrice(coupon.min_purchase_amount)}`);
             }
             setAppliedCoupon(coupon);
             setCouponCode("");
@@ -205,20 +205,20 @@ export function CartDrawer({
             Object.entries(grouped).forEach(([day, dayItems]) => {
                 if (day !== 'Pedido General') message += `\n*ENTREGA: ${day.toUpperCase()}*\n`;
                 dayItems.forEach(i => {
-                    message += `- ${i.quantity}x ${i.product.name} — $${(i.product.price * i.quantity).toLocaleString()}\n`;
+                    message += `- ${i.quantity}x ${i.product.name} — ${formatPrice(i.product.price * i.quantity)}\n`;
                 });
             });
 
             if (appliedCoupon) {
-                message += `\nSubtotal: $${totalPrice.toLocaleString()}\n` +
-                    `Cupón: ${appliedCoupon.code} (-$${discount.toLocaleString()})\n`;
+                message += `\nSubtotal: ${formatPrice(totalPrice)}\n` +
+                    `Cupón: ${appliedCoupon.code} (-${formatPrice(discount)})\n`;
             }
 
             if (!dbSaveOk) {
                 message += `\n⚠️ *AVISO: El pedido no se sincronizó con el panel. Usar estos detalles para procesar.*\n`;
             }
 
-            message += `\n*TOTAL: $${finalTotal.toLocaleString()}*\n` +
+            message += `\n*TOTAL: ${formatPrice(finalTotal)}*\n` +
                 `------------------\n\n` +
                 `*DETALLES DEL CLIENTE*\n` +
                 `- Nombre: ${customerName}\n` +
@@ -332,7 +332,7 @@ export function CartDrawer({
                                                         <span className="shrink-0 text-[9px] font-black uppercase bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">Promo</span>
                                                     )}
                                                 </div>
-                                                <p className="text-slate-400 font-bold text-[10px]">${item.product.price.toLocaleString()}</p>
+                                                <p className="text-slate-400 font-bold text-[10px]">{formatPrice(item.product.price)}</p>
                                             </div>
                                             <div className="flex items-center gap-2 bg-slate-50 rounded-xl p-1">
                                                 <button onClick={() => onUpdateQuantity(item.product.id, -1, item.delivery_day)} className="w-6 h-6 flex items-center justify-center rounded-lg bg-white shadow-sm text-slate-400">
@@ -447,7 +447,7 @@ export function CartDrawer({
                                     <div>
                                         <span className="text-[10px] font-black uppercase tracking-widest">{appliedCoupon.code} APLICADO</span>
                                         {discount > 0 && (
-                                            <span className="ml-2 text-[10px] font-bold text-emerald-300">-${discount.toLocaleString()}</span>
+                                            <span className="ml-2 text-[10px] font-bold text-emerald-300">-{formatPrice(discount)}</span>
                                         )}
                                     </div>
                                     <button onClick={() => setAppliedCoupon(null)} className="text-[10px] font-black uppercase">X</button>
@@ -464,16 +464,16 @@ export function CartDrawer({
                     <div className="space-y-1">
                         {(discount > 0 || currentShipping > 0) && (
                             <>
-                                <div className="flex justify-between font-bold text-xs text-slate-400"><span>SUBTOTAL</span><span>${totalPrice.toLocaleString()}</span></div>
+                                <div className="flex justify-between font-bold text-xs text-slate-400"><span>SUBTOTAL</span><span>{formatPrice(totalPrice)}</span></div>
                                 {discount > 0 && (
-                                    <div className="flex justify-between font-bold text-xs text-emerald-600"><span>DESCUENTO ({appliedCoupon.code})</span><span>-${discount.toLocaleString()}</span></div>
+                                    <div className="flex justify-between font-bold text-xs text-emerald-600"><span>DESCUENTO ({appliedCoupon.code})</span><span>-{formatPrice(discount)}</span></div>
                                 )}
                                 {currentShipping > 0 && (
-                                    <div className="flex justify-between font-bold text-xs text-slate-400"><span>ENVÍO</span><span>+${currentShipping.toLocaleString()}</span></div>
+                                    <div className="flex justify-between font-bold text-xs text-slate-400"><span>ENVÍO</span><span>+{formatPrice(currentShipping)}</span></div>
                                 )}
                             </>
                         )}
-                        <div className="flex justify-between font-bold text-xs text-slate-500"><span>TOTAL</span><span className="text-lg text-slate-900">${finalTotal.toLocaleString()}</span></div>
+                        <div className="flex justify-between font-bold text-xs text-slate-500"><span>TOTAL</span><span className="text-lg text-slate-900">{formatPrice(finalTotal)}</span></div>
                     </div>
                     <button
                         disabled={

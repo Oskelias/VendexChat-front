@@ -1,4 +1,5 @@
 import { ShoppingBag, ArrowRight } from "lucide-react";
+import { formatPrice } from "../../utils/format";
 
 interface CartBarProps {
     totalItems: number;
@@ -24,7 +25,7 @@ export function CartBar({ totalItems, totalPrice, onClick }: CartBarProps) {
                     </div>
                     <div className="text-left">
                         <p className="text-[10px] uppercase tracking-wider font-bold opacity-80">Tu pedido</p>
-                        <p className="font-bold text-lg leading-tight">${totalPrice.toLocaleString()}</p>
+                        <p className="font-bold text-lg leading-tight">{formatPrice(totalPrice)}</p>
                     </div>
                 </div>
 

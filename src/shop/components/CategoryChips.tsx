@@ -13,8 +13,9 @@ interface CategoryChipsProps {
 }
 
 export function CategoryChips({ categories, activeId, onSelect, onMenuClick }: CategoryChipsProps) {
-    const showMenu = categories.length > 6;
-    const displayCategories = showMenu ? categories.slice(0, 5) : categories;
+    const sorted = [...categories].sort((a, b) => a.name.localeCompare(b.name));
+    const showMenu = sorted.length > 6;
+    const displayCategories = showMenu ? sorted.slice(0, 5) : sorted;
 
     return (
         <div className="bg-white border-b border-slate-100 overflow-x-auto no-scrollbar flex items-center shadow-sm">
